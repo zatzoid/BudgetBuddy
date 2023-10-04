@@ -1,0 +1,18 @@
+.header {
+    background-color: #CFF1C9;
+}
+
+.header__heading {
+    color: #000;
+    font-family: Inter;
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.header__menu {
+    width: 51px;
+    height: 31px;
+    background-color:  red;
+}
