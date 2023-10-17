@@ -1,18 +1,32 @@
 const router = require('express').Router();
 const { deleteUserMe, changeProfile, signOut } = require('../controllers/users');
 const { validUserInfo } = require('../utils/validation');
+const { uploadLocalPost, changeLocalPost, createLocalPost, deleteLocalPost } = require('../controllers/localPosts')
+const { deleteCommentPublicPost, putCommentPublicPost, deletePublicPost } = require('../controllers/publicPosts')
 
-router.patch('/user-me', validUserInfo,  changeProfile); //change user
+router.patch('/user-me', validUserInfo, changeProfile); //change user
 router.delete('/user-me', deleteUserMe); // del user
 router.post('/sign-out', signOut)
 //posts
-//  router.post('/post'); //create
-//  router.delete('/post/:postId'); //deletelocal post
-//  router.patch('/post/:postId'); //change local post
-//  router.post('/post-all'); //post to all from local
+router.post('/local-posts', createLocalPost); //create
+router.delete('/local-posts/:postId', deleteLocalPost); //deletelocal post
+router.patch('/local-posts/:postId', changeLocalPost); //  получает весь объект поста
 //  //all posts
-//  router.delete('/post-all/:postId'); //del post from all
-//  router.delete('/post-all/:postId/comment'); //delete comment
-//  router.post('/post-all/:postId/comment'); //create comment
+router.post('/public-posts/:postId', uploadLocalPost); //получает только id объекта из url
+router.delete('/public-posts/:postId', deletePublicPost); //del post from all
+/* { формат комментария
+    "owner": {
+        "_id": "652d1790f7ccc0be25d2258e",
+        "avatar": "in progress",
+        "name": "asd",
+        "email": "test@gmail.com"
+    },
+    "comment": "привет"
+} */
+router.put('/public-posts/:postId/comment', putCommentPublicPost); //create comment
+/* 
+{commentId: "comment id from db"}
+*/
+ router.delete('/public-posts/:postId/comment', deleteCommentPublicPost); //delete comment
 
 module.exports = router

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const { LoginError } = require('../utils/errorsType');
+const bcrypt = require("bcryptjs")
 
 const user = new mongoose.Schema({
   avatar: {
@@ -11,11 +12,11 @@ const user = new mongoose.Schema({
     type: String,
     minlength: 2,
     maxlength: 30,
-    default: 'лох',
+    required: [true, 'Поле name обязательно'],
   },
   email: {
     type: String,
-    required: [true, 'Поле "email" обязательно'],
+    required: true,
     unique: [true, 'Почта уже зарегистрирована'],
     validate: {
       validator: (value) => validator.isEmail(value),

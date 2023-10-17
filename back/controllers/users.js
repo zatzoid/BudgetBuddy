@@ -85,7 +85,7 @@ module.exports.deleteUserMe = async (req, res, next) => {
         if (!user) {
             throw new NotFoundError('user not found');
         }
-        return successResponse(res, { user, message: 'Аккаунт успешно удален' });
+        return res.clearCookie('Bearer').status(200).send({ message: 'Аккаунт успешно удален' });
     } catch (err) {
         return next(err);
     }

@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
 
-const post = new mongoose.Schema({
+const publicPost = new mongoose.Schema({
     owner: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -16,29 +15,23 @@ const post = new mongoose.Schema({
     },
     posted: {
         type: Boolean,
-        default: false
+        default: false,
+        required: true
     },
     cashData: {
-        profit: {
-            key: {
-                type: String,
-                required: true,
-            },
-            value: {
-                type: Number,
-                required: true,
-            },
-        },
-        lose: {
-            key: {
-                type: String,
-                required: true,
-            },
-            value: {
-                type: Number,
-                required: true,
-            },
-        }
+        profit: [
+            {
+                type: Object,
+                required: true
+            }
+
+        ],
+        lose: [
+            {
+                type: Object,
+                required: true
+            }
+        ]
     },
     createdAt: {
         type: Date,
@@ -50,7 +43,10 @@ const post = new mongoose.Schema({
     },
     comments: [
         {
-            comment: String,
+            comment: {
+                type: String,
+                required: true
+            },
             owner: {
                 _id: {
                     type: mongoose.Schema.Types.ObjectId,
@@ -75,4 +71,4 @@ const post = new mongoose.Schema({
     ]
 }, { versionKey: false });
 
-module.exports = mongoose.model('Post', post);
+module.exports = mongoose.model('PublicPost', publicPost);
