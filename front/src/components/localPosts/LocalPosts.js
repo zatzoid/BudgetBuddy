@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Profile from "../profile/Profile";
 import getMonthName from "../../utils/getMonthName";
-import MounthSlider from "../mounthSlider/MounthSlider";
+import MounthSlider from "./mounthSlider/MounthSlider";
 import Border from "../border/Border";
 import { data } from "../../utils/constants";
 import PostedEl from "./PostedEl/PostedEl";

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import getMonthName from "../../utils/getMonthName";
+import getMonthName from "../../../utils/getMonthName";
 
 export default function MounthSlider() {
     const [currentMounth, setCurrentMounth] = useState(0);
