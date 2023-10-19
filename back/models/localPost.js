@@ -14,6 +14,10 @@ const localPost = new mongoose.Schema({
     cashData: {
         profit: [
             {
+                _id: {
+                    type: mongoose.Schema.Types.ObjectId
+                    , default: mongoose.Types.ObjectId
+                },
                 type: Object,
                 required: true
             }
@@ -21,6 +25,10 @@ const localPost = new mongoose.Schema({
         ],
         lose: [
             {
+                _id: {
+                    type: mongoose.Schema.Types.ObjectId
+                    , default: mongoose.Types.ObjectId
+                },
                 type: Object,
                 required: true
             }
