@@ -4,27 +4,18 @@ import { NavLink } from 'react-router-dom'
 
 export default function Header(props) {
     const [showMenu, setShowMenu] = useState(false);
-    const [showNavBar, setShowNavBar] = useState(false)
-    useEffect(() => {
-        setTimeout(() => {
-            if (showNavBar) {
-                return setShowNavBar(false)
-            }
-            setShowNavBar(true)
-        }, 500);
 
-    }, [showMenu])
     function openMenu() {
         if (showMenu) {
             return setShowMenu(false)
         }
         setShowMenu(true);
-    }
+    };
+
     return (
         <header className='header' >
             <div className="header__content">
-                <h1 onClick={() => { props.log() }}
-                    className={`header__heading ${!props.loggedIn && 'header__heading_unlogged '}`}>
+                <h1 className={`header__heading ${!props.loggedIn && 'header__heading_unlogged '}`}>
                     BudgetBuddy</h1>
                 {
                     props.loggedIn &&
@@ -43,7 +34,7 @@ export default function Header(props) {
                         Общие посты</NavLink>
 
                 </nav>
-                <button className="header__acc-btn">Выйти из аккаунта</button>
+                <button className="header__acc-btn" onClick={() => { props.signOut() }}>Выйти из аккаунта</button>
                 <button className="header__acc-btn">Удалить аккаунт</button>
             </div>
 

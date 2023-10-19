@@ -1,0 +1,28 @@
+.border {
+    width: 100%;
+    height: 2px;
+    margin: 2px 0 5px;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-gap: 5px;
+    transition: all 0.5s;
+}
+
+
+
+
+.border__el {
+    height: 100%;
+    width: 100%;
+    transition: all 0.5s;
+    background-color: var(--col-main);
+}
+
+.border__el_error {
+    background-color: var(--col-red);
+}
+
+.border_focus {
+    transition: all 0.5s;
+    gap: 0;
+}

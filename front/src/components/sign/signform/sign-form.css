@@ -1,0 +1,90 @@
+.sign-wrapper {
+
+    width: 100%;
+    box-sizing: border-box;
+    padding: 50px 15px;
+
+}
+
+.sign__form-heading {
+    text-align: center;
+    margin: 0 0 30px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--col-main);
+    width: 100%;
+}
+
+.sign__form {
+    overflow: hidden;
+    max-width: 350px;
+    height: 370px;
+    border-radius: 25px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--col-sec);
+    padding: 5px 0;
+}
+
+.sign__form-input-block {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    margin-bottom: 10px;
+}
+
+.sign__form-input {
+    background-color: var(--col-clear);
+    border: none;
+    outline: none;
+}
+
+
+.sign__form-input-err {
+    height: 13px;
+    font-size: 12px;
+    margin: 0;
+    color: var(--col-red);
+}
+
+.sign__redirect-block {
+    margin: auto 0 20px;
+}
+
+.sign__redirect-message {
+    margin: 0;
+}
+
+.sign__redirect-link {
+    color: var(--col-main-dark);
+    text-decoration: none;
+}
+
+.sign__submit-error-msg {
+    margin: 0;
+    color: var(--col-red);
+    font-size: 15px;
+    height: 17px;
+}
+
+.sign__submit-btn {
+    width: 100%;
+    border: none;
+    background-color: var(--col-clear);
+    font-size: 20px;
+    padding: 8px 0;
+    border-top: 1px solid var(--col-main);
+    cursor: pointer;
+    transition: all .2s;
+}
+
+.sign__submit-btn:active {
+    background-color: var(--col-main);
+
+}
+
+.sign__submit-btn:disabled {
+    opacity: 0.7;
+
+}
