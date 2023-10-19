@@ -1,0 +1,27 @@
+.posted-el {
+    display: grid;
+    grid-template-columns: auto min-content;
+    margin: 15px 0 5px;
+}
+
+.posted-el-value {
+    margin: 0;
+}
+
+.posted-el-value_heading::after {
+    font-weight: 700;
+    content: ':';
+}
+
+.posted-el-value_value::after {
+    content: ' ₽';
+}
+
+.posted-el__del-btn {
+    background-image: url(../../../images/x.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: var(--col-clear);
+    border: none;
+}
