@@ -1,5 +1,5 @@
 .sign-wrapper {
-
+    min-height: calc(100vh - 120px);
     width: 100%;
     box-sizing: border-box;
     padding: 50px 15px;

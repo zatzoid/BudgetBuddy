@@ -1,24 +1,13 @@
 import React, { useEffect, useState } from "react";
 import getMonthName from "../../../utils/getMonthName";
 
-export default function MounthSlider() {
-    const [currentMounth, setCurrentMounth] = useState(0);
+export default function MounthSlider(props) {
     const slideStyle = {
-        transform: `translateX(-${currentMounth}00%)`
+        transform: `translateX(-${props.showedPost}00%)`
     }
-    useEffect(() => {
-        const date = new Date;
-        console.log(date.getMonth() + 1)
-        setCurrentMounth(date.getMonth() + 1)
-
-    }, []);
-    function sliderMove(e) {
-        setCurrentMounth(currentMounth + e)
-    }
-
     return (
         <div className="slider">
-            <button className="slider-btn slider-btn_left" onClick={() => { sliderMove(-1) }}>  </button>
+            <button className="slider-btn slider-btn_left" onClick={() => { props.switchMonth(-1) }}>  </button>
             <ul className="slider-container" style={slideStyle}>
                 <li className="slider__el"><p className="slider__value"></p></li>
                 <li className="slider__el"><p className="slider__value">{getMonthName(1)}</p></li>
@@ -34,7 +23,7 @@ export default function MounthSlider() {
                 <li className="slider__el"><p className="slider__value">{getMonthName(11)}</p></li>
                 <li className="slider__el"><p className="slider__value">{getMonthName(12)}</p></li>
             </ul>
-            <button className="slider-btn slider-btn_right" onClick={() => { sliderMove(1) }}> </button>
+            <button className="slider-btn slider-btn_right" onClick={() => { props.switchMonth(1) }}> </button>
         </div>
 
     )

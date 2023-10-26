@@ -7,6 +7,7 @@
 @import url(./components/profile/profile.css);
 @import url(./components/localPosts/mounthSlider/mounth-slider.css);
 @import url(./components/localPosts/PostedEl/PostedEl.css);
+@import url(./components/Chart/chart.css);
 
 /* шрифты не подключены */
 body {
