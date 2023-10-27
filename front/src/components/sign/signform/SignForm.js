@@ -66,7 +66,7 @@ export default function SignForm(props) {
                         </p>
                     </div>
                     : <div className="sign__redirect-block">
-                        <p className="sign__redirect-message">Еще незарегистрированы?
+                        <p className="sign__redirect-message">Еще не зарегистрированы?
                             <Link to='/sign-up' className="sign__redirect-link"> Регистрация</Link>
                         </p>
                     </div>}

@@ -38,9 +38,13 @@ const localPost = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
-    choisenDate: {
-        type: String,
+    choisenMonth: {
+        type: Number,
         required: true,
+    },
+    choisenYear: {
+        type: Number,
+        required: true
     }
 
 }, { versionKey: false });

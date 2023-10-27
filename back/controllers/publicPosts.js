@@ -5,6 +5,19 @@ function successResponse(res, data, statusCode = 200) {
     return res.status(statusCode).send({ data });
 };
 
+module.exports.getAllPublicPosts = async (req, res, next) => {
+    try {
+        const findedPosts = await PublicPost.find({});
+        if (!findedPosts) {
+            return res.send({ message: 'постов не найдено' }).status(404)
+        }
+        successResponse(res, findedPosts);
+    }
+    catch (err) {
+        return next(err);
+    }
+}
+
 module.exports.deletePublicPost = async (req, res, next) => {
     try {
         const postId = req.params.postId;

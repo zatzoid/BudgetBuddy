@@ -86,11 +86,14 @@
 .local-posts__public-btn-container {
     grid-column: 1 / span 2;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    align-items: center;
     width: 100%;
     background-color: var(--col-sec);
     padding: 10px 0 10px;
+
 }
+
 
 .local-posts__public-btn {
     border-radius: 20px;
@@ -99,6 +102,10 @@
     background-color: var(--col-main);
     width: 250px;
     transition: all .2s;
+}
+
+.local-posts__public-btn_active {
+    opacity: 0.5;
 }
 
 .local-posts__public-btn:hover {
@@ -120,4 +127,39 @@
     background-color: var(--col-main-dark);
     color: var(--col-white);
     margin: 0;
+    opacity: 0.7;
+}
+
+.local-posts__public-add-description {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 500px;
+    width: 100%;
+    margin: auto;
+}
+
+.local-posts__public-add-description-value {
+    width: 100%;
+    grid-column: 1 / span 2;
+    resize: none;
+    height: 90px;
+    background-color: var(--col-sec);
+    border: 2px dashed var(--col-main);
+}
+
+.local-posts__public-add-description-btn {
+    margin: 5px 0;
+    padding: 5px 0;
+    background-color: var(--col-clear);
+    border: none;
+}
+
+.local-posts__public-add-description-btn:first-of-type {
+    background-color: var(--col-main);
+    border-radius: 20px;
+
+}
+
+.local-posts__public-add-description-btn:last-of-type {
+    color: var(--col-red);
 }

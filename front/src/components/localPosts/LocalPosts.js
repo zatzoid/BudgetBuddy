@@ -17,6 +17,8 @@ export default function LoaclPosts(props) {
     const [showedPostData, setShowedPostData] = useState(null);
     const totalProfit = showedPostData?.cashData.profit.reduce((acc, item) => acc + Object.values(item)[1], 0);
     const totalLose = showedPostData?.cashData.lose.reduce((acc, item) => acc + Object.values(item)[1], 0);
+    const [showDescription, setShowDescription] = useState(false);
+    const [descriptionValue, setDescriptionValue] = useState(null)
     function submitForm(e) {
         e.preventDefault()
         const objectData = { [profitValues.key]: parseFloat(profitValues.value) };
@@ -97,8 +99,26 @@ export default function LoaclPosts(props) {
                                     <Border />
                                 </li>
                             </ul>
-                            <div className="local-posts__public-btn-container">
-                                {showedPostData.posted && <button className="local-posts__public-btn">Опубликовать запись</button>}
+                            <div className='local-posts__public-btn-container' >
+                                {showDescription && <div className="local-posts__public-add-description">
+                                    <textarea
+                                        required
+                                        className="local-posts__public-add-description-value"
+                                        placeholder="Добавьте описание (это обязательно)"
+                                        value={descriptionValue}
+                                        onChange={(e) => { setDescriptionValue(e.target.value) }}
+                                    />
+                                    <button className="local-posts__public-add-description-btn">Опубликовать</button>
+                                    <button
+                                        onClick={() => { setShowDescription(false) }}
+                                        className="local-posts__public-add-description-btn">Отмена</button>
+                                </div>}
+                                {showedPostData.posted &&
+                                    <button
+                                        onClick={() => { setShowDescription(true) }}
+                                        className={`local-posts__public-btn ${showDescription && 'local-posts__public-btn_active'}`}>
+                                        Опубликовать запись</button>}
+
                                 {!showedPostData.posted && <p className="local-posts__public-btn_posted">Запись опубликована</p>}
                             </div>
                         </>}

@@ -6,7 +6,19 @@ const mongoose = require('mongoose')
 function successResponse(res, data, statusCode = 200) {
     return res.status(statusCode).send({ data });
 };
-
+module.exports.getUserLocalPosts = async (req, res, next) => {
+    try {
+        const owner = req.user._id;
+        const findedPosts = await LocalPost.find({ owner: owner });
+        if (!findedPosts) {
+            return res.send({ message: 'постов не найдено' }).status(404)
+        }
+        successResponse(res, findedPosts);
+    }
+    catch (err) {
+        return next(err);
+    }
+};
 module.exports.createLocalPost = async (req, res, next) => {
     try {
         const { cashData, choisenDate } = req.body;
