@@ -8,6 +8,9 @@
 @import url(./components/localPosts/mounthSlider/mounth-slider.css);
 @import url(./components/localPosts/PostedEl/PostedEl.css);
 @import url(./components/Chart/chart.css);
+@import url(./components/publicPosts/publicPosts.css);
+@import url(./components/publicPosts/PublicEl/public-el.css);
+@import url(./components/localPosts/form/local-posts-form.css);
 
 /* шрифты не подключены */
 body {

@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
 import Profile from "../profile/Profile";
-import getMonthName from "../../utils/getMonthName";
 import MounthSlider from "./mounthSlider/MounthSlider";
 import Border from "../border/Border";
 import useLocalPostForm from "../../utils/localPostForm";
 import PostedEl from "./PostedEl/PostedEl";
 import ChartComponent from "../Chart/chart";
+import LocalPostForm from "./form/localPostForm";
 
 
 
 export default function LoaclPosts(props) {
     const date = new Date;
     const { profitValues, loseValues, resetLoseForm, resetProfitForm, handleChangeLose, handleChangeProfit } = useLocalPostForm();
-    const [localPostList, setLocalPostsList] = useState(props.localData); /* вес массив */
+    const [localPostList, setLocalPostsList] = useState(props.localData); /* весь массив */
     const [showedPost, setShowedPost] = useState(date.getMonth() + 1);
-    const [showedPostData, setShowedPostData] = useState(null)
+    const [showedPostData, setShowedPostData] = useState(null);
+    const totalProfit = showedPostData?.cashData.profit.reduce((acc, item) => acc + Object.values(item)[1], 0);
+    const totalLose = showedPostData?.cashData.lose.reduce((acc, item) => acc + Object.values(item)[1], 0);
     function submitForm(e) {
         e.preventDefault()
         const objectData = { [profitValues.key]: parseFloat(profitValues.value) };
@@ -24,9 +26,7 @@ export default function LoaclPosts(props) {
     }
 
     useEffect(() => {
-
         setLocalPostsList(props.localData);
-
     }, []);
     useEffect(() => {
         const currentData = (localPostList?.filter(item => item.choisenMonth === showedPost));
@@ -60,52 +60,47 @@ export default function LoaclPosts(props) {
 
                                 className="local-post__empty-el-add-btn"
                                 type="button"
-                            >+ </button>
+                            >+</button>
                         </div>
                         :
                         <>
                             <ul className="local-posts__list">
-                                <li><p className="local-posts__list-heading">Доходы</p></li>
+                                <li><p className="local-posts__list-heading">Доход:</p>
+                                    <p className="local-posts__list-heading">{totalProfit}</p>
+                                </li>
                                 {Array.isArray(showedPostData?.cashData.profit) && showedPostData?.cashData.profit.map((item) => (
                                     <PostedEl key={item._id} keyName={Object.keys(item)[1]} value={Object.values(item)[1]} />
                                 ))}
                                 <li className="local-posts__posted-el">
-                                    <form className="local-posts__form"
-                                        onSubmit={(e) => { submitForm(e) }}>
-                                        <p className="local-posts__form-heading">Добавить доход</p>
-                                        <input
-                                            onChange={(e) => { handleChangeProfit(e) }}
-                                            value={profitValues.key}
-                                            placeholder="Название"
-                                            className="local-posts__form-input"
-                                            name="key"
-                                            type="text" />
-                                        <input
-                                            onChange={(e) => { handleChangeProfit(e) }}
-                                            value={profitValues.value}
-                                            placeholder="Сумма"
-                                            className="local-posts__form-input"
-                                            name="value"
-                                            type="number" />
-                                        <button
-                                            className="local-posts__from-btn-sbmt"
-                                            type="submit"
-                                        />
-                                        <button
-                                            onClick={() => { resetProfitForm() }}
-                                            className="local-posts__from-btn-reset"
-                                            type="reset"
-                                        />
-                                    </form>
+                                    <LocalPostForm
+                                        heading={'Добавить доход'}
+                                        values={profitValues}
+                                        submitForm={submitForm}
+                                        handleChange={handleChangeProfit}
+                                        resetForm={resetProfitForm} />
                                     <Border />
                                 </li>
                             </ul>
                             <ul className="local-posts__list">
-                                <li><p className="local-posts__list-heading">Расходы</p></li>
+                                <li><p className="local-posts__list-heading">Расход:</p>
+                                    <p className="local-posts__list-heading">{totalLose}</p></li>
                                 {Array.isArray(showedPostData?.cashData.lose) && showedPostData?.cashData.lose.map((item) => (
                                     <PostedEl key={item._id} keyName={Object.keys(item)[1]} value={Object.values(item)[1]} />
                                 ))}
+                                <li className="local-posts__posted-el">
+                                    <LocalPostForm
+                                        heading={'Добавить расход'}
+                                        values={loseValues}
+                                        submitForm={submitForm}
+                                        handleChange={handleChangeLose}
+                                        resetForm={resetLoseForm} />
+                                    <Border />
+                                </li>
                             </ul>
+                            <div className="local-posts__public-btn-container">
+                                {showedPostData.posted && <button className="local-posts__public-btn">Опубликовать запись</button>}
+                                {!showedPostData.posted && <p className="local-posts__public-btn_posted">Запись опубликована</p>}
+                            </div>
                         </>}
                 </div>
 

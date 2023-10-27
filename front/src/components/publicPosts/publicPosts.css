@@ -1,0 +1,14 @@
+.public-post {
+    min-height: calc(100vh - 118px);
+    max-width: var(--width-max);
+margin: auto;
+}
+
+.public-post__list {
+    max-width: var(--width-max);
+    margin: auto;
+    list-style: none;
+    padding: 0;
+    max-width: 100%;
+
+}

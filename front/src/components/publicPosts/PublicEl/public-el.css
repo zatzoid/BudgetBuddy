@@ -1,0 +1,135 @@
+.public-el {
+    transition: all .5s;
+    background-color: var(--col-sec);
+    display: grid;
+    grid-template-columns: min-content auto auto 0px 0px;
+    grid-template-rows: auto auto auto;
+    margin: 15px 5px;
+    font-size: 12px;
+    align-items: center;
+    overflow: hidden;
+    height: auto;
+    border-radius: 10px;
+    gap: 5px;
+
+}
+
+.public-el_more {
+    transition: all .5s;
+    max-height: 500px;
+}
+
+.public-el__diagramm {
+    width: 80px;
+    grid-row: 1/ span 2;
+}
+
+.public-el__name {
+    overflow: hidden;
+    margin: 0;
+    max-height: 30px;
+    text-align: center;
+
+}
+
+.public-el__date {
+    margin: 0;
+    max-height: 30px;
+    font-weight: 700;
+
+}
+
+.public-el__cashdata {
+    grid-row: 2;
+    border-top: 2px dashed var(--col-main);
+    padding-top: 5px;
+}
+
+.public-el__cashdata-text {
+    margin: 0;
+    text-align: center;
+}
+
+.public-el__cashdata-text:nth-child(2) {
+    font-weight: 700;
+
+}
+
+.public-el__cashdata-text:nth-child(2)::after {
+    content: ' ₽';
+}
+
+.public-el__cashdata_profit {
+    grid-column: 2;
+
+
+}
+
+.public-el__cashdata_lose {
+    grid-column: 3;
+}
+
+.public-el__description {
+    margin: 0;
+    grid-column: 2 / span 4;
+
+
+}
+
+.button__show-more-btn {
+    padding: 0;
+    width: 100%;
+    height: 30px;
+    grid-column: 1 /span 5;
+    background-image: url(../../../images/arrow-down-icon.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+    background-size: 25px;
+    background-color: var(--col-clear);
+    transition: all .5s;
+
+}
+
+.button__show-more-btn:hover {
+    background-position: bottom;
+}
+
+.button__show-more-btn:active {
+    background-position: bottom;
+}
+
+.button__show-more-btn_active {
+    transform: rotate(180deg);
+
+}
+
+
+.public-el__show-more-wrapper {
+    grid-column: 1 / span 4;
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto-fill;
+    max-height: 0;
+    transition: all .2s;
+}
+
+.public-el__show-more-wrapper_active {
+    transition: all .2s;
+    max-height: 1000px;
+    padding: 15px 5px;
+}
+
+.button__show-more-btn_list {
+    grid-column: 1 / span 2;
+}
+
+@media screen and (min-width:500px) {
+    .public-el__show-more-wrapper_active {
+        padding: 15px 10px;
+
+    }
+
+}

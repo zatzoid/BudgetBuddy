@@ -8,6 +8,7 @@ import Footer from "./footer/footer";
 import SignIn from "./sign/SignIn";
 import SignUp from "./sign/SignUp";
 import LoaclPosts from "./localPosts/LocalPosts";
+import PublicPost from "./publicPosts/publicPosts";
 import { data } from "../utils/constants";
 
 
@@ -50,6 +51,7 @@ function App() {
           <Route path="/sign-up" element={<SignUp submit={log} />} />
           <Route path="/sign-in" element={<SignIn submit={log} />} />
           <Route path="/local-posts" element={<LoaclPosts localData={localPostsList} />} />
+          <Route path="/public-posts" element={<PublicPost localData={localPostsList} />} />
         </Routes>
         <Footer />
       </CurrentUserContext.Provider>

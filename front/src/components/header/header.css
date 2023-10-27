@@ -1,6 +1,15 @@
 .header {
-    position: relative;
+    background-color: var(--col-sec);
     height: 60px;
+    
+}
+
+.header__wrapper {
+    max-width: var(--width-max);
+    position: relative;
+    height: 100%;
+    margin: auto;
+   
 }
 
 .header__content {
@@ -8,13 +17,12 @@
     top: 0;
     z-index: 10;
     width: 100%;
-    background-color: var(--col-sec);
     padding: 15px 5px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     box-sizing: border-box;
-
+    background-color: var(--col-sec);
 }
 
 .header__heading {
@@ -42,6 +50,7 @@
     position: absolute;
     background-color: var(--col-sec);
     width: 100%;
+    max-width: var(--width-max);
     bottom: 0;
     left: 0;
     transition: all 0.5s;

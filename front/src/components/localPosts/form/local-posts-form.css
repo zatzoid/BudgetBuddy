@@ -1,0 +1,49 @@
+.local-posts__form {
+    margin-top: 15px;
+    box-sizing: border-box;
+    padding: 0 15px 0 0;
+
+}
+
+.local-posts__form-heading {
+    margin: 0;
+    opacity: 0.7;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.local-posts__list-heading:nth-child(2)::after {
+    content: ' ₽';
+}
+
+.local-posts__form-input {
+    background-color: var(--col-clear);
+    border: none;
+    border-bottom: 2px solid var(--col-main);
+    width: 100%;
+}
+
+.local-posts__from-btn-sbmt {
+    margin-top: 10px;
+    width: 50%;
+    height: 20px;
+    background-image: url(../../../images/arrow-down-icon.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--col-clear);
+    border: none;
+
+}
+
+.local-posts__from-btn-reset {
+
+    margin-top: 10px;
+    width: 50%;
+    height: 20px;
+    background-image: url(../../../images/x.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: var(--col-clear);
+    border: none;
+}
