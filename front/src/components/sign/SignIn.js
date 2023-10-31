@@ -5,6 +5,7 @@ export default function SignIn(props) {
     return (
         <>
             <SignForm
+                isLoading={props.isLoading}
                 submit={props.submit}
                 signUp={false} />
         </>

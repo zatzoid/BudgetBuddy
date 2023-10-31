@@ -7,15 +7,17 @@ const cookieParser = require('cookie-parser');
 const routes = require('./routes/index');
 const { Auth } = require('./midlewares/auth');
 const { errors } = require('celebrate');
-const {errorCheker} = require('./midlewares/errorChecker');
+const { errorCheker } = require('./midlewares/errorChecker');
 const { signUp, signIn } = require('./controllers/users');
 const { validRegister, validLogin } = require('./utils/validation');
+const  cors  = require('./midlewares/cors')
 
 const { PORT = 3000, MONGODB_PORT } = process.env;
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors);
 app.post('/sign-up', validRegister, signUp);
 app.post('/sign-in', validLogin, signIn);
 app.use(Auth);

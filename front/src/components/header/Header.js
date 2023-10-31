@@ -29,13 +29,13 @@ export default function Header(props) {
                 </div>
                 <div className={`header__navbar-wrapper ${showMenu && 'header__navbar-wrapper_active'}`}>
                     <nav className="header__navbar">
-                        <NavLink to='/local-posts' className='header__link'>
+                        <NavLink to='/local-posts' onClick={()=>{openMenu()}} className='header__link'>
                             Личные посты</NavLink>
-                        <NavLink to='/public-posts' className='header__link'>
+                        <NavLink to='/public-posts' onClick={()=>{openMenu()}} className='header__link'>
                             Общие посты</NavLink>
 
                     </nav>
-                    <button className="header__acc-btn" onClick={() => { props.signOut() }}>Выйти из аккаунта</button>
+                    <button className="header__acc-btn" onClick={() => { props.signOut(); openMenu() }}>Выйти из аккаунта</button>
                     <button className="header__acc-btn">Удалить аккаунт</button>
                 </div>
             </div>

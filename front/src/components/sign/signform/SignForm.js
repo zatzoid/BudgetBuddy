@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Border from "../../border/Border";
-import useFormWithValidation from '../../../utils/validator';
+import useFormWithValidation from '../../../utils/customHooks/validator';
 
 export default function SignForm(props) {
     const { values, handleChange, errors, isValid } = useFormWithValidation();
@@ -10,7 +10,8 @@ export default function SignForm(props) {
     const [passwordFocus, setPasswordFocus] = useState(false);
     function submitForm(e) {
         e.preventDefault()
-        props.submit()
+        console.log('from sign up form::', values)
+        props.submit(values);
 
     }
     return (
@@ -22,22 +23,25 @@ export default function SignForm(props) {
                         onFocus={() => { setNameFocus(true) }}
                         onBlur={(e) => { handleChange(e); setNameFocus(false) }}
                         onChange={(e) => { handleChange(e) }}
-                        value={values.name}
+                        value={values.name || ''}
                         minLength={2}
                         maxLength={25}
                         className="sign__form-input"
                         name="name"
                         type="text"
-                        placeholder="name" />
+                        placeholder="name"
+                        required />
                     <Border onError={errors.name} onFocus={nameFocus} />
                     <span className="sign__form-input-err">{errors.name}</span>
                 </div>}
                 <div className="sign__form-input-block">
                     <input
+                        pattern="^[A-Za-z0-9]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
+                        required
                         onFocus={() => { setEmailFocus(true) }}
                         onBlur={(e) => { handleChange(e); setEmailFocus(false) }}
                         onChange={(e) => { handleChange(e) }}
-                        value={values.email}
+                        value={values.email || ''}
                         className="sign__form-input"
                         name="email"
                         type="email"
@@ -47,10 +51,11 @@ export default function SignForm(props) {
                 </div>
                 <div className="sign__form-input-block">
                     <input
+                        required
                         onFocus={() => { setPasswordFocus(true) }}
                         onBlur={(e) => { handleChange(e); setPasswordFocus(false) }}
                         onChange={(e) => { handleChange(e) }}
-                        value={values.password}
+                        value={values.password || ''}
                         minLength={5}
                         className="sign__form-input"
                         name="password"
@@ -72,7 +77,7 @@ export default function SignForm(props) {
                     </div>}
                 <p className="sign__submit-error-msg"></p>
                 <button
-                    disabled={!isValid}
+                    disabled={!isValid || props.isLoading}
                     type="submit"
                     className="sign__submit-btn">
                     {props.signUp ? "Зарегистрироваться" : "Войти"}

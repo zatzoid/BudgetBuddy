@@ -19,31 +19,43 @@
 .local-posts__form-input {
     background-color: var(--col-clear);
     border: none;
-    border-bottom: 2px solid var(--col-main);
     width: 100%;
 }
 
+.local-posts__form-input:focus {
+    outline: none;
+}
+
+.local-posts__from-btn-wrapper {
+    display: flex;
+    justify-content: space-around;
+}
+
 .local-posts__from-btn-sbmt {
+    cursor: pointer;
+    padding: 0;
     margin-top: 10px;
-    width: 50%;
-    height: 20px;
-    background-image: url(../../../images/arrow-down-icon.svg);
-    background-position: center;
-    background-repeat: no-repeat;
+    width: 30px;
+    height: 30px;
     background-color: var(--col-clear);
     border: none;
 
 }
 
-.local-posts__from-btn-reset {
+.local-posts__from-btn-sbmt:disabled {
+    opacity: 0.5;
+}
 
+.local-posts__from-btn-reset {
+    cursor: pointer;
+    padding: 0;
     margin-top: 10px;
-    width: 50%;
-    height: 20px;
-    background-image: url(../../../images/x.svg);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
+    width: 30px;
+    height: 30px;
     background-color: var(--col-clear);
     border: none;
+}
+
+.local-posts__from-btn-reset:disabled {
+    opacity: 0.5;
 }

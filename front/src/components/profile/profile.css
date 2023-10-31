@@ -39,10 +39,11 @@
 .profile__input {
     background-color: var(--col-clear);
     border: none;
-
+    width: 100%;
 
 }
-.profile__input:focus{
+
+.profile__input:focus {
     outline: none;
 }
 
@@ -58,9 +59,25 @@
     background-size: contain;
     background-repeat: no-repeat;
 }
-.profile__edit_active{
+
+.profile__edit_active {
     background-image: url(../../images/x.svg);
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
+}
+.profile__edit-submit-btn{
+    border: none;
+    background-color: var(--col-clear);
+    color: var(--col-main);
+    font-weight: 700;
+    font-size: 30px;
+    padding: 0;
+    cursor: pointer;
+}
+.profile__edit-submit-btn:disabled{
+    opacity: 0.5;
+}
+.profile__edit:disabled{
+    opacity: 0.5;
 }

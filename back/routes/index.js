@@ -1,12 +1,13 @@
 const router = require('express').Router();
-const { deleteUserMe, changeProfile, signOut } = require('../controllers/users');
+const { deleteUserMe, changeProfile, signOut, getUserMe } = require('../controllers/users');
 const { validUserInfo } = require('../utils/validation');
 const { putCashDataLocalPost, uploadLocalPost, deleteCashDataLocalPost, createLocalPost, getUserLocalPosts } = require('../controllers/localPosts')
 const { getAllPublicPosts, deleteCommentPublicPost, putCommentPublicPost, deletePublicPost } = require('../controllers/publicPosts')
 
 router.patch('/user-me', validUserInfo, changeProfile); //change user
 router.delete('/user-me', deleteUserMe); // del user
-router.post('/sign-out', signOut)
+router.post('/sign-out', signOut);
+router.get('/user-me', getUserMe);
 //posts
 router.get('/local-posts', getUserLocalPosts);
 router.post('/local-posts', createLocalPost); //create

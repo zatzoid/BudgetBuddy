@@ -21,9 +21,9 @@ module.exports.getUserLocalPosts = async (req, res, next) => {
 };
 module.exports.createLocalPost = async (req, res, next) => {
     try {
-        const { cashData, choisenDate } = req.body;
+        const { choisenMonth, choisenYear } = req.body;
         const owner = req.user._id;
-        const newPost = await LocalPost.create({ cashData, choisenDate, owner });
+        const newPost = await LocalPost.create({ choisenMonth, choisenYear, owner });
         return successResponse(res, newPost);
     }
     catch (err) {
@@ -45,21 +45,22 @@ module.exports.createLocalPost = async (req, res, next) => {
 module.exports.putCashDataLocalPost = async (req, res, next) => {
     try {
         const postId = req.params.postId;
-        const { profit, lose } = req.body.cashData;
         const postToPut = await LocalPost.findById(postId);
         if (!postToPut) {
             throw new NotFoundError('Пост не найден')
         }
-        if (!lose) {
+        if (!req.body.cashData.lose) {
+            const profit = req.body.cashData.profit;
             const newProfit = { _id: new mongoose.Types.ObjectId(), ...profit };
             postToPut.cashData.profit.push(newProfit);
         }
-        if (!profit) {
+        if (!req.body.cashData.profit) {
+            const lose = req.body.cashData.lose;
             const newLose = { _id: new mongoose.Types.ObjectId(), ...lose };
             postToPut.cashData.lose.push(newLose);
         }
         const updatedPost = await postToPut.save();
-        return successResponse(res, { meessage: `Добавлено поле`, updatedPost });
+        return successResponse(res, { message: `Добавлено поле`, updatedPost });
     }
     catch (err) {
         return next(err);
@@ -69,19 +70,20 @@ module.exports.putCashDataLocalPost = async (req, res, next) => {
 module.exports.deleteCashDataLocalPost = async (req, res, next) => {
     try {
         const postId = req.params.postId;
-        const { profit, lose } = req.body.cashData;
-        const updatedPost = await LocalPost.findById(postId);
-        if (!updatedPost) {
+        const postToDel = await LocalPost.findById(postId);
+        if (!postToDel) {
             throw new NotFoundError('Пост не найден');
         }
-        if (!lose) {
-            updatedPost.cashData.profit = updatedPost.cashData.profit.filter(p => p._id.toString() !== profit._id);
+        if (!req.body.cashData.lose) {
+            const { profit } = req.body.cashData;
+            postToDel.cashData.profit = postToDel.cashData.profit.filter(p => p._id.toString() !== profit._id);
         }
-        if (!profit) {
-            updatedPost.cashData.lose = updatedPost.cashData.lose.filter(l => l._id.toString() !== lose._id);
+        if (!req.body.cashData.profit) {
+            const { lose } = req.body.cashData;
+            postToDel.cashData.lose = postToDel.cashData.lose.filter(l => l._id.toString() !== lose._id);
         }
-        const savedPost = await updatedPost.save();
-        return successResponse(res, { meessage: `Запись удалена`, savedPost });
+        const updatedPost = await postToDel.save();
+        return successResponse(res, { meessage: `Запись удалена`, updatedPost });
     }
     catch (err) {
         return next(err);

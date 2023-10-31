@@ -1,7 +1,9 @@
 .public-post {
     min-height: calc(100vh - 118px);
     max-width: var(--width-max);
-margin: auto;
+    margin: auto;
+    padding-top: 100px;
+    box-sizing: border-box;
 }
 
 .public-post__list {

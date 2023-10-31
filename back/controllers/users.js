@@ -58,19 +58,28 @@ module.exports.signOut = async (req, res, next) => {
         return res.clearCookie('Bearer').status(200).send({ message: 'Выход из аккаунта выполнен успешно' });
     } catch (err) { return next(err); }
 };
-
+module.exports.getUserMe = async (req, res, next) => {
+    try {
+        const userData = await User.findById(req.user._id);
+        if (!userData) {
+            throw new NotFoundError('user not found');
+        }
+        return successResponse(res, {userData, message: 'Авторизация прошла успешно'});
+    }
+    catch (err) { return next(err); }
+}
 module.exports.changeProfile = async (req, res, next) => {
     try {
         const { name, email } = req.body;
-        const user = await User.findByIdAndUpdate(
+        const userData = await User.findByIdAndUpdate(
             req.user._id,
             { name, email },
             { new: true, runValidators: true },
         );
-        if (!user) {
+        if (!userData) {
             throw new NotFoundError('user not found');
         }
-        return successResponse(res, user);
+        return successResponse(res, {userData, message: 'Данные профиля успешно изменены'});
     } catch (err) {
         if (err.code === 11000) {
             return next(new RegistrError('почта уже зарегистрирована'));

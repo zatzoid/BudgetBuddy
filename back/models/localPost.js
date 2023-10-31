@@ -18,8 +18,11 @@ const localPost = new mongoose.Schema({
                     type: mongoose.Schema.Types.ObjectId
                     , default: mongoose.Types.ObjectId
                 },
-                type: Object,
-                required: true
+                data: {
+                    type: Object,
+                    required: true
+                }
+
             }
 
         ],
@@ -29,8 +32,10 @@ const localPost = new mongoose.Schema({
                     type: mongoose.Schema.Types.ObjectId
                     , default: mongoose.Types.ObjectId
                 },
-                type: Object,
-                required: true
+                data: {
+                    type: Object,
+                    required: true
+                }
             }
         ]
     },

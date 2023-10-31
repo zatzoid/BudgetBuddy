@@ -4,12 +4,14 @@ import ProtectedRouteElement from "./ProtectedRoutEl";
 import { CurrentUserContext } from "./Context";
 import Header from "./header/Header";
 import Footer from "./footer/footer";
-
 import SignIn from "./sign/SignIn";
 import SignUp from "./sign/SignUp";
 import LoaclPosts from "./localPosts/LocalPosts";
 import PublicPost from "./publicPosts/publicPosts";
 import { data } from "../utils/constants";
+import { useUser } from "../utils/customHooks/useUser";
+import { useLocalPosts } from "../utils/customHooks/useLocalPosts";
+import Notice from "./notice/Notice";
 
 
 
@@ -28,30 +30,48 @@ api
 */
 function App() {
   const navigate = useNavigate();
-  const [loggedIn, setLoggedIn] = useState(true);
-  const [userData, setUserData] = useState({ name: 'statqw1eeqwic', email: 'staqweqwasdastic@email.com' });
+  const { loggedIn, signUp, signIn, signOut, changeUserInfo, isLoadingUser, userResMsg, userData, auth } = useUser();
+  const { getLPList, createLPel, putCashDataLP, deleteCashDataLP, LPList, isLoadingLP, LPResMsg } = useLocalPosts()
   const [localPostsList, setLocalPostsList] = useState(data);
+  const [resMessage, setResMessage] = useState(null);
   useEffect(() => {
-    setLocalPostsList(data)
+    auth();
+    getLPList()
   }, [])
-  function log() {
-    if (!loggedIn) {
-      return setLoggedIn(true)
-    }
-    setLoggedIn(false)
-  };
-  function signOut() {
-    navigate('/sign-in')
-  };
+  useEffect(() => {
+    setResMessage(userResMsg);
+  }, [userResMsg]);
+  useEffect(() => {
+    setResMessage(LPResMsg)
+  }, [LPResMsg]);
+
   return (
     <div className="App">
       <CurrentUserContext.Provider value={userData}>
         <Header loggedIn={loggedIn} signOut={signOut} />
+        <Notice resMessage={resMessage} />
         <Routes>
-          <Route path="/sign-up" element={<SignUp submit={log} />} />
-          <Route path="/sign-in" element={<SignIn submit={log} />} />
-          <Route path="/local-posts" element={<LoaclPosts localData={localPostsList} />} />
-          <Route path="/public-posts" element={<PublicPost localData={localPostsList} />} />
+          <Route path="/sign-up" element={<SignUp submit={signUp} isLoading={isLoadingUser} />} />
+          <Route path="/sign-in" element={<SignIn submit={signIn} isLoading={isLoadingUser} />} />
+          <Route path="/local-posts"
+            element={<ProtectedRouteElement
+              element={LoaclPosts}
+              loggedIn={loggedIn}
+              auth={auth}
+              isLoading={isLoadingUser}
+              changeUserInfo={changeUserInfo}
+              localData={LPList}
+              isLoadingLP={isLoadingLP}
+              LPResMsg={LPResMsg}
+              deleteCashDataLP={deleteCashDataLP}
+              putCashDataLP={putCashDataLP}
+              createPost={createLPel} />} />
+          <Route path="/public-posts"
+            element={<ProtectedRouteElement
+              element={PublicPost}
+              localData={localPostsList}
+              auth={auth}
+              loggedIn={loggedIn} />} />
         </Routes>
         <Footer />
       </CurrentUserContext.Provider>
