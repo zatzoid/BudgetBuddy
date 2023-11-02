@@ -12,6 +12,8 @@ import { data } from "../utils/constants";
 import { useUser } from "../utils/customHooks/useUser";
 import { useLocalPosts } from "../utils/customHooks/useLocalPosts";
 import Notice from "./notice/Notice";
+import EmailModal from "./EmailModal/EmailModal";
+import { localPostApi } from "../utils/api/apiLocal";
 
 
 
@@ -32,8 +34,9 @@ function App() {
   const navigate = useNavigate();
   const { loggedIn, signUp, signIn, signOut, changeUserInfo, isLoadingUser, userResMsg, userData, auth } = useUser();
   const { getLPList, createLPel, putCashDataLP, deleteCashDataLP, LPList, isLoadingLP, LPResMsg } = useLocalPosts()
-  const [localPostsList, setLocalPostsList] = useState(data);
   const [resMessage, setResMessage] = useState(null);
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [emailModalData, setEmailModalData] = useState(null);
   useEffect(() => {
     auth();
     getLPList()
@@ -44,12 +47,32 @@ function App() {
   useEffect(() => {
     setResMessage(LPResMsg)
   }, [LPResMsg]);
+  /* develop */
+  async function submitEmailModal(data) {
+    try {
 
+      data.emailTo = userData.email
+      console.log("data to fetch::", data)
+      const response = await localPostApi.mailReminder(data);
+      console.log('response email::', response)
+    }
+    catch (e) {
+      console.log(e)
+    }
+
+  }
+  function openEmailModal({ show, data }) {
+    if (data) {
+      setEmailModalData(data)
+    }
+    setShowEmailModal(show)
+  }
   return (
     <div className="App">
       <CurrentUserContext.Provider value={userData}>
         <Header loggedIn={loggedIn} signOut={signOut} />
         <Notice resMessage={resMessage} />
+        {showEmailModal && <EmailModal submitForm={submitEmailModal} openEmailModal={openEmailModal} emailModalData={emailModalData} />}
         <Routes>
           <Route path="/sign-up" element={<SignUp submit={signUp} isLoading={isLoadingUser} />} />
           <Route path="/sign-in" element={<SignIn submit={signIn} isLoading={isLoadingUser} />} />
@@ -63,13 +86,14 @@ function App() {
               localData={LPList}
               isLoadingLP={isLoadingLP}
               LPResMsg={LPResMsg}
+              openEmailModal={openEmailModal}
               deleteCashDataLP={deleteCashDataLP}
               putCashDataLP={putCashDataLP}
               createPost={createLPel} />} />
           <Route path="/public-posts"
             element={<ProtectedRouteElement
               element={PublicPost}
-              localData={localPostsList}
+              localData={data}
               auth={auth}
               loggedIn={loggedIn} />} />
         </Routes>

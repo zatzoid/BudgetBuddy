@@ -22,7 +22,9 @@ export const useLocalPosts = () => {
     }
     function _successLoading(data) {
         setIsloadingLP(false);
-        setLPResMsg(data);
+        if (data) {
+            setLPResMsg(data);
+        }
     }
 
     async function getLPList() {
@@ -41,9 +43,11 @@ export const useLocalPosts = () => {
 
     }
     async function createLPel(data) {
+        _onLoading()
         try {
             const newPostdata = await localPostApi.createLocalPost(data);
             setLPList([...LPList, newPostdata.data]);
+            _successLoading()
         }
         catch (e) {
             _onError(e)

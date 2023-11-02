@@ -1,3 +1,13 @@
+@keyframes rotate {
+    from {
+        transform: rotate(0);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 .local-posts {
     margin: auto;
     max-width: var(--width-max);
@@ -75,7 +85,36 @@
     font-size: 70px;
     color: var(--col-main);
     cursor: pointer;
+    padding: 0;
 
+}
+
+.local-post__empty-el-add-btn_loading {
+    animation: rotate 1s linear infinite;
+    border: 4px solid var(--col-main);
+    position: relative;
+}
+
+.local-post__empty-el-add-btn_loading::after {
+    position: absolute;
+    content: '';
+    z-index: 2;
+    background-color: var(--col-white);
+    width: 50%;
+    height: 50%;
+    top: 25%;
+    left: 25%;
+}
+
+.local-post__empty-el-add-btn_loading::before {
+    content: '';
+    background-color: var(--col-white);
+    width: 5px;
+    height: 5px;
+    left: -5px;
+    top: calc(50% - 2.5px);
+    z-index: 3;
+    position: absolute;
 }
 
 .local-post__empty-el:hover {

@@ -1,7 +1,7 @@
 const LocalPost = require('../models/localPost');
 const PublicPost = require('../models/publicPosts');
 const { NotFoundError } = require('../utils/errorsType');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 
 function successResponse(res, data, statusCode = 200) {
     return res.status(statusCode).send({ data });
@@ -51,12 +51,12 @@ module.exports.putCashDataLocalPost = async (req, res, next) => {
         }
         if (!req.body.cashData.lose) {
             const profit = req.body.cashData.profit;
-            const newProfit = { _id: new mongoose.Types.ObjectId(), ...profit };
+            const newProfit = { _id: new mongoose.Types.ObjectId(), emailStatus: null, postId: postId, ...profit };
             postToPut.cashData.profit.push(newProfit);
         }
         if (!req.body.cashData.profit) {
             const lose = req.body.cashData.lose;
-            const newLose = { _id: new mongoose.Types.ObjectId(), ...lose };
+            const newLose = { _id: new mongoose.Types.ObjectId(), emailStatus: null, postId: postId, ...lose };
             postToPut.cashData.lose.push(newLose);
         }
         const updatedPost = await postToPut.save();

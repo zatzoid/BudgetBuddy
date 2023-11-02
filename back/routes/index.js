@@ -3,6 +3,7 @@ const { deleteUserMe, changeProfile, signOut, getUserMe } = require('../controll
 const { validUserInfo } = require('../utils/validation');
 const { putCashDataLocalPost, uploadLocalPost, deleteCashDataLocalPost, createLocalPost, getUserLocalPosts } = require('../controllers/localPosts')
 const { getAllPublicPosts, deleteCommentPublicPost, putCommentPublicPost, deletePublicPost } = require('../controllers/publicPosts')
+const { createEmailDataToSend } = require('../controllers/LPreminder')
 
 router.patch('/user-me', validUserInfo, changeProfile); //change user
 router.delete('/user-me', deleteUserMe); // del user
@@ -12,7 +13,8 @@ router.get('/user-me', getUserMe);
 router.get('/local-posts', getUserLocalPosts);
 router.post('/local-posts', createLocalPost); //create
 router.put('/local-posts/:postId', putCashDataLocalPost) //add profit/lose
-router.delete('/local-posts/:postId', deleteCashDataLocalPost); //deletelocal post
+router.delete('/local-posts/:postId', deleteCashDataLocalPost);
+router.post('/local-posts/remind', createEmailDataToSend) //deletelocal post
 //  router.patch('/local-posts/:postId', deleteCashDataLocalPost); //  получает весь объект поста
 //  //all posts
 router.get('/public-posts', getAllPublicPosts)

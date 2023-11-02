@@ -34,7 +34,7 @@ class localPostAPI {
             .then(this._checkError)
     };
     putCashDataLocalPost(data) {
-        const {cashData, postId } = data;
+        const { cashData, postId } = data;
         return fetch(`${this._link}/local-posts/${postId}`, {
             method: 'PUT',
             headers: this._headers,
@@ -45,12 +45,21 @@ class localPostAPI {
     };
     deleteCashDataLocalPost(data) {
         const { cashData, postId } = data;
-         return fetch(`${this._link}/local-posts/${postId}`, {
+        return fetch(`${this._link}/local-posts/${postId}`, {
             method: 'DELETE',
             headers: this._headers,
             body: JSON.stringify({ cashData }),
             credentials: 'include'
-        }) 
+        })
+    };
+    mailReminder(data) {
+        return fetch(`${this._link}/local-posts/remind`, {
+            method: 'POST',
+            headers: this._headers,
+            body: JSON.stringify({ data }),
+            credentials: 'include'
+        })
+            .then(this._checkError)
     };
 
 };

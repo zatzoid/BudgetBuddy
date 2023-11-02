@@ -13,6 +13,7 @@
 @import url(./components/localPosts/form/local-posts-form.css);
 @import url(./components/notice/notice.css);
 @import url(./components/visualbtn/visual-btn.css);
+@import url(./components/EmailModal/email-modal.css);
 
 /* шрифты не подключены */
 body {

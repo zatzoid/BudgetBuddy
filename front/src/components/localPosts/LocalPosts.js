@@ -60,6 +60,10 @@ export default function LoaclPosts(props) {
         setShowedPost(showedPost + e)
 
     }
+    function openEmailModal(data) {
+        data.data.postId = showedPostData._id;
+        props.openEmailModal(data)
+    }
 
 
     return (
@@ -71,10 +75,11 @@ export default function LoaclPosts(props) {
                     {/* тут должна быть диаграмма */}
                     {!showedPostData ?
                         <div className="local-post__empty-el">
-                            <p className="local-post__empty-el-text">Добавить запись</p>
+                            <p className="local-post__empty-el-text">{props.isLoadingLP ? 'Добавляем запись' : 'Добавить запись'}</p>
                             <button
+                                disabled={props.isLoadingLP}
                                 onClick={() => { props.createPost({ choisenMonth: showedPost, choisenYear: 2023 }) }}
-                                className="local-post__empty-el-add-btn"
+                                className={`local-post__empty-el-add-btn ${props.isLoadingLP && 'local-post__empty-el-add-btn_loading'}`}
                                 type="button"
                             >+</button>
                         </div>
@@ -86,7 +91,7 @@ export default function LoaclPosts(props) {
                                 </li>
                                 {Array.isArray(showedPostData?.cashData.profit) && showedPostData?.cashData.profit.map((item) => (
                                     <PostedEl
-                                       
+                                        openEmailModal={openEmailModal}
                                         isLoadingLP={props.isLoadingLP}
                                         deleteCashDataLP={deleteCashDataLP}
                                         key={item._id}
@@ -97,7 +102,7 @@ export default function LoaclPosts(props) {
                                 ))}
                                 <li className="local-posts__posted-el">
                                     <LocalPostForm
-                                     LPResMsg={props.LPResMsg}
+                                        LPResMsg={props.LPResMsg}
                                         isLoadingLP={props.isLoadingLP}
                                         kinde={'profit'}
                                         heading={'Добавить доход'}
@@ -111,6 +116,7 @@ export default function LoaclPosts(props) {
                                     <p className="local-posts__list-heading">{totalLose}</p></li>
                                 {Array.isArray(showedPostData?.cashData.lose) && showedPostData?.cashData.lose.map((item) => (
                                     <PostedEl
+                                        openEmailModal={openEmailModal}
                                         isLoadingLP={props.isLoadingLP}
                                         deleteCashDataLP={deleteCashDataLP}
                                         key={item._id}
@@ -121,7 +127,7 @@ export default function LoaclPosts(props) {
                                 ))}
                                 <li className="local-posts__posted-el">
                                     <LocalPostForm
-                                    LPResMsg={props.LPResMsg}
+                                        LPResMsg={props.LPResMsg}
                                         isLoadingLP={props.isLoadingLP}
                                         kinde={'lose'}
                                         heading={'Добавить расход'}

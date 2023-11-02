@@ -1,5 +1,6 @@
 const dotenv = require('dotenv');
 const path = require('path');
+const schedule = require('node-schedule');
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
 const express = require('express');
 const mongoose = require('mongoose');
@@ -10,7 +11,8 @@ const { errors } = require('celebrate');
 const { errorCheker } = require('./midlewares/errorChecker');
 const { signUp, signIn } = require('./controllers/users');
 const { validRegister, validLogin } = require('./utils/validation');
-const  cors  = require('./midlewares/cors')
+const { emailFinder } = require('./utils/reminder/EmailFinder')
+const cors = require('./midlewares/cors')
 
 const { PORT = 3000, MONGODB_PORT } = process.env;
 
@@ -36,4 +38,21 @@ async function serverUp() {
   }
 
 }
-serverUp()
+serverUp();
+
+/* отправка писем с делеем */
+const rule = new schedule.RecurrenceRule();
+rule.hour = 22;
+rule.minute = 34;
+
+
+const dailyTask = schedule.scheduleJob(rule, function () {
+  const currentDate = new Date();
+  currentDate.setHours(0, 0, 0, 0);
+  const day = currentDate.getDate() ;
+  const month = currentDate.getMonth() + 1;
+  const year = currentDate.getFullYear();
+  const formattedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}T00:00:00.000+00:00`;
+  const dateToFinde = new Date(formattedDate);
+  emailFinder(dateToFinde);
+});
