@@ -11,10 +11,7 @@ const localPost = new mongoose.Schema({
         default: false,
         required: true
     },
-    reminde: {
-        type: Boolean,
-        default: false
-    },
+
     cashData: {
         profit: [
             {
@@ -26,11 +23,12 @@ const localPost = new mongoose.Schema({
                     type: Object,
                     required: true
                 },
-                emailStatus:{
-                    type: Boolean,
-                    default: null
+                reminde: {
+                    status: { type: String, default: null },
+                    data: { type: Object, default: null }
+
                 },
-                postId:{
+                postId: {
                     type: mongoose.Schema.Types.ObjectId
                 }
 
@@ -47,11 +45,12 @@ const localPost = new mongoose.Schema({
                     type: Object,
                     required: true
                 },
-                emailStatus:{
-                    type: Boolean,
-                    default: null
+                reminde: {
+                    status: { type: String, default: null },
+                    data: { type: Object, default: null }
+
                 },
-                postId:{
+                postId: {
                     type: mongoose.Schema.Types.ObjectId
                 }
             }

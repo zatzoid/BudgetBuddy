@@ -81,7 +81,7 @@ export const useLocalPosts = () => {
         }
         try {
             const newPostDataJSON = await localPostApi.deleteCashDataLocalPost(uploadData);
-            const newPostData = await newPostDataJSON.json()
+            const newPostData = await newPostDataJSON.json();
             const indexToUpdate = LPList.findIndex(item => item._id === newPostData.data.updatedPost._id);
             if (indexToUpdate !== -1) {
                 const updatedLPList = [...LPList];
@@ -92,7 +92,22 @@ export const useLocalPosts = () => {
                 _onError({ message: 'Объект не найден в массиве.' })
             }
         }
-        catch (e) { _onError(e) }
+        catch (e) { _onError(e) };
+
     }
-    return { getLPList, createLPel, putCashDataLP, deleteCashDataLP, LPList, isLoadingLP, LPResMsg }
+    function refreshPost(data) {
+        _onLoading()
+        const indexToUpdate = LPList.findIndex(item => item._id === data.updatedPost._id);
+        if (indexToUpdate !== -1) {
+            const updatedLPList = [...LPList];
+            updatedLPList[indexToUpdate] = data.updatedPost;
+            _successLoading({ message: data.message, status: true })
+            setLPList(updatedLPList);
+        } else {
+            _onError({ message: 'Объект не найден в массиве.' })
+        }
+
+
+    };
+    return { getLPList, createLPel, putCashDataLP, deleteCashDataLP, refreshPost, LPList, isLoadingLP, LPResMsg }
 }

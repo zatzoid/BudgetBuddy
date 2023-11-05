@@ -3,12 +3,11 @@ const localPost = require('../models/localPost')
 
 module.exports.createEmailDataToSend = async (req, res, next) => {
     try {
-
         const { date, mainData, message, emailTo } = req.body.data;
         const dateToSend = date;
-        const { originalCashDataId, postId } = mainData
-        await LPreminderData.create({ dateToSend, mainData, message, emailTo, originalCashDataId, postId })
-        const updatedPost = await localPost.findOne({ _id: postId })
+        const { originalCashDataId, postId } = mainData;
+        const dataReminder = await LPreminderData.create({ dateToSend, mainData: { name: mainData.name, value: mainData.value }, message, emailTo, originalCashDataId, postId });
+        const updatedPost = await localPost.findOne({ _id: postId });
         if (updatedPost) {
             const targetElementId = originalCashDataId;
             const cashData = updatedPost.cashData;
@@ -16,19 +15,19 @@ module.exports.createEmailDataToSend = async (req, res, next) => {
                 (profitElement) => profitElement._id.toString() === targetElementId);
             const loseIndex = cashData.lose.findIndex(
                 (loseElement) => loseElement._id.toString() === targetElementId);
-  
+
             if (profitIndex !== -1) {
-                cashData.profit[profitIndex].emailStatus = true;
-                
+                cashData.profit[profitIndex].reminde = { status: 'added', data: { dateToSend: dateToSend, reminderId: dataReminder._id } };
+
             }
             else if (loseIndex !== -1) {
-                cashData.lose[loseIndex].emailStatus = true;
-               
+                cashData.lose[loseIndex].reminde = { status: 'added', data: { dateToSend: dateToSend, reminderId: dataReminder._id } };
+
             }
 
             await updatedPost.save();
         }
-        return res.send({ updatedPost })
+        return res.status(200).send({ message: `Писмьо придет на почту ${emailTo}, ${dateToSend} в 1:00 по МСК`, updatedPost })
     }
     catch (e) { return next(e) }
 }

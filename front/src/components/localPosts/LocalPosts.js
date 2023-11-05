@@ -94,6 +94,7 @@ export default function LoaclPosts(props) {
                                         openEmailModal={openEmailModal}
                                         isLoadingLP={props.isLoadingLP}
                                         deleteCashDataLP={deleteCashDataLP}
+                                        reminde={item.reminde}
                                         key={item._id}
                                         objId={item._id}
                                         kinde={'profit'}
@@ -119,6 +120,7 @@ export default function LoaclPosts(props) {
                                         openEmailModal={openEmailModal}
                                         isLoadingLP={props.isLoadingLP}
                                         deleteCashDataLP={deleteCashDataLP}
+                                        reminde={item.reminde}
                                         key={item._id}
                                         objId={item._id}
                                         kinde={'lose'}

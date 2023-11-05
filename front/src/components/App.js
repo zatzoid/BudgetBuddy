@@ -33,7 +33,7 @@ api
 function App() {
   const navigate = useNavigate();
   const { loggedIn, signUp, signIn, signOut, changeUserInfo, isLoadingUser, userResMsg, userData, auth } = useUser();
-  const { getLPList, createLPel, putCashDataLP, deleteCashDataLP, LPList, isLoadingLP, LPResMsg } = useLocalPosts()
+  const { getLPList, createLPel, putCashDataLP, deleteCashDataLP, refreshPost, LPList, isLoadingLP, LPResMsg } = useLocalPosts()
   const [resMessage, setResMessage] = useState(null);
   const [showEmailModal, setShowEmailModal] = useState(false);
   const [emailModalData, setEmailModalData] = useState(null);
@@ -52,9 +52,8 @@ function App() {
     try {
 
       data.emailTo = userData.email
-      console.log("data to fetch::", data)
       const response = await localPostApi.mailReminder(data);
-      console.log('response email::', response)
+      refreshPost(response);
     }
     catch (e) {
       console.log(e)

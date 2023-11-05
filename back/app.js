@@ -42,8 +42,8 @@ serverUp();
 
 /* отправка писем с делеем */
 const rule = new schedule.RecurrenceRule();
-rule.hour = 22;
-rule.minute = 34;
+rule.hour = 15;
+rule.minute = 10;
 
 
 const dailyTask = schedule.scheduleJob(rule, function () {

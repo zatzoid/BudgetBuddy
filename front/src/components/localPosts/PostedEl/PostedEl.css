@@ -32,7 +32,8 @@
 .posted-el__del-btn:disabled {
     opacity: 0.5;
 }
-.posted-el-email-btn{
+
+.posted-el-email-btn {
     cursor: pointer;
     height: 40px;
     width: 40px;
@@ -45,4 +46,39 @@
     border: none;
     background-color: var(--col-clear);
     padding: 0;
+}
+
+.posted-el-email-btn_added {
+    position: relative;
+}
+
+.posted-el-email-btn_added::after {
+    position: absolute;
+    content: '';
+    width: 50%;
+    height: 50%;
+    left: 0px;
+    top: 10px;
+    background-color: var(--col-white);
+    background-image: url(../../../images/calendar.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+.posted-el-email-btn_sended {
+    position: relative;
+}
+
+.posted-el-email-btn_sended::after {
+    position: absolute;
+    content: '';
+    width: 50%;
+    height: 50%;
+    left: 0px;
+    top: 10px;
+    background-color: var(--col-white);
+    background-image: url(../../../images/check.svg);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
 }
