@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Profile from "../profile/Profile";
 import MounthSlider from "./mounthSlider/MounthSlider";
-import Border from "../border/Border";
 import PostedEl from "./PostedEl/PostedEl";
-import ChartComponent from "../Chart/chart";
 import LocalPostForm from "./form/localPostForm";
+
+import { Pie } from 'react-chartjs-2';
+import 'chart.js/auto';
 
 
 
@@ -15,7 +16,8 @@ export default function LoaclPosts(props) {
     const totalProfit = showedPostData?.cashData.profit.reduce((acc, item) => acc + Object.values(item.data)[0], 0);
     const totalLose = showedPostData?.cashData.lose.reduce((acc, item) => acc + Object.values(item.data)[0], 0);
     const [showDescription, setShowDescription] = useState(false);
-    const [descriptionValue, setDescriptionValue] = useState(null)
+    const [descriptionValue, setDescriptionValue] = useState(null);
+    const [dataForChart, setDataForChart] = useState(null);
     function submitFormPutCashData(data) {
         const valueNmbr = parseInt(data.values.value, 10);
         const cashData = {
@@ -42,10 +44,18 @@ export default function LoaclPosts(props) {
 
     useEffect(() => {
         filterList()
+        if (showedPostData) {
+            setDataForChart(chartPieData())
+        } else { setDataForChart(null) }
     }, [props.localData]);
 
     useEffect(() => {
         filterList()
+        if (showedPostData) {
+            setDataForChart(chartPieData())
+        } else {
+            setDataForChart(null)
+        }
     }, [showedPost]);
 
     function switchMonth(e) {
@@ -66,13 +76,63 @@ export default function LoaclPosts(props) {
     }
 
 
+    function chartPieData() {
+        const chartData = {
+            labels: [],
+            datasets: [
+                {
+                    data: [],
+                    backgroundColor: [],
+                },
+            ],
+        };
+
+        showedPostData?.cashData.profit.forEach((item, index) => {
+            const key = Object.keys(item.data)[0];
+            const value = Object.values(item.data)[0];
+            chartData.labels.push(key);
+            chartData.datasets[0].data.push(value);
+            chartData.datasets[0].backgroundColor.push("#33FF57");
+        });
+
+        showedPostData?.cashData.lose.forEach((item, index) => {
+            const key = Object.keys(item.data)[0];
+            const value = Object.values(item.data)[0];
+            chartData.labels.push(key);
+            chartData.datasets[0].data.push(value);
+            chartData.datasets[0].backgroundColor.push("#FF5733");
+        });
+        return chartData
+    }
+
+    useEffect(() => { if (dataForChart !== null) { console.log(dataForChart) } }, [dataForChart])
+
     return (
         <section className='local-posts'>
             <Profile changeUserInfo={props.changeUserInfo} isLoading={props.isLoading} />
             <MounthSlider showedPost={showedPost} switchMonth={switchMonth} />
             <div className="local-posts__wrapper">
                 <div className="local-posts__container">
-                    {/* тут должна быть диаграмма */}
+                    {/*  <Diagram data={showedPostData?.cashData} /> */}
+                    {dataForChart !== null && <div style={{
+                        gridColumn: '1 / span 2',
+                        margin: 'auto',
+                        width: '400px',
+                        height: '400px'
+                    }}>
+                        <Pie
+
+                            data={dataForChart}
+                            options={{
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                legend: {
+                                    display: true,
+                                    position: "bottom",
+                                },
+                            }}
+
+                        /> </div>}
                     {!showedPostData ?
                         <div className="local-post__empty-el">
                             <p className="local-post__empty-el-text">{props.isLoadingLP ? 'Добавляем запись' : 'Добавить запись'}</p>

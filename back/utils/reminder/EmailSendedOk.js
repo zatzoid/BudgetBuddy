@@ -15,11 +15,21 @@ module.exports.emailSendedOk = async (data) => {
                 (loseElement) => loseElement._id.toString() === targetElementId);
 
             if (profitIndex !== -1) {
-                cashData.profit[profitIndex].reminde = { status: 'sended', data: { dateToSend: data.dateToSend, reminderId: deletedData._id } };
+                const currentReminde = cashData.profit[profitIndex].reminde;
+                const updatedReminde = {
+                    ...currentReminde,
+                    status: 'sended'
+                };
+                cashData.profit[profitIndex].reminde = updatedReminde;
 
             }
             else if (loseIndex !== -1) {
-                cashData.lose[loseIndex].reminde = { status: 'sended', data: { dateToSend: data.dateToSend, reminderId: deletedData._id } };
+                const currentReminde = cashData.lose[loseIndex].reminde;
+                const updatedReminde = {
+                    ...currentReminde,
+                    status: 'sended'
+                };
+                cashData.lose[loseIndex].reminde = updatedReminde;
 
             }
 

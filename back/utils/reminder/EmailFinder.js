@@ -8,7 +8,7 @@ module.exports.emailFinder = async (data) => {
         if (findedDataToSend.length > 0) {
             findedDataToSend.map(el => EmailSender(el))
         }
-        
+
     }
     catch (e) { console.log(e.message) }
 }

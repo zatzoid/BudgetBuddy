@@ -50,7 +50,6 @@ function App() {
   /* develop */
   async function submitEmailModal(data) {
     try {
-
       data.emailTo = userData.email
       const response = await localPostApi.mailReminder(data);
       refreshPost(response);
@@ -60,9 +59,9 @@ function App() {
     }
 
   }
-  function openEmailModal({ show, data }) {
+  function openEmailModal({ show, data, reminde }) {
     if (data) {
-      setEmailModalData(data)
+      setEmailModalData({data, reminde})
     }
     setShowEmailModal(show)
   }

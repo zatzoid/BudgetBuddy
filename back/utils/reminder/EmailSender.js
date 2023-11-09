@@ -19,6 +19,7 @@ const transporter = nodemailer.createTransport({
 module.exports = async function EmailSender(data, next) {
     // send mail with defined transport object
     try {
+       
         const { mainData, message, emailTo } = data
         const info = await transporter.sendMail({
             from: `"BudgetBuddy" <${EMAIL_HOST_USER}>`, // sender address

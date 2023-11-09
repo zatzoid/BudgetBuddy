@@ -17,11 +17,11 @@ module.exports.createEmailDataToSend = async (req, res, next) => {
                 (loseElement) => loseElement._id.toString() === targetElementId);
 
             if (profitIndex !== -1) {
-                cashData.profit[profitIndex].reminde = { status: 'added', data: { dateToSend: dateToSend, reminderId: dataReminder._id } };
+                cashData.profit[profitIndex].reminde = { status: 'added', data: { dateToSend: dateToSend, reminderId: dataReminder._id, message: dataReminder.message } };
 
             }
             else if (loseIndex !== -1) {
-                cashData.lose[loseIndex].reminde = { status: 'added', data: { dateToSend: dateToSend, reminderId: dataReminder._id } };
+                cashData.lose[loseIndex].reminde = { status: 'added', data: { dateToSend: dateToSend, reminderId: dataReminder._id, message: dataReminder.message } };
 
             }
 
