@@ -95,8 +95,10 @@ export const useLocalPosts = () => {
         catch (e) { _onError(e) };
 
     }
+    
     function refreshPost(data) {
         _onLoading()
+        console.log(LPList)
         const indexToUpdate = LPList.findIndex(item => item._id === data.updatedPost._id);
         if (indexToUpdate !== -1) {
             const updatedLPList = [...LPList];

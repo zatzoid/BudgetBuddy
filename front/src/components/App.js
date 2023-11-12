@@ -14,6 +14,7 @@ import { useLocalPosts } from "../utils/customHooks/useLocalPosts";
 import Notice from "./notice/Notice";
 import EmailModal from "./EmailModal/EmailModal";
 import { localPostApi } from "../utils/api/apiLocal";
+import { useEmailModal } from "../utils/customHooks/useEmailModal";
 
 
 
@@ -33,10 +34,10 @@ api
 function App() {
   const navigate = useNavigate();
   const { loggedIn, signUp, signIn, signOut, changeUserInfo, isLoadingUser, userResMsg, userData, auth } = useUser();
-  const { getLPList, createLPel, putCashDataLP, deleteCashDataLP, refreshPost, LPList, isLoadingLP, LPResMsg } = useLocalPosts()
+  const { getLPList, createLPel, putCashDataLP, deleteCashDataLP, refreshPost, LPList, isLoadingLP, LPResMsg } = useLocalPosts();
+  const { showEmailModal, emailModalData, emailModalLodaing, submitEmailModal, openEmailModal } = useEmailModal();
   const [resMessage, setResMessage] = useState(null);
-  const [showEmailModal, setShowEmailModal] = useState(false);
-  const [emailModalData, setEmailModalData] = useState(null);
+
   useEffect(() => {
     auth();
     getLPList()
@@ -47,30 +48,19 @@ function App() {
   useEffect(() => {
     setResMessage(LPResMsg)
   }, [LPResMsg]);
-  /* develop */
-  async function submitEmailModal(data) {
-    try {
-      data.emailTo = userData.email
-      const response = await localPostApi.mailReminder(data);
-      refreshPost(response);
-    }
-    catch (e) {
-      console.log(e)
-    }
+  async function submitEmailModalWrapper(data) {
+    data.emailTo = userData.email;
+    const response = await submitEmailModal(data);
+    refreshPost(response)
+  }
 
-  }
-  function openEmailModal({ show, data, reminde }) {
-    if (data) {
-      setEmailModalData({data, reminde})
-    }
-    setShowEmailModal(show)
-  }
+
   return (
     <div className="App">
       <CurrentUserContext.Provider value={userData}>
         <Header loggedIn={loggedIn} signOut={signOut} />
         <Notice resMessage={resMessage} />
-        {showEmailModal && <EmailModal submitForm={submitEmailModal} openEmailModal={openEmailModal} emailModalData={emailModalData} />}
+        {showEmailModal && <EmailModal submitForm={submitEmailModalWrapper} openEmailModal={openEmailModal} emailModalData={emailModalData} />}
         <Routes>
           <Route path="/sign-up" element={<SignUp submit={signUp} isLoading={isLoadingUser} />} />
           <Route path="/sign-in" element={<SignIn submit={signIn} isLoading={isLoadingUser} />} />
@@ -84,6 +74,7 @@ function App() {
               localData={LPList}
               isLoadingLP={isLoadingLP}
               LPResMsg={LPResMsg}
+              emailModalLodaing={emailModalLodaing}
               openEmailModal={openEmailModal}
               deleteCashDataLP={deleteCashDataLP}
               putCashDataLP={putCashDataLP}

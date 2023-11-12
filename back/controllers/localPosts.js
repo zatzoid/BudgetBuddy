@@ -36,6 +36,7 @@ module.exports.createLocalPost = async (req, res, next) => {
 // добавляет что то одно, получает {cashData. ...}
 module.exports.putCashDataLocalPost = async (req, res, next) => {
     try {
+
         const postId = req.params.postId;
         const postToPut = await LocalPost.findById(postId);
         if (!postToPut) {
@@ -43,12 +44,12 @@ module.exports.putCashDataLocalPost = async (req, res, next) => {
         }
         if (!req.body.cashData.lose) {
             const profit = req.body.cashData.profit;
-            const newProfit = { _id: new mongoose.Types.ObjectId(), emailStatus: null, postId: postId, ...profit };
+            const newProfit = { _id: new mongoose.Types.ObjectId(), emailStatus: null, postId: postId, category: profit.category, ...profit };
             postToPut.cashData.profit.push(newProfit);
         }
         if (!req.body.cashData.profit) {
             const lose = req.body.cashData.lose;
-            const newLose = { _id: new mongoose.Types.ObjectId(), emailStatus: null, postId: postId, ...lose };
+            const newLose = { _id: new mongoose.Types.ObjectId(), emailStatus: null, postId: postId, category: lose.category, ...lose };
             postToPut.cashData.lose.push(newLose);
         }
         const updatedPost = await postToPut.save();

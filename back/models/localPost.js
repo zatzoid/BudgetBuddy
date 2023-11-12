@@ -30,6 +30,17 @@ const localPost = new mongoose.Schema({
                 },
                 postId: {
                     type: mongoose.Schema.Types.ObjectId
+                },
+                category: {
+                    type: String
+                },
+                statusComplited: {
+                    type: Boolean,
+                    default: false
+                },
+                createdAt: {
+                    type: Date,
+                    default: Date.now,
                 }
 
             }
@@ -52,6 +63,18 @@ const localPost = new mongoose.Schema({
                 },
                 postId: {
                     type: mongoose.Schema.Types.ObjectId
+                },
+                category: {
+                    type: String,
+                    default: 'другое'
+                },
+                statusComplited: {
+                    type: Boolean,
+                    default: false
+                },
+                createdAt: {
+                    type: Date,
+                    default: Date.now,
                 }
             }
         ]

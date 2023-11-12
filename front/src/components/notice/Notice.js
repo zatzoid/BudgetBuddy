@@ -4,7 +4,6 @@ export default function Notice(props) {
     const [isShow, setIsShow] = useState(true);
     const [timeOutId, setTimeOutId] = useState(null);
     useEffect(() => {
-        console.log(props.resMessage)
         if (props.resMessage !== null) {
             setIsShow(true);
             const timeOutShow = setTimeout(() => {

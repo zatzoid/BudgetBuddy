@@ -34,6 +34,7 @@ class localPostAPI {
             .then(this._checkError)
     };
     putCashDataLocalPost(data) {
+        console.log(data)
         const { cashData, postId } = data;
         return fetch(`${this._link}/local-posts/${postId}`, {
             method: 'PUT',
