@@ -14,6 +14,7 @@ import { useLocalPosts } from "../utils/customHooks/useLocalPosts";
 import Notice from "./notice/Notice";
 import EmailModal from "./EmailModal/EmailModal";
 import { useEmailModal } from "../utils/customHooks/useEmailModal";
+import Present from "./Present/Present";
 
 
 
@@ -61,6 +62,7 @@ function App() {
         <Notice resMessage={resMessage} />
         {showEmailModal && <EmailModal submitForm={submitEmailModalWrapper} openEmailModal={openEmailModal} emailModalData={emailModalData} />}
         <Routes>
+          <Route path="/present" element={<Present />}/>
           <Route path="/sign-up" element={<SignUp submit={signUp} isLoading={isLoadingUser} />} />
           <Route path="/sign-in" element={<SignIn submit={signIn} isLoading={isLoadingUser} />} />
           <Route path="/local-posts"
