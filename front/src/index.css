@@ -16,6 +16,7 @@
 @import url(./components/EmailModal/email-modal.css);
 @import url(./components/localPosts/Sorting/sorting.css);
 @import url(./components/localPosts/Statistics/statistics.css);
+@import url(./components/Present/present.css);
 
 /* шрифты не подключены */
 body {
