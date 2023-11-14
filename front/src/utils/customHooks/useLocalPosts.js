@@ -53,19 +53,11 @@ export const useLocalPosts = () => {
             _onError(e)
         }
     };
-    async function putCashDataLP(data) {
+    async function putCashDataLP(dataToPut) {
         _onLoading()
         try {
-            const newPostData = await localPostApi.putCashDataLocalPost(data);
-            const indexToUpdate = LPList.findIndex(item => item._id === newPostData.data.updatedPost._id);
-            if (indexToUpdate !== -1) {
-                const updatedLPList = [...LPList];
-                updatedLPList[indexToUpdate] = newPostData.data.updatedPost;
-                _successLoading({ message: newPostData.data.message, status: true })
-                setLPList(updatedLPList);
-            } else {
-                _onError({ message: 'Объект не найден в массиве.' })
-            }
+            const { data } = await localPostApi.putCashDataLocalPost(dataToPut);
+            refreshPost(data);
         }
         catch (e) { _onError(e) }
     };
@@ -81,24 +73,19 @@ export const useLocalPosts = () => {
         }
         try {
             const newPostDataJSON = await localPostApi.deleteCashDataLocalPost(uploadData);
-            const newPostData = await newPostDataJSON.json();
-            const indexToUpdate = LPList.findIndex(item => item._id === newPostData.data.updatedPost._id);
-            if (indexToUpdate !== -1) {
-                const updatedLPList = [...LPList];
-                updatedLPList[indexToUpdate] = newPostData.data.updatedPost;
-                _successLoading({ message: newPostData.data.message, status: true })
-                setLPList(updatedLPList);
-            } else {
-                _onError({ message: 'Объект не найден в массиве.' })
-            }
+            const { data } = await newPostDataJSON.json();
+            refreshPost(data);
         }
         catch (e) { _onError(e) };
 
     }
-    
+    async function patchLPCashData(data) {
+        _onLoading()
+        const updatedPost = await localPostApi.patchLPCashData(data);
+        refreshPost({ updatedPost });
+    }
     function refreshPost(data) {
         _onLoading()
-        console.log(LPList)
         const indexToUpdate = LPList.findIndex(item => item._id === data.updatedPost._id);
         if (indexToUpdate !== -1) {
             const updatedLPList = [...LPList];
@@ -111,5 +98,5 @@ export const useLocalPosts = () => {
 
 
     };
-    return { getLPList, createLPel, putCashDataLP, deleteCashDataLP, refreshPost, LPList, isLoadingLP, LPResMsg }
+    return { getLPList, createLPel, putCashDataLP, deleteCashDataLP, refreshPost, patchLPCashData, LPList, isLoadingLP, LPResMsg }
 }

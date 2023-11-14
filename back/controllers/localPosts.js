@@ -84,6 +84,40 @@ module.exports.deleteCashDataLocalPost = async (req, res, next) => {
         return next(err);
     }
 };
+module.exports.patchCashDataLP = async (req, res, next) => {
+    try {
+        const postId = req.params.postId;
+        const postToUpdate = await LocalPost.findById(postId);
+        if (!postToUpdate) {
+            throw new NotFoundError('Пост не найден');
+        }
+        if (!req.body.data.cashData.lose) {
+            const { profit } = req.body.data.cashData;
+            const profitIndex = postToUpdate.cashData.profit.findIndex(p => p._id.toString() === profit._id);
+            if (profitIndex !== -1) {
+                postToUpdate.cashData.profit[profitIndex] = profit;
+            } else {
+                throw new NotFoundError('Profit объект не найден');
+            }
+
+        }
+        if (!req.body.data.cashData.profit) {
+            const { lose } = req.body.data.cashData;
+            const loseIndex = postToUpdate.cashData.lose.findIndex(l => l._id.toString() === lose._id);
+            if (loseIndex !== -1) {
+                postToUpdate.cashData.lose[loseIndex] = lose;
+            } else {
+                throw new NotFoundError('Lose объект не найден');
+            }
+
+        }
+        const updatedPost = await postToUpdate.save();
+        return successResponse(res, { meessage: `Статус обновлен`, updatedPost });
+    }
+    catch (err) {
+        return next(err)
+    }
+}
 
 module.exports.uploadLocalPost = async (req, res, next) => {
     try {

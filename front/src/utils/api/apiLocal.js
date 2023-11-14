@@ -62,6 +62,16 @@ class localPostAPI {
         })
             .then(this._checkError)
     };
+    patchLPCashData(data) {
+        const { postId } = data.cashData.profit ?? data.cashData.lose;
+        return fetch(`${this._link}/local-posts/${postId}`, {
+            method: 'PATCH',
+            headers: this._headers,
+            body: JSON.stringify({ data }),
+            credentials: 'include'
+        })
+            .then(this._checkError)
+    }
 
 };
 

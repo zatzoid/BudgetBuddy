@@ -6,7 +6,7 @@ export default function LocalPostForm(props) {
     const [values, setValues] = useState({});
     const [focusKey, setFocusKey] = useState(false);
     const [focusValue, setFocusValue] = useState(false);
-    const [categoryValue, setCategoryValue] = useState('другое');
+    const [categoryValue, setCategoryValue] = useState('another');
     const [showCategory, setShowCategory] = useState(false);
     function handleChange(event) {
         const target = event.target;
@@ -32,6 +32,13 @@ export default function LocalPostForm(props) {
             return
         }
         setShowCategory(true);
+    }
+    function choisCategory(data){
+        setCategoryValue(data)
+        setTimeout(() => {
+            openCategory()
+        }, 500);
+        
     }
 
     return (
@@ -75,64 +82,64 @@ export default function LocalPostForm(props) {
                     <label className="lp__form-type-label"> <input
                         type='radio'
                         name='typeof'
-                        value='транспорт'
-                        onChange={(e) => { setCategoryValue(e.target.value) }}
+                        value='transport'
+                        onChange={(e) => { choisCategory(e.target.value) }}
                         className="lp__form-type-input"
                     />
-                        <span className="lp__form-type-input-btn lp__form-type-input-btn_auto"></span>
+                        <span className="lp__form-type-input-btn back-img_transport"></span>
                         транспорт
                     </label>
                     <label className="lp__form-type-label"> <input
                         type='radio'
                         name='typeof'
-                        value='жкх'
-                        onChange={(e) => { setCategoryValue(e.target.value) }}
+                        value='jkh'
+                        onChange={(e) => { choisCategory(e.target.value) }}
                         className="lp__form-type-input"
                     />
-                        <span className="lp__form-type-input-btn lp__form-type-input-btn_jkh"></span>
+                        <span className="lp__form-type-input-btn back-img_jkh"></span>
                         жкх
                     </label>
 
                     <label className="lp__form-type-label"> <input
                         type='radio'
                         name='typeof'
-                        value='питание'
-                        onChange={(e) => { setCategoryValue(e.target.value) }}
+                        value='food'
+                        onChange={(e) => { choisCategory(e.target.value) }}
                         className="lp__form-type-input"
                     />
-                        <span className="lp__form-type-input-btn lp__form-type-input-btn_food"></span>
+                        <span className="lp__form-type-input-btn back-img_food"></span>
                         питание
                     </label>
                     <label className="lp__form-type-label">
                         <input
                             type='radio'
                             name='typeof'
-                            value='развлечения'
-                            onChange={(e) => { setCategoryValue(e.target.value) }}
+                            value='fun'
+                            onChange={(e) => { choisCategory(e.target.value) }}
                             className="lp__form-type-input"
                         />
-                        <span className="lp__form-type-input-btn lp__form-type-input-btn_fun"></span>
+                        <span className="lp__form-type-input-btn back-img_fun"></span>
                         развлечения
                     </label>
                     <label className="lp__form-type-label"> <input
                         type='radio'
                         name='typeof'
-                        value='взятка'
-                        onChange={(e) => { setCategoryValue(e.target.value) }}
+                        value='vzyatka'
+                        onChange={(e) => { choisCategory(e.target.value) }}
                         className="lp__form-type-input"
                     />
-                        <span className="lp__form-type-input-btn lp__form-type-input-btn_vzyatka"></span>
+                        <span className="lp__form-type-input-btn back-img_vzyatka"></span>
                         взятка
                     </label>
                     <label className="lp__form-type-label"> <input
                         type='radio'
                         name='typeof'
-                        value='другое'
+                        value='another'
                         defaultChecked
-                        onChange={(e) => { setCategoryValue(e.target.value) }}
+                        onChange={(e) => { choisCategory(e.target.value) }}
                         className="lp__form-type-input"
                     />
-                        <span className="lp__form-type-input-btn lp__form-type-input-btn_another"></span>
+                        <span className="lp__form-type-input-btn back-img_another"></span>
                         другое
                     </label>
                 </> :
@@ -140,32 +147,32 @@ export default function LocalPostForm(props) {
                         <label className="lp__form-type-label"> <input
                             type='radio'
                             name='typeof'
-                            value='майнинг'
-                            onChange={(e) => { setCategoryValue(e.target.value) }}
+                            value='mining'
+                            onChange={(e) => { choisCategory(e.target.value) }}
                             className="lp__form-type-input"
                         />
-                            <span className="lp__form-type-input-btn lp__form-type-input-btn_mine"></span>
+                            <span className="lp__form-type-input-btn back-img_mining"></span>
                             майнинг
                         </label>
                         <label className="lp__form-type-label"> <input
                             type='radio'
                             name='typeof'
-                            value='зарплата'
-                            onChange={(e) => { setCategoryValue(e.target.value) }}
+                            value='zp'
+                            onChange={(e) => { choisCategory(e.target.value) }}
                             className="lp__form-type-input"
                         />
-                            <span className="lp__form-type-input-btn lp__form-type-input-btn_zp"></span>
+                            <span className="lp__form-type-input-btn back-img_zp"></span>
                             зарплата
                         </label>
                         <label className="lp__form-type-label"> <input
                             type='radio'
                             name='typeof'
-                            value='другое'
+                            value='another'
                             defaultChecked
-                            onChange={(e) => { setCategoryValue(e.target.value) }}
+                            onChange={(e) => { choisCategory(e.target.value) }}
                             className="lp__form-type-input"
                         />
-                            <span className="lp__form-type-input-btn lp__form-type-input-btn_another"></span>
+                            <span className="lp__form-type-input-btn back-img_another"></span>
                             другое
                         </label>
                     </>}

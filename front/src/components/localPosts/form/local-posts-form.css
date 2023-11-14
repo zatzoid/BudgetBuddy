@@ -153,39 +153,6 @@
     min-width: 20px;
 
 }
-
-.lp__form-type-input-btn_auto {
-    background-image: url(../../../images/car.svg);
-}
-
-.lp__form-type-input-btn_jkh {
-    background-image: url(../../../images/jkh.svg);
-}
-
-.lp__form-type-input-btn_zp {
-    background-image: url(../../../images/mony.svg);
-}
-
-.lp__form-type-input-btn_food {
-    background-image: url(../../../images/food.svg);
-}
-
-.lp__form-type-input-btn_fun {
-    background-image: url(../../../images/fun.svg);
-}
-
-.lp__form-type-input-btn_another {
-    background-image: url(../../../images/another.svg);
-}
-
-.lp__form-type-input-btn_mine {
-    background-image: url(../../../images/mine.svg);
-}
-
-.lp__form-type-input-btn_vzyatka {
-    background-image: url(../../../images/vzyatka.svg);
-}
-
 .lp__form-type-input:checked+.lp__form-type-input-btn {
     filter: grayscale(0);
 }

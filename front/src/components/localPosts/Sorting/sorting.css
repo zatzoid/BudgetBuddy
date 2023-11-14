@@ -1,0 +1,68 @@
+
+.lp__sort-btn {
+    display: flex;
+    margin-left: auto;
+    background-color: var(--col-clear);
+    border: none;
+    border-bottom: 2px solid black;
+    opacity: 0.5;
+}
+
+.lp__sort-btn:active {
+    opacity: 0.7;
+}
+
+.lp__sort-block {
+    position: absolute;
+    right: 0;
+    background-color: var(--col-sec);
+    z-index: 4;
+    gap: 10px;
+    transition: all .2s;
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+}
+
+.lp__sort-block_active {
+
+    max-height: 500px;
+}
+
+.lp__sort-label {
+    padding: 5px 5px 0;
+    opacity: 0.9;
+    position: relative;
+
+}
+
+.lp__sort-label:last-of-type {
+    margin-bottom: 5px;
+}
+
+.lp__sort-input {
+    opacity: 0;
+    position: absolute;
+
+}
+
+.lp__sort-input+span {
+    position: absolute;
+    width: 3px;
+    height: 3px;
+    bottom: 0;
+    left: 5px;
+    background-color: rgba(0, 0, 0, 0.596);
+    transition: width .3s;
+}
+
+.lp__sort-input:checked+span {
+    width: calc(100% - 10px);
+}
+
+.lp__sort-input:checked+.lp__sort-label {
+    background-color: red;
+    border-bottom: 2px solid black;
+}

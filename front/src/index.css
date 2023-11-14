@@ -14,17 +14,68 @@
 @import url(./components/notice/notice.css);
 @import url(./components/visualbtn/visual-btn.css);
 @import url(./components/EmailModal/email-modal.css);
+@import url(./components/localPosts/Sorting/sorting.css);
+@import url(./components/localPosts/Statistics/statistics.css);
 
 /* шрифты не подключены */
 body {
     --col-main: #7DCE70;
-    --col-main-dark: rgb(74, 141, 64);
+    --col-main-dark: #4a8d40;
     --col-sec: #CFF1C9;
-    --col-clear: rgba(0, 0, 0, 0);
+    --col-clear: #00000000;
     --col-red: #f12652;
     --col-white: #f3fae9;
     --text-col: #000000;
     --width-max: 770px;
     background-color: var(--col-white);
     font-family: Arial, Helvetica, sans-serif;
+}
+.back-img_transport{
+    background-image: url(./images/transport.svg);
+}
+.back-img_jkh {
+    background-image: url(./images/jkh.svg);
+}
+.back-img_zp {
+    background-image: url(./images/zp.svg);
+}
+.back-img_food {
+    background-image: url(./images/food.svg);
+}
+.back-img_fun {
+    background-image: url(./images/fun.svg);
+}
+.back-img_another {
+    background-image: url(./images/another.svg);
+}
+.back-img_mining {
+    background-image: url(./images/mining.svg);
+}
+.back-img_vzyatka {
+    background-image: url(./images/vzyatka.svg);
+}
+
+.back-col_transport{
+    background-color: rgb(250, 206, 8);
+}
+.back-col_jkh {
+    background-color: rgb(87, 196, 247);
+}
+.back-col_zp {
+    background-color: rgb(188,97,21);
+}
+.back-col_food {
+    background-color: #82d465;
+}
+.back-col_fun {
+    background-color: rgb(0,17,178);
+}
+.back-col_another {
+    background-color: rgb(192,58,43);
+}
+.back-col_mining {
+    background-color: black;
+}
+.back-col_vzyatka {
+    background-color: pink;
 }

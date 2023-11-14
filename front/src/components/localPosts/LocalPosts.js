@@ -3,9 +3,10 @@ import Profile from "../profile/Profile";
 import MounthSlider from "./mounthSlider/MounthSlider";
 import PostedEl from "./PostedEl/PostedEl";
 import LocalPostForm from "./form/localPostForm";
+import Sorting from "./Sorting/Sorting";
+import Statistics from "./Statistics/Statistics";
 
-import { Pie } from 'react-chartjs-2';
-import 'chart.js/auto';
+
 
 
 
@@ -17,12 +18,10 @@ export default function LoaclPosts(props) {
     const totalLose = showedPostData?.cashData.lose.reduce((acc, item) => acc + Object.values(item.data)[0], 0);
     const [showDescription, setShowDescription] = useState(false);
     const [descriptionValue, setDescriptionValue] = useState(null);
-    const [dataForChart, setDataForChart] = useState(null);
+    const [dataForStatistic, setDataForStatistic] = useState(null);
     const [lpContainerStyle, setLpContainerStyle] = useState('local-posts__container');
-    const [sortMenuProfitShowed, setSortMenuProfitShowed] = useState(false);
-    const [sortMenuLoseShowed, setSortMenuLoseShowed] = useState(false);
+    const [complitedElStatus, setComplitedElStatus] = useState({ lose: 'showed', profit: 'showed' });
 
-    const [currentSort, setCurrentSort] = useState(null);
     function submitFormPutCashData(data) {
         const valueNmbr = parseInt(data.values.value, 10);
         const cashData = {
@@ -33,8 +32,8 @@ export default function LoaclPosts(props) {
                 category: data.category,
             }
         }
-        const postId = showedPostData._id
-        props.putCashDataLP({ cashData, postId })
+        const postId = showedPostData._id;
+        props.putCashDataLP({ cashData, postId });
     };
     function deleteCashDataLP(data) {
         data.postId = showedPostData._id;
@@ -45,9 +44,9 @@ export default function LoaclPosts(props) {
         if (currentData) {
             setShowedPostData(currentData[0]);
             if (currentData.length > 0) {
-                chartPieData(currentData[0]);
+                setDataForStatistic(currentData[0]);
             } else {
-                chartPieData(null);
+                setDataForStatistic(null);
             }
 
         }
@@ -85,102 +84,22 @@ export default function LoaclPosts(props) {
     }
 
 
-    function chartPieData(data) {
-        if (data !== null) {
-            const chartData = {
-                labels: [],
-                datasets: [
-                    {
-                        data: [],
-                        backgroundColor: [],
-                    },
-                ]
-
-            };
-
-            data?.cashData.profit.forEach((item, index) => {
-                const key = Object.keys(item.data)[0];
-                const value = Object.values(item.data)[0];
-                chartData.labels.push(key);
-                chartData.datasets[0].data.push(value);
-                chartData.datasets[0].backgroundColor.push("#7DCE70");
-            });
-
-            data?.cashData.lose.forEach((item, index) => {
-                const key = Object.keys(item.data)[0];
-                const value = Object.values(item.data)[0];
-                chartData.labels.push(key);
-                chartData.datasets[0].data.push(value);
-                chartData.datasets[0].backgroundColor.push("#f12652");
-            });
-            setDataForChart(chartData);
-        } else {
-            setDataForChart(null);
-        }
+    function setShowedPostDataFoo(data) {
+        setShowedPostData(data)
     }
-    function sortMassive(data) {
-        const copyPostData = { ...showedPostData };
-        const copyCashData = { ...copyPostData.cashData };
-        const kinde = data.kinde;
-        const dataArray = copyCashData[kinde];
-        /* сортировка выбором*/
-        dataArray.sort(function (a, b) {
-            if (data.type === 'sum') {
-                return data.sortBy === 'fromMany' ?
-                    Object.values(b.data) - Object.values(a.data) :
-                    Object.values(a.data) - Object.values(b.data)
-            } else if (data.type === 'category') {
-                return b.category - a.category
-            }
-        })
-        copyPostData.cashData[kinde] = dataArray;
-        setShowedPostData(copyPostData);
-
-
-    }
-    useEffect(() => {
-        if (currentSort) {
-            sortMassive(currentSort)
-        }
-    }, [currentSort])
-
-    function showSortMenuprofit() {
-        if (sortMenuProfitShowed) {
-            setSortMenuProfitShowed(false)
-        }
-        else {
-            setSortMenuProfitShowed(true)
-        }
+    function setComplitedElStatusFoo(data) {
+        const previousObj = { ...complitedElStatus };
+        setComplitedElStatus({ ...previousObj, [data.kinde]: data.value })
     }
 
-    function showSortMenuLose() {
-        if (sortMenuLoseShowed) {
-            setSortMenuLoseShowed(false)
-        }
-        else {
-            setSortMenuLoseShowed(true)
-        }
-    }
+
     return (
         <section className='local-posts'>
             <Profile changeUserInfo={props.changeUserInfo} isLoading={props.isLoading} />
             <MounthSlider showedPost={showedPost} switchMonth={switchMonth} />
             <div className="local-posts__wrapper">
                 <div className={lpContainerStyle}>
-                    {dataForChart !== null && <div
-                        className="local-posts__chart" >
-                        <Pie
-
-                            data={dataForChart}
-                            options={{
-                                plugins: {
-                                    legend: {
-                                        display: false,
-                                    },
-                                }
-                            }}
-
-                        /> </div>}
+                    <Statistics dataForStatistic={dataForStatistic} />
                     {!showedPostData ?
                         <div className="local-post__empty-el">
                             <p className="local-post__empty-el-text">{props.isLoadingLP ? 'Добавляем запись' : 'Добавить запись'}</p>
@@ -198,44 +117,18 @@ export default function LoaclPosts(props) {
                                     <p className="local-posts__list-heading">Доход:</p>
                                     <p className="local-posts__list-heading">{totalProfit}</p>
                                 </li>
-                                {/* ////////////////////////////////////////////////////////////////////////////// */}
                                 <li className="lp__sort-el">
-                                    <button className="lp__sort-btn"
-                                        onClick={() => { showSortMenuprofit() }}
-                                    >сортировать</button>
-                                    <div className={`lp__sort-block ${sortMenuProfitShowed && 'lp__sort-block_active'}`}>
-                                        <label className="lp__sort-label">
-                                            <input
-                                                className="lp__sort-input"
-                                                type="radio"
-                                                name="sortProfit"
-                                                value='fromMany'
-                                                onClick={() => { setCurrentSort({ kinde: 'profit', sortBy: 'fromMany', type: 'sum' }) }} />
-                                            по сумме, от большего
-                                        </label>
-                                        <label className="lp__sort-label">
-                                            <input
-                                                className="lp__sort-input"
-                                                type="radio"
-                                                name="sortProfit"
-                                                value='fromSmall'
-                                                onChange={() => { setCurrentSort({ kinde: 'profit', sortBy: 'fromSmall', type: 'sum' }) }} />
-                                            по сумме, от меньшего
-                                        </label>
-                                        <label className="lp__sort-label">
-                                            <input
-                                                className="lp__sort-input"
-                                                type="radio"
-                                                name="sortProfit"
-                                                value='category'
-                                                onChange={() => { setCurrentSort({ kinde: 'profit', sortBy: '--', type: 'category' }) }} />
-                                            по категории
-                                        </label>
-                                    </div>
-
+                                    <Sorting
+                                        kinde={'profit'}
+                                        complitedElStatus={complitedElStatus}
+                                        setComplitedElStatusFoo={setComplitedElStatusFoo}
+                                        showedPostData={showedPostData}
+                                        setShowedPostData={setShowedPostDataFoo} />
                                 </li>
                                 {Array.isArray(showedPostData?.cashData.profit) && showedPostData?.cashData.profit.map((item) => (
                                     <PostedEl
+                                        complitedElStatus={complitedElStatus}
+                                        patchLPCashData={props.patchLPCashData}
                                         emailModalLodaing={props.emailModalLodaing}
                                         openEmailModal={openEmailModal}
                                         isLoadingLP={props.isLoadingLP}
@@ -248,6 +141,7 @@ export default function LoaclPosts(props) {
                                 ))}
                                 <li className="local-posts__posted-el">
                                     <LocalPostForm
+                                        complitedElStatus={complitedElStatus}
                                         LPResMsg={props.LPResMsg}
                                         isLoadingLP={props.isLoadingLP}
                                         kinde={'profit'}
@@ -263,33 +157,17 @@ export default function LoaclPosts(props) {
                                     <p className="local-posts__list-heading">{totalLose}</p>
                                 </li>
                                 <li className="lp__sort-el">
-                                    <button className="lp__sort-btn"
-                                        onClick={() => { showSortMenuLose() }}
-                                    >сортировать</button>
-                                    <div className={`lp__sort-block ${sortMenuLoseShowed && 'lp__sort-block_active'}`}>
-                                        <label className="lp__sort-label">
-                                            <input
-                                                className="lp__sort-input"
-                                                type="radio"
-                                                name="sortLose"
-                                                value={'fromMany'}
-                                                onClick={() => { setCurrentSort({ kinde: 'lose', sortBy: 'fromMany', type: 'sum' }) }} />
-                                            по сумме, от большего
-                                        </label>
-                                        <label className="lp__sort-label">
-                                            <input
-                                                className="lp__sort-input"
-                                                type="radio"
-                                                name="sortLose"
-                                                value={'fromSmall'}
-                                                onChange={() => { setCurrentSort({ kinde: 'lose', sortBy: 'fromSmall', type: 'sum' }) }} />
-                                            по сумме, от меньшего
-                                        </label>
-                                    </div>
+                                    <Sorting
+                                        setComplitedElStatusFoo={setComplitedElStatusFoo}
+                                        kinde={'lose'}
+                                        showedPostData={showedPostData}
+                                        setShowedPostData={setShowedPostDataFoo} />
 
                                 </li>
                                 {Array.isArray(showedPostData?.cashData.lose) && showedPostData?.cashData.lose.map((item) => (
                                     <PostedEl
+                                        complitedElStatus={complitedElStatus}
+                                        patchLPCashData={props.patchLPCashData}
                                         emailModalLodaing={props.emailModalLodaing}
                                         openEmailModal={openEmailModal}
                                         isLoadingLP={props.isLoadingLP}

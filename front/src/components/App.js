@@ -34,7 +34,7 @@ api
 function App() {
   const navigate = useNavigate();
   const { loggedIn, signUp, signIn, signOut, changeUserInfo, isLoadingUser, userResMsg, userData, auth } = useUser();
-  const { getLPList, createLPel, putCashDataLP, deleteCashDataLP, refreshPost, LPList, isLoadingLP, LPResMsg } = useLocalPosts();
+  const { getLPList, createLPel, putCashDataLP, deleteCashDataLP, refreshPost, patchLPCashData, LPList, isLoadingLP, LPResMsg } = useLocalPosts();
   const { showEmailModal, emailModalData, emailModalLodaing, submitEmailModal, openEmailModal } = useEmailModal();
   const [resMessage, setResMessage] = useState(null);
 
@@ -78,6 +78,7 @@ function App() {
               openEmailModal={openEmailModal}
               deleteCashDataLP={deleteCashDataLP}
               putCashDataLP={putCashDataLP}
+              patchLPCashData={patchLPCashData}
               createPost={createLPel} />} />
           <Route path="/public-posts"
             element={<ProtectedRouteElement
