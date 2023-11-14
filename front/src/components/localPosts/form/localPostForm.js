@@ -18,6 +18,7 @@ export default function LocalPostForm(props) {
     function submit(e) {
         e.preventDefault();
         props.submitForm({ values, kinde: props.kinde, category: categoryValue });
+        setCategoryValue('another');
 
     }
     useEffect(() => {

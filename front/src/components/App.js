@@ -13,7 +13,6 @@ import { useUser } from "../utils/customHooks/useUser";
 import { useLocalPosts } from "../utils/customHooks/useLocalPosts";
 import Notice from "./notice/Notice";
 import EmailModal from "./EmailModal/EmailModal";
-import { localPostApi } from "../utils/api/apiLocal";
 import { useEmailModal } from "../utils/customHooks/useEmailModal";
 
 
