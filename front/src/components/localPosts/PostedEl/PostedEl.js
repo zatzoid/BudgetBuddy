@@ -39,7 +39,6 @@ export default function PostedEl(props) {
             }
         }
         checkToday()
-        console.log(date.getTime())
     }, [])
     return (
         <li

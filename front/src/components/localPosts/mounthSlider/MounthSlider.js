@@ -1,34 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import getMonthName from "../../../utils/getMonthName";
+import useTouchSlider from "../../../utils/customHooks/useTouchSlider";
 
 export default function MounthSlider(props) {
-    const [sliderStartX, setSliderStartX] = useState(null);
-
-    const slideStyle = {
-        transform: `translateX(-${props.showedPost}00%)`
-    }
-    const handleTouchStart = (e) => {
-        setSliderStartX(e.touches ? e.touches[0].clientX : e.clientX);
-    };
-
-    // Обработчик перемещения касания или мыши
-    const handleTouchMove = (e) => {
-        if (sliderStartX === null) return;
-        const currentX = e.touches ? e.touches[0].clientX : e.clientX;
-        const deltaX = currentX - sliderStartX;
-        if (deltaX > 50) {
-            props.switchMonth(-1);
-            setSliderStartX(null);
-        } else if (deltaX < -50) {
-            props.switchMonth(1);
-            setSliderStartX(null);
-        }
-    };
-
-    // Обработчик окончания касания или клика
-    const handleTouchEnd = () => {
-        setSliderStartX(null);
-    };
+    const { handleTouchStart, handleTouchMove, handleTouchEnd, slideStyle } = useTouchSlider({step: props.showedPost , slideFunction: props.switchMonth})
+ 
     return (
         <div className="slider"
             onTouchStart={handleTouchStart}

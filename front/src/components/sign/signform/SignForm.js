@@ -10,7 +10,6 @@ export default function SignForm(props) {
     const [passwordFocus, setPasswordFocus] = useState(false);
     function submitForm(e) {
         e.preventDefault()
-        console.log('from sign up form::', values)
         props.submit(values);
 
     }
@@ -36,7 +35,6 @@ export default function SignForm(props) {
                 </div>}
                 <div className="sign__form-input-block">
                     <input
-                        pattern="^[A-Za-z0-9]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
                         required
                         onFocus={() => { setEmailFocus(true) }}
                         onBlur={(e) => { handleChange(e); setEmailFocus(false) }}

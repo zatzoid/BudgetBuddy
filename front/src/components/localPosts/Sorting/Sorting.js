@@ -5,8 +5,6 @@ export default function Sorting(props) {
     const [sortMenuShowed, setSortMenuShowed] = useState(false);
     const [currentSort, setCurrentSort] = useState(null);
     const [hideCheckBoxVal, setHideCheckBoxVal] = useState({ profit: false, lose: false });
-    const [CBvalProfit, setCBvalProfit] = useState(false);
-    const [CBvalLose, setCBvalLose] = useState(false);
     function showSortMenu() {
         if (sortMenuShowed) {
             setSortMenuShowed(false)
@@ -42,11 +40,11 @@ export default function Sorting(props) {
 
     function hideComplited(value) {
         if (!value) {
-            props.setComplitedElStatusFoo({  kinde:[props.kinde], value: 'none' });
+            props.setComplitedElStatusFoo({ kinde: [props.kinde], value: 'none' });
             setHideCheckBoxVal({ ...hideCheckBoxVal, [props.kinde]: true })
         }
         else {
-            props.setComplitedElStatusFoo({  kinde:[props.kinde], value: 'block' });
+            props.setComplitedElStatusFoo({ kinde: [props.kinde], value: 'block' });
             setHideCheckBoxVal({ ...hideCheckBoxVal, [props.kinde]: false })
         }
     }
@@ -58,21 +56,22 @@ export default function Sorting(props) {
     }, [currentSort])
 
     return (
-        <>
-            <label>
+        <div className="sorting-wrapper">
+            <label className="sorting__checkbox">
                 <input
-                    onChange={(e) => {hideComplited(hideCheckBoxVal[props.kinde]) }}
+                    onChange={(e) => { hideComplited(hideCheckBoxVal[props.kinde]) }}
                     checked={hideCheckBoxVal[props.kinde]}
                     type='checkbox' />
                 скрыть вычеркнутые
+                <span />
             </label>
-            <button className="lp__sort-btn"
+            <button className="sorting__btn"
                 onClick={() => { showSortMenu() }}
             >сортировать</button>
-            <div className={`lp__sort-block ${sortMenuShowed && 'lp__sort-block_active'}`}>
-                <label className="lp__sort-label">
+            <div className={`sorting__block ${sortMenuShowed && 'sorting__block_active'}`}>
+                <label className="sorting__label">
                     <input
-                        className="lp__sort-input"
+                        className="sorting__input"
                         type="radio"
                         name={`sort${props.kinde}`}
                         value='fromMany'
@@ -80,9 +79,9 @@ export default function Sorting(props) {
                     по сумме, от большего
                     <span ></span>
                 </label>
-                <label className="lp__sort-label">
+                <label className="sorting__label">
                     <input
-                        className="lp__sort-input"
+                        className="sorting__input"
                         type="radio"
                         name={`sort${props.kinde}`}
                         value='fromSmall'
@@ -90,9 +89,9 @@ export default function Sorting(props) {
                     по сумме, от меньшего
                     <span ></span>
                 </label>
-                <label className="lp__sort-label">
+                <label className="sorting__label">
                     <input
-                        className="lp__sort-input"
+                        className="sorting__input"
                         type="radio"
                         name={`sort${props.kinde}`}
                         value='category'
@@ -100,9 +99,9 @@ export default function Sorting(props) {
                     по категории
                     <span ></span>
                 </label>
-                <label className="lp__sort-label">
+                <label className="sorting__label">
                     <input
-                        className="lp__sort-input"
+                        className="sorting__input"
                         type="radio"
                         name={`sort${props.kinde}`}
                         value='statusComplited'
@@ -112,6 +111,6 @@ export default function Sorting(props) {
                 </label>
             </div>
 
-        </>
+        </div>
     )
 }

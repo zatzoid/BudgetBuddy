@@ -43,6 +43,20 @@ export const useUser = () => {
             _onError(e)
         }
     };
+    async function signIn(data) {
+        _onLoading()
+        try {
+            const signUpStatus = await userApi.signIn(data);
+            await auth()
+            setIsloadingUser(false);
+            setUserResMsg({ message: signUpStatus.message, status: true });
+
+        }
+        catch (e) {
+            _onError(e)
+        }
+
+    };
     async function auth() {
 
         try {
@@ -60,23 +74,11 @@ export const useUser = () => {
             }
         }
         catch (e) {
+            navigate('/sign-in');
             console.log(e)
         }
     };
-    async function signIn(data) {
-        _onLoading()
-        try {
-            const signUpStatus = await userApi.signIn(data);
-            await auth()
-            setIsloadingUser(false);
-            setUserResMsg({ message: signUpStatus.message, status: true });
-
-        }
-        catch (e) {
-            _onError(e)
-        }
-
-    };
+   
     async function signOut() {
         _onLoading()
         try {

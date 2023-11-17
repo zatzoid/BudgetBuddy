@@ -3,6 +3,7 @@ const allowedCors = [
     'http://zatzoid.mesto.nomoredomainsicu.ru',
     'https://localhost:3000',
     'http://localhost:3000',
+    'http://localhost:3010',
     'http://localhost:3001',
     'https://localhost:3001',
   ];

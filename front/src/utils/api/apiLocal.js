@@ -1,4 +1,5 @@
 const CURRENT_LINK = 'http://localhost:3000';
+/* const CURRENT_LINK = 'http://192.168.0.15:3000'; */
 
 class localPostAPI {
     constructor(options) {

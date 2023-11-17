@@ -44,7 +44,7 @@
 }
 
 .slider__value {
-
+    font-weight: 300;
     margin: 7px 0;
     font-size: 30px;
 }

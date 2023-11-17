@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Border from "../../border/Border";
 import VisualBtn from "../../visualbtn/VisualBtn";
+import ShowMoreBtn from "../../showMoreBtn/ShowMoreBtn";
+import translateCategory from "../../../utils/translateCategory";
 
 export default function LocalPostForm(props) {
     const [values, setValues] = useState({});
@@ -8,6 +10,7 @@ export default function LocalPostForm(props) {
     const [focusValue, setFocusValue] = useState(false);
     const [categoryValue, setCategoryValue] = useState('another');
     const [showCategory, setShowCategory] = useState(false);
+
     function handleChange(event) {
         const target = event.target;
         const name = target.name;
@@ -18,7 +21,9 @@ export default function LocalPostForm(props) {
     function submit(e) {
         e.preventDefault();
         props.submitForm({ values, kinde: props.kinde, category: categoryValue });
-        setCategoryValue('another');
+        setValues({})
+        setCategoryValue('another')
+        setShowCategory(false)
 
     }
     useEffect(() => {
@@ -34,12 +39,12 @@ export default function LocalPostForm(props) {
         }
         setShowCategory(true);
     }
-    function choisCategory(data){
+    function choisCategory(data) {
         setCategoryValue(data)
         setTimeout(() => {
             openCategory()
         }, 500);
-        
+
     }
 
     return (
@@ -76,38 +81,41 @@ export default function LocalPostForm(props) {
                 type="button"
                 onClick={() => { openCategory() }}>
                 <p className="lp__form-heading-type">Выберите категорию</p>
-                <span className={`lp__form-type-btn-arrow ${showCategory && 'lp__form-type-btn-arrow_active'}`} ></span>
+                <ShowMoreBtn active={showCategory} />
             </button>
             <div className={`lp-form-type-container ${showCategory && 'lp-form-type-container_active'}`}>
                 {props.kinde === 'lose' ? <>
-                    <label className="lp__form-type-label"> <input
-                        type='radio'
-                        name='typeof'
-                        value='transport'
-                        onChange={(e) => { choisCategory(e.target.value) }}
-                        className="lp__form-type-input"
-                    />
+                    <label className="lp__form-type-label">
+                        <input
+                            type='radio'
+                            name='typeof'
+                            value='transport'
+                            onChange={(e) => { choisCategory(e.target.value) }}
+                            className="lp__form-type-input"
+                        />
                         <span className="lp__form-type-input-btn back-img_transport"></span>
                         транспорт
                     </label>
-                    <label className="lp__form-type-label"> <input
-                        type='radio'
-                        name='typeof'
-                        value='jkh'
-                        onChange={(e) => { choisCategory(e.target.value) }}
-                        className="lp__form-type-input"
-                    />
+                    <label className="lp__form-type-label">
+                        <input
+                            type='radio'
+                            name='typeof'
+                            value='jkh'
+                            onChange={(e) => { choisCategory(e.target.value) }}
+                            className="lp__form-type-input"
+                        />
                         <span className="lp__form-type-input-btn back-img_jkh"></span>
                         жкх
                     </label>
 
-                    <label className="lp__form-type-label"> <input
-                        type='radio'
-                        name='typeof'
-                        value='food'
-                        onChange={(e) => { choisCategory(e.target.value) }}
-                        className="lp__form-type-input"
-                    />
+                    <label className="lp__form-type-label">
+                        <input
+                            type='radio'
+                            name='typeof'
+                            value='food'
+                            onChange={(e) => { choisCategory(e.target.value) }}
+                            className="lp__form-type-input"
+                        />
                         <span className="lp__form-type-input-btn back-img_food"></span>
                         питание
                     </label>

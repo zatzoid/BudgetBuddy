@@ -31,8 +31,8 @@ export default function Header(props) {
                     <nav className="header__navbar">
                         <NavLink to='/local-posts' onClick={()=>{openMenu()}} className='header__link'>
                             Личные посты</NavLink>
-                        <NavLink to='/public-posts' onClick={()=>{openMenu()}} className='header__link'>
-                            Общие посты</NavLink>
+                        <NavLink to='/present' onClick={()=>{openMenu()}} className='header__link'>
+                           Презентация</NavLink>
 
                     </nav>
                     <button className="header__acc-btn" onClick={() => { props.signOut(); openMenu() }}>Выйти из аккаунта</button>

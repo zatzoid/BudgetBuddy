@@ -1,5 +1,11 @@
+.sorting-wrapper {
+    display: flex;
+    width: 100%;
+    border-bottom: 2px solid var(--col-main);
+    padding:10px 0 10px ;
+}
 
-.lp__sort-btn {
+.sorting__btn {
     display: flex;
     margin-left: auto;
     background-color: var(--col-clear);
@@ -8,14 +14,15 @@
     opacity: 0.5;
 }
 
-.lp__sort-btn:active {
+.sorting__btn:active {
     opacity: 0.7;
 }
 
-.lp__sort-block {
+.sorting__block {
     position: absolute;
+    top: 20px;
     right: 0;
-    background-color: var(--col-sec);
+    background-color: var(--col-white);
     z-index: 4;
     gap: 10px;
     transition: all .2s;
@@ -24,31 +31,33 @@
     padding: 0;
     max-height: 0;
     overflow: hidden;
+    border-radius: 10px 0 10px 10px;
+    box-shadow: 0 0 1px 2px rgba(0, 0, 0, 0.5) inset;
 }
 
-.lp__sort-block_active {
-
+.sorting__block_active {
+    padding: 5px;
     max-height: 500px;
 }
 
-.lp__sort-label {
+.sorting__label {
     padding: 5px 5px 0;
     opacity: 0.9;
     position: relative;
 
 }
 
-.lp__sort-label:last-of-type {
+.sorting__label:last-of-type {
     margin-bottom: 5px;
 }
 
-.lp__sort-input {
+.sorting__input {
     opacity: 0;
     position: absolute;
 
 }
 
-.lp__sort-input+span {
+.sorting__input+span {
     position: absolute;
     width: 3px;
     height: 3px;
@@ -58,11 +67,48 @@
     transition: width .3s;
 }
 
-.lp__sort-input:checked+span {
+.sorting__input:checked+span {
     width: calc(100% - 10px);
 }
 
-.lp__sort-input:checked+.lp__sort-label {
-    background-color: red;
+.sorting__input:checked+.sorting__label {
+
     border-bottom: 2px solid black;
+}
+
+.sorting__checkbox {
+    position: relative;
+    padding-left: 15px;
+}
+
+.sorting__checkbox input {
+    opacity: 0;
+
+}
+
+.sorting__checkbox span {
+    position: absolute;
+    height: 90%;
+    width: 21px;
+    left: 0;
+    background-color: var(--col-clear);
+    border-radius: 50%;
+    border: 1px solid var(--col-main-dark);
+    transition: all .2s;
+    overflow: hidden;
+}
+
+.sorting__checkbox span::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: scale(0);
+    background-color: var(--col-main);
+    transition: all .2s;
+}
+
+.sorting__checkbox input:checked+span::after {
+    border-radius: 50%;
+    transform: scale(0.7);
 }

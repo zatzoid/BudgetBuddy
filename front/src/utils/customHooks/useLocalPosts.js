@@ -12,8 +12,6 @@ export const useLocalPosts = () => {
             setLPResMsg(`Введенны не корректные данные в поле ${e.validation.body.keys[0]}`);
             return
         }
-
-
         console.log(e)
     }
     function _onLoading() {
@@ -79,14 +77,15 @@ export const useLocalPosts = () => {
         catch (e) { _onError(e) };
 
     }
-    async function patchLPCashData(data) {
+    async function patchLPCashData(dataTo) {
         _onLoading()
-        const updatedPost = await localPostApi.patchLPCashData(data);
-        refreshPost({ updatedPost });
+        const { data } = await localPostApi.patchLPCashData(dataTo);
+        refreshPost( data );
     }
     function refreshPost(data) {
         _onLoading()
         const indexToUpdate = LPList.findIndex(item => item._id === data.updatedPost._id);
+
         if (indexToUpdate !== -1) {
             const updatedLPList = [...LPList];
             updatedLPList[indexToUpdate] = data.updatedPost;

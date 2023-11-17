@@ -40,8 +40,13 @@ function App() {
 
   useEffect(() => {
     auth();
-    getLPList()
-  }, [])
+
+  }, []);
+  useEffect(() => {
+    if (loggedIn) {
+      getLPList()
+    }
+  }, [loggedIn])
   useEffect(() => {
     setResMessage(userResMsg);
   }, [userResMsg]);
@@ -62,7 +67,7 @@ function App() {
         <Notice resMessage={resMessage} />
         {showEmailModal && <EmailModal submitForm={submitEmailModalWrapper} openEmailModal={openEmailModal} emailModalData={emailModalData} />}
         <Routes>
-          <Route path="/present" element={<Present />}/>
+          <Route path="/present" element={<Present />} />
           <Route path="/sign-up" element={<SignUp submit={signUp} isLoading={isLoadingUser} />} />
           <Route path="/sign-in" element={<SignIn submit={signIn} isLoading={isLoadingUser} />} />
           <Route path="/local-posts"
