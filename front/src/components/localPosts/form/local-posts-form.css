@@ -33,35 +33,42 @@
     justify-content: space-around;
 }
 
-.local-posts__from-btn-sbmt {
+.local-posts__from-btn {
     cursor: pointer;
     padding: 0;
     margin-top: 10px;
     width: 30px;
     height: 30px;
-    background-color: var(--col-clear);
     border: none;
-
+    background-color: var(--col-clear);
+    position: relative;
+    
+    
 }
 
-.local-posts__from-btn-sbmt:disabled {
+.local-posts__from-btn::after {
+    content: '';
+    position: absolute;
+    width: 100px;
+    height: 35px;
+    top: 0;
+    left: -35px;
+    z-index: -1;
+    background-color: var(--col-sec);
+    border-radius: 20px;
+}
+.local-posts__from-btn:last-of-type::after{
+    opacity: 0.3;
+    background-color: var(--col-red);
+}
+
+.local-posts__from-btn:disabled {
     opacity: 0.5;
 }
-
-.local-posts__from-btn-reset {
-    cursor: pointer;
-    padding: 0;
-    margin-top: 10px;
-    width: 30px;
-    height: 30px;
-    background-color: var(--col-clear);
-    border: none;
+.local-posts__from-btn_reset{
+   padding-top: 2px;
+   box-sizing: content-box;
 }
-
-.local-posts__from-btn-reset:disabled {
-    opacity: 0.5;
-}
-
 .lp__form-type-btn {
     cursor: pointer;
     position: relative;
@@ -72,13 +79,15 @@
     background-color: var(--col-clear);
     border: none;
     border-bottom: 3px solid var(--col-main-dark);
-    
+
 }
 
 
 .lp__form-heading-type {
-    font-weight: 400;
+    font-size: 15px;
+    font-weight: 300;
     margin: 0;
+    letter-spacing: 1px;
 }
 
 .lp-form-type-container {
@@ -91,9 +100,9 @@
     z-index: 5;
     width: calc(100% - 15px);
     background-color: var(--col-white);
-    box-shadow: 0 -2px 1px 2px var(--col-main-dark) inset;
+    box-shadow: 0 -3px 1px 2px var(--col-main-dark) inset;
     border-radius: 0 0 10px 10px;
-    
+
 }
 
 .lp-form-type-container_active {
@@ -107,7 +116,6 @@
     display: flex;
     position: relative;
     text-align: center;
-    font-weight: 500;
     margin-top: 8px;
     flex-direction: row;
     max-height: 50px;
@@ -116,6 +124,8 @@
     width: 100%;
     padding-top: 1.2vw;
     box-sizing: border-box;
+    font-weight: 400;
+    letter-spacing: 1px;
 }
 
 .lp__form-type-input {
@@ -128,7 +138,7 @@
 }
 
 .lp__form-type-input-btn {
-   
+
     position: absolute;
     content: '';
     background-position: center;
@@ -144,6 +154,7 @@
     min-width: 20px;
 
 }
+
 .lp__form-type-input:checked+.lp__form-type-input-btn {
     filter: grayscale(0);
 }
@@ -151,7 +162,7 @@
 
 
 @media screen and (max-width: 600px) {
-  
+
     /*  .lp__form-heading-type {
         font-size: 13px;
     }

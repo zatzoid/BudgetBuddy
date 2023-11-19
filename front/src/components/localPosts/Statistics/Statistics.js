@@ -156,7 +156,7 @@ export default function Statistics(props) {
     }, [props.dataForStatistic]);
     return (
         <>
-            <button className="stats__show-stats-btn"
+            <button className={`stats__show-stats-btn ${statsOpened && 'stats__show-stats-btn__open'}`}
                 type="button"
                 onClick={() => { showStats() }}>
                 Статистика
@@ -166,7 +166,7 @@ export default function Statistics(props) {
                 <nav className="stats__heading-btn-block" >
                     <button className="stats__heading-btn" onClick={() => choisStats()}>Общая информация</button>
                     <button className="stats__heading-btn" onClick={() => choisStats()}>Подробная информация</button>
-                   { props.currentWW < 701 && <ActuveBtnSlider  transformValue={showedStatsEl}/>}
+                    {props.currentWW < 701 && <ActuveBtnSlider transformValue={showedStatsEl} />}
                 </nav>
                 <section className='stats' style={slideStyle}
                     onTouchStart={handleTouchStart}
@@ -178,13 +178,20 @@ export default function Statistics(props) {
                     <div className="stats__el stats__chart" >
                         {dataForChart !== null && <div className="stats__chart-el">
                             <Pie
+                                height={150}
+                                width={150}
                                 data={dataForChart}
                                 options={{
                                     plugins: {
                                         legend: {
                                             display: false,
-                                        },
-                                    }
+                                        }
+
+                                    },
+                                    /* maintainAspectRatio: true, */
+                                    /*   responsive: true, */
+                                    /*  aspectRatio: 2 | 2 */
+
                                 }}
 
                             />

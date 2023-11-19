@@ -6,6 +6,7 @@ const allowedCors = [
     'http://localhost:3010',
     'http://localhost:3001',
     'https://localhost:3001',
+    'http://192.168.0.15:3010'
   ];
   
   const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';

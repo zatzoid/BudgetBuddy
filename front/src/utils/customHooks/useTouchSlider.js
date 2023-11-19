@@ -2,14 +2,19 @@ import React, { useState } from "react";
 
 
 export default function useTouchSlider(data) {
-
     const [sliderStartX, setSliderStartX] = useState(null);
-
+    const [sliderStartY, setSliderStartY] = useState(null);
     const slideStyle = {
         transform: `translateX(-${data.step}00%)`
     }
+    const sliderStyleY = {
+        transform: `translateY(-${data.step}00%)`
+    }
     const handleTouchStart = (e) => {
         setSliderStartX(e.touches ? e.touches[0].clientX : e.clientX);
+    };
+    const handleTouchStartY = (e) => {
+        setSliderStartY(e.touches ? e.touches[0].clientY : e.clientY);
     };
 
     // Обработчик перемещения касания или мыши
@@ -17,12 +22,24 @@ export default function useTouchSlider(data) {
         if (sliderStartX === null) return;
         const currentX = e.touches ? e.touches[0].clientX : e.clientX;
         const deltaX = currentX - sliderStartX;
-        if (deltaX > 50) {
-             data.slideFunction(-1);
+        if (deltaX > 100) {
+            data.slideFunction(-1);
             setSliderStartX(null);
-        } else if (deltaX < -50) {
-             data.slideFunction(1);
+        } else if (deltaX < -100) {
+            data.slideFunction(1);
             setSliderStartX(null);
+        }
+    };
+    const handleTouchMoveY = (e) => {
+        if (sliderStartY === null) return;
+        const currentY = e.touches ? e.touches[0].clientY : e.clientY;
+        const deltaY = currentY - sliderStartY;
+        if (deltaY > 100) {
+            data.slideFunction(-1);
+            setSliderStartY(null);
+        } else if (deltaY < -100) {
+            data.slideFunction(1);
+            setSliderStartY(null);
         }
     };
 
@@ -30,5 +47,9 @@ export default function useTouchSlider(data) {
     const handleTouchEnd = () => {
         setSliderStartX(null);
     };
-    return { handleTouchStart, handleTouchMove, handleTouchEnd, slideStyle }
+    const handleTouchEndY = () => {
+        setSliderStartY(null);
+    };
+
+    return { handleTouchStart, handleTouchStartY, handleTouchMove, handleTouchMoveY, handleTouchEnd, handleTouchEndY, slideStyle, sliderStyleY }
 }

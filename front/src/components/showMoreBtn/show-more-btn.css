@@ -5,22 +5,22 @@
     width: 20px;
     right: 10px;
     bottom: -3px;
-    transition: all 0.2s;
-    /*   display: flex;
-    justify-content: space-between; */
+    transition: all 0.5s;
+    z-index: 2;
+   
 }
 
 .showMoreBtn__left {
     height: 100%;
     width: 3px;
     left: -2px;
-    transform: rotate(40deg);
-    transition: all .2s;
+    transform: rotate(42deg);
+    transition: all .5s;
     position: absolute;
 }
 
 .showMoreBtn__left_active {
-    transform: rotate(-45deg);
+    transform: rotate(-43deg);
 }
 
 .showMoreBtn__left::after {
@@ -39,11 +39,11 @@
     height: 100%;
     width: 3px;
     transform: rotate(135deg);
-    transition: all .2s;
+    transition: all .5s;
 }
 
 .showMoreBtn__right_active {
-    transform: rotate(220deg);
+    transform: rotate(224deg);
 }
 
 .showMoreBtn__right::after {

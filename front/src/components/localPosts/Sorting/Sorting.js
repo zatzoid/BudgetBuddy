@@ -29,6 +29,11 @@ export default function Sorting(props) {
                 return a.category.localeCompare(b.category)
             } else if (data.type === 'statusComplited') {
                 return b.statusComplited - a.statusComplited
+            } else if (data.type === 'date') {
+                const dateA = new Date(a.createdAt);
+                const dateB = new Date(b.createdAt);
+                return dateB - dateA
+
             }
         })
         copyPostData.cashData[kinde] = dataArray;
@@ -69,6 +74,16 @@ export default function Sorting(props) {
                 onClick={() => { showSortMenu() }}
             >сортировать</button>
             <div className={`sorting__block ${sortMenuShowed && 'sorting__block_active'}`}>
+                <label className="sorting__label">
+                    <input
+                        className="sorting__input"
+                        type="radio"
+                        name={`sort${props.kinde}`}
+                        value='fromMany'
+                        onClick={() => { setCurrentSort({ kinde: props.kinde, sortBy: '--', type: 'date' }) }} />
+                    по дате добавления
+                    <span ></span>
+                </label>
                 <label className="sorting__label">
                     <input
                         className="sorting__input"

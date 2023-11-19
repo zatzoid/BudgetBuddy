@@ -1,0 +1,80 @@
+@keyframes jumping {
+    from {
+        transform: translateY(10px);
+    }
+
+    to {
+        transform: translateY(-10px);
+    }
+}
+
+@keyframes jumpingTop {
+    from {
+        transform: translateY(10px) rotate(180deg);
+
+    }
+
+    to {
+        transform: translateY(-10px) rotate(180deg);
+    }
+}
+
+.present {
+    overflow: hidden;
+    min-height: calc(100vh - 120px);
+}
+
+.present-wrapper {
+    transition: all .5s;
+}
+
+.present__el {}
+
+.present__el_one {
+    background-color: red;
+}
+
+.present__el_two {
+    background-color: green;
+}
+
+.present__el_three {
+    background-color: yellow;
+}
+
+@media screen and (max-width: 700px) {
+    .present-wrapper {
+        height: calc(100vh - 120px);
+    }
+
+    .present__el {
+        display: flex;
+        flex-direction: column;
+         height: calc(100vh - 120px);
+        position: relative;
+    }
+
+    .present__el-btn {
+        position: absolute;
+        bottom: 20px;
+        left: calc(50% - 40px);
+        opacity: 0.2;
+        width: 80px;
+        height: 55px;
+        border: none;
+        background-color: var(--col-clear);
+        background-image: url(../../images/arrow-down-icon.svg);
+        background-size: 30px;
+        background-position: center;
+        background-repeat: repeat-y;
+
+        animation: jumping 1s infinite alternate;
+    }
+
+    .present__el-btn_top {
+        animation: jumpingTop 1s infinite alternate;
+
+        top: 15px;
+        left: 80%;
+    }
+}

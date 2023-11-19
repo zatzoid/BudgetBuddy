@@ -6,7 +6,9 @@
     display: flex;
     justify-content: center;
     transition: all .5s;
+    z-index: 2;
 }
+
 
 .activeBtnSlider {
     border-radius:  10px 10px 0 0 ;

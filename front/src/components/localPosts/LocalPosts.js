@@ -19,8 +19,8 @@ export default function LoaclPosts(props) {
     const [showedPostData, setShowedPostData] = useState(null);
     const totalProfit = showedPostData?.cashData.profit.reduce((acc, item) => acc + Object.values(item.data)[0], 0);
     const totalLose = showedPostData?.cashData.lose.reduce((acc, item) => acc + Object.values(item.data)[0], 0);
-    const [showDescription, setShowDescription] = useState(false);
-    const [descriptionValue, setDescriptionValue] = useState(null);
+ /*    const [showDescription, setShowDescription] = useState(false);
+    const [descriptionValue, setDescriptionValue] = useState(null); */
     const [dataForStatistic, setDataForStatistic] = useState(null);
     const [lpContainerStyle, setLpContainerStyle] = useState('local-posts__container');
     const [complitedElStatus, setComplitedElStatus] = useState({ lose: 'showed', profit: 'showed' });
@@ -33,6 +33,7 @@ export default function LoaclPosts(props) {
         setCurrentWW(window.innerWidth);
     }
     useEffect(() => {
+        checkWW()
         window.addEventListener('resize', checkWW);
         return () => {
             window.removeEventListener('resize', checkWW);
@@ -232,8 +233,8 @@ export default function LoaclPosts(props) {
 
                                 </ul>
                             </section>
-                            <div className='local-posts__public-btn-container' >
-                                {showDescription && <div className="local-posts__public-add-description">
+                            <div className='local-posts__public-btn-container'  >
+                                {/* {showDescription && <div className="local-posts__public-add-description" >
                                     <textarea
                                         required
                                         className="local-posts__public-add-description-value"
@@ -241,8 +242,8 @@ export default function LoaclPosts(props) {
                                         value={descriptionValue || ''}
                                         onChange={(e) => { setDescriptionValue(e.target.value) }}
                                     />
-                                    <button className="local-posts__public-add-description-btn">Опубликовать</button>
-                                    <button
+                                    <button className="local-posts__public-add-description-btn" >Опубликовать</button>
+                                    <button 
                                         onClick={() => { setShowDescription(false) }}
                                         className="local-posts__public-add-description-btn">Отмена</button>
                                 </div>}
@@ -252,7 +253,7 @@ export default function LoaclPosts(props) {
                                         className={`local-posts__public-btn ${showDescription && 'local-posts__public-btn_active'}`}>
                                         Опубликовать запись</button>}
 
-                                {showedPostData.posted && <p className="local-posts__public-btn_posted">Запись опубликована</p>}
+                                {showedPostData.posted && <p className="local-posts__public-btn_posted">Запись опубликована</p>} */}
                             </div>
                         </>}
                 </div>

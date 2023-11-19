@@ -188,13 +188,13 @@ export default function LocalPostForm(props) {
             </div>
             <div className="local-posts__from-btn-wrapper">
                 <button
-                    className="local-posts__from-btn-sbmt"
+                    className="local-posts__from-btn local-posts__from-btn_sbmt"
                     type="submit"
                     disabled={props.isLoadingLP}
                 ><VisualBtn confirm={true} loading={props.isLoadingLP} /> </button>
                 <button
                     onClick={() => { setValues({}) }}
-                    className="local-posts__from-btn-reset"
+                    className="local-posts__from-btn local-posts__from-btn_reset"
                     type="reset"
                     disabled={props.isLoadingLP}
                 ><VisualBtn cancel={true} loading={props.isLoadingLP} /> </button>
