@@ -48,7 +48,12 @@
 .local-posts__form-input:focus {
     outline: none;
 }
-
+.lp__form-input-err-msg{
+    color: var(--col-red);
+    font-size: 10px;
+    height: 12px;
+    display: block;
+}
 .local-posts__from-btn-wrapper {
     display: flex;
     justify-content: space-around;

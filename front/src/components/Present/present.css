@@ -80,7 +80,7 @@
 .present__el-btn {
     position: absolute;
     bottom: 20px;
-    left: calc(35%);
+    left: calc(45%);
     opacity: 0.2;
     width: 100px;
     height: 40px;
@@ -103,7 +103,11 @@
 }
 
 @media screen and (max-width: 700px) {
-
+    .present__el-btn_top {
+        left: 80%;
+    }
+    .present__el-btn {
+        left: calc(35%);}
 
     .presetn__description-heading {
         font-size: 20px;

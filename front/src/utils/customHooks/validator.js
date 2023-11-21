@@ -18,12 +18,13 @@ export default function useFormWithValidation() {
             setIsValid(target.closest("form").checkValidity() && !errors.email);
             return
         }
-
         setErrors({ ...errors, [name]: target.validationMessage });
         setIsValid(target.closest("form").checkValidity() && !errors.email);
     };
 
+    const resetForm = () => {
+        setValues({})
+    }
 
-
-    return { values, handleChange, errors, isValid };
+    return { values, handleChange, resetForm, errors, isValid };
 }
