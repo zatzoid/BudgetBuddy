@@ -1,6 +1,8 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const localPost = require('../models/localPost');
+const LPreminderData = require('../models/LPreminderData')
 const { getJWT } = require('../utils/getJwt');
 const { NotFoundError, RegistrError } = require('../utils/errorsType');
 
@@ -28,7 +30,7 @@ module.exports.signUp = async (req, res, next) => {
                 maxAge: 3600000 * 24 * 7,
                 httpOnly: true,
             },
-        ).send({ message: 'Вы успешно зарегистрировались' });
+        ).status(201).send({ message: 'Вы успешно зарегистрировались' });
     } catch (err) {
         if (err.code === 11000) {
             return next(new RegistrError('почта уже зарегистрирована'));
@@ -64,7 +66,7 @@ module.exports.getUserMe = async (req, res, next) => {
         if (!userData) {
             throw new NotFoundError('user not found');
         }
-        return successResponse(res, {userData, message: 'Авторизация прошла успешно'});
+        return successResponse(res, { userData, message: 'Авторизация прошла успешно' });
     }
     catch (err) { return next(err); }
 }
@@ -79,7 +81,7 @@ module.exports.changeProfile = async (req, res, next) => {
         if (!userData) {
             throw new NotFoundError('user not found');
         }
-        return successResponse(res, {userData, message: 'Данные профиля успешно изменены'});
+        return successResponse(res, { userData, message: 'Данные профиля успешно изменены' });
     } catch (err) {
         if (err.code === 11000) {
             return next(new RegistrError('почта уже зарегистрирована'));
@@ -90,11 +92,13 @@ module.exports.changeProfile = async (req, res, next) => {
 
 module.exports.deleteUserMe = async (req, res, next) => {
     try {
+        await localPost.deleteMany({ owner: req.user._id });
+        await LPreminderData.deleteMany({ emailTo: req.body.data.email });
         const user = await User.findByIdAndDelete(req.user._id);
         if (!user) {
             throw new NotFoundError('user not found');
         }
-        return res.clearCookie('Bearer').status(200).send({ message: 'Аккаунт успешно удален' });
+        return res.clearCookie('Bearer').status(200).send({ message: `Аккаунт успешно удален.` });
     } catch (err) {
         return next(err);
     }

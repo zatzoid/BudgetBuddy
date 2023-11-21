@@ -19,7 +19,7 @@
 
 
 .local-posts__wrapper {
-
+    min-height: 400px;
     box-sizing: border-box;
     display: flex;
     margin: 15px auto 100px;

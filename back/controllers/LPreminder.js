@@ -3,10 +3,11 @@ const localPost = require('../models/localPost')
 
 module.exports.createEmailDataToSend = async (req, res, next) => {
     try {
+        console.log(req.body)
         const { date, mainData, message, emailTo } = req.body.data;
         const dateToSend = date;
         const { originalCashDataId, postId } = mainData;
-        const dataReminder = await LPreminderData.create({ dateToSend, mainData: { name: mainData.name, value: mainData.value }, message, emailTo, originalCashDataId, postId });
+        const dataReminder = await LPreminderData.create({ dateToSend, mainData: { name: mainData.name, value: mainData.value, kinde: mainData.kinde }, message, emailTo, originalCashDataId, postId });
         const updatedPost = await localPost.findOne({ _id: postId });
         if (updatedPost) {
             const targetElementId = originalCashDataId;

@@ -10,6 +10,7 @@ export default function LocalPostForm(props) {
     const [focusValue, setFocusValue] = useState(false);
     const [categoryValue, setCategoryValue] = useState('another');
     const [showCategory, setShowCategory] = useState(false);
+    const [formShowed, setFormShowed] = useState(false);
 
     function handleChange(event) {
         const target = event.target;
@@ -46,11 +47,23 @@ export default function LocalPostForm(props) {
         }, 500);
 
     }
+    function switchShowedForm() {
+        if (formShowed) {
+            setFormShowed(false)
+            setShowCategory(false)
+        } else {
+            setFormShowed(true)
+        }
+    }
 
     return (
-        <form className="local-posts__form"
+        <> <button className={`local-posts__form-heading ${formShowed && 'local-posts__form-heading_active'}`}
+        onClick={() => switchShowedForm()}>
+            {props.heading}
+            </button>
+        <form className={`local-posts__form ${formShowed && 'local-posts__form_active'}`}
             onSubmit={(e) => { submit(e) }}>
-            <p className="local-posts__form-heading">{props.heading}</p>
+           
             <input
                 disabled={props.isLoadingLP}
                 required
@@ -60,6 +73,8 @@ export default function LocalPostForm(props) {
                 className="local-posts__form-input"
                 name="key"
                 type="text"
+                maxLength={25}
+                minLength={1}
                 onFocus={() => { setFocusKey(true) }}
                 onBlur={() => { setFocusKey(false) }}
 
@@ -74,6 +89,7 @@ export default function LocalPostForm(props) {
                 className="local-posts__form-input"
                 name="value"
                 type="number"
+                min='1'
                 onFocus={() => { setFocusValue(true) }}
                 onBlur={() => { setFocusValue(false) }} />
             <Border onFocus={focusValue} />
@@ -200,6 +216,7 @@ export default function LocalPostForm(props) {
                 ><VisualBtn cancel={true} loading={props.isLoadingLP} /> </button>
             </div>
         </form>
+        </>
     )
 
 }

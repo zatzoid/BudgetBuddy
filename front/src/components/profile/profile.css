@@ -70,10 +70,10 @@
     border: none;
     background-color: var(--col-clear);
     color: var(--col-main);
-    font-weight: 700;
-    font-size: 30px;
     padding: 0;
     cursor: pointer;
+    width: 30px;
+    height: 30px;
 }
 .profile__edit-submit-btn:disabled{
     opacity: 0.5;

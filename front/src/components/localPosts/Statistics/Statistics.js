@@ -89,18 +89,27 @@ export default function Statistics(props) {
 
         function createPrevValues(data) {
             if (data.prevList && data.curList) {
+
                 const currentList = data.curList;
                 const prevList = data.prevList;
                 const newList = currentList.map(el => {
                     const curKey = el.category;
                     const previousObj = prevList.find(el => el.category === curKey);
                     if (previousObj) {
-                        if (previousObj.value < el.value) {
-                            /*  return { [curKey]: Math.ceil(100 * (el.value - previousObj.value) / el.value) } */
-                            return { [curKey]: Math.ceil(((previousObj.value - el.value) / el.value) * 100) }
+                        if (data.kinde === 'profit') {
+                            if (previousObj.value < el.value) {
+                                return { [curKey]: Math.ceil(((el.value - previousObj.value )/el.value)*100) }
+                            } else {
+                                return { [curKey]: Math.ceil((( el.value - previousObj.value)/previousObj.value)*100) }
+                            }
                         } else {
-                            return { [curKey]: Math.ceil(100 * (previousObj.value - el.value) / previousObj.value) }
-                            /* return { [curKey]: Math.ceil((( el.value - previousObj.value) / previousObj.value) * 100) } */
+                            if (previousObj.value < el.value) {
+
+                                return { [curKey]: Math.ceil(((el.value - previousObj.value )/el.value)*100) }
+                            } else {
+                             return { [curKey]: Math.ceil((( el.value - previousObj.value)/previousObj.value)*100) }
+                                
+                            }
                         }
                     } else { return null }
                 }).filter(el => el !== null)
@@ -110,7 +119,7 @@ export default function Statistics(props) {
                 return null
             }
         }
-        const prevValues = createPrevValues({ curList: currentList, prevList: previousList });
+        const prevValues = createPrevValues({ curList: currentList, prevList: previousList, kinde: data.kinde });
         data.kinde === 'profit' ? setPrevProfitCategoryList(prevValues) : setPrevLoseCategoryList(prevValues);
     }
 
@@ -296,20 +305,22 @@ export default function Statistics(props) {
                                     </div>
                                     <ul className="stats__month">
                                         <li className="stats__month-el" style={{ gridColumn: '1 / span 2' }}>
-                                            {prevLoseCategoryList || prevProfitCategoryList ? <p className="stats__month-heading">сравнение категорий с прошлым месяцом</p> :
-                                                <p>нет данных для сравнения</p>}
+                                            {prevLoseCategoryList || prevProfitCategoryList ? <p className="stats__month-heading">текущий месяц к прошлому по категориям</p> :
+                                                <p className="stats__month-cap">нет данных для сравнения</p>}
                                         </li>
                                         {Array.isArray(prevProfitCategoryList) && prevProfitCategoryList.map((el) => {
 
                                             return (<li className="stats__month-el" style={{ gridColumn: '1' }} key={Object.keys(el)[0]}>
+                                                <span className={`stats__month-img back-img_${Object.keys(el)[0]}`} />
                                                 <p className="stats__month-text">{translateCategory(Object.keys(el)[0])}</p>
-                                                <p className="stats__month-text" style={{ color: `${Object.values(el) > 0 ? 'var(--col-main-dark)' : 'var(--col-red)'}` }}>{Object.values(el)}%</p>
+                                                <p className="stats__month-text" style={{ color: `${Object.values(el) >= 0 ? 'var(--col-main-dark)' : 'var(--col-red)'}` }}>{Object.values(el)}%</p>
                                             </li>)
 
                                         })}
                                         {Array.isArray(prevLoseCategoryList) && prevLoseCategoryList.map((el, index) => {
 
                                             return (<li className="stats__month-el" style={{ gridColumn: '2', gridRow: `${index + 2}` }} key={Object.keys(el)[0]}>
+                                                <span className={`stats__month-img back-img_${Object.keys(el)[0]}`} />
                                                 <p className="stats__month-text">{translateCategory(Object.keys(el)[0])}</p>
                                                 <p className="stats__month-text" style={{ color: `${Object.values(el) < 0 ? 'var(--col-main-dark)' : 'var(--col-red)'}` }}>{Object.values(el)}%</p>
                                             </li>)

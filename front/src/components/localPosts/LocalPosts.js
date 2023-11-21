@@ -175,12 +175,12 @@ export default function LoaclPosts(props) {
 
                                     </li>
                                     <li className="lp__sort-el">
-                                        <Sorting
+                                       { totalProfit > 0 && <Sorting
                                             kinde={'profit'}
                                             complitedElStatus={complitedElStatus}
                                             setComplitedElStatusFoo={setComplitedElStatusFoo}
                                             showedPostData={showedPostData}
-                                            setShowedPostData={setShowedPostDataFoo} />
+                                            setShowedPostData={setShowedPostDataFoo} />}
                                     </li>
                                     {Array.isArray(showedPostData?.cashData.profit) && showedPostData?.cashData.profit.map((item) => (
                                         <PostedEl
@@ -209,11 +209,11 @@ export default function LoaclPosts(props) {
 
                                     </li>
                                     <li className="lp__sort-el">
-                                        <Sorting
+                                        { totalLose > 0 && <Sorting
                                             setComplitedElStatusFoo={setComplitedElStatusFoo}
                                             kinde={'lose'}
                                             showedPostData={showedPostData}
-                                            setShowedPostData={setShowedPostDataFoo} />
+                                            setShowedPostData={setShowedPostDataFoo} />}
 
                                     </li>
                                     {Array.isArray(showedPostData?.cashData.lose) && showedPostData?.cashData.lose.map((item) => (

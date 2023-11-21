@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import ProtectedRouteElement from "./ProtectedRoutEl";
 import { CurrentUserContext } from "./Context";
 import Header from "./header/Header";
@@ -15,44 +15,38 @@ import Notice from "./notice/Notice";
 import EmailModal from "./EmailModal/EmailModal";
 import { useEmailModal } from "../utils/customHooks/useEmailModal";
 import Present from "./Present/Present";
+import NotFoundPage from "./NotFoundPage/NotFoundPage";
 
 
 
 /* 
-api
-защитить роуты
-кнопка изменения профиля
-*/
-/* 
-диограмма
-заглушка на локал пост 
-статус публикации
-форма для луза
-публик пост
+
+проценты ебучие
 
 */
 function App() {
-  const navigate = useNavigate();
-  const { loggedIn, signUp, signIn, signOut, changeUserInfo, isLoadingUser, userResMsg, userData, auth } = useUser();
+  const { loggedIn, signUp, signIn, signOut, changeUserInfo, deleteUserMe, isLoadingUser, userResMsg, userData, auth } = useUser();
   const { getLPList, createLPel, putCashDataLP, deleteCashDataLP, refreshPost, patchLPCashData, LPList, isLoadingLP, LPResMsg } = useLocalPosts();
   const { showEmailModal, emailModalData, emailModalLodaing, submitEmailModal, openEmailModal } = useEmailModal();
   const [resMessage, setResMessage] = useState(null);
 
   useEffect(() => {
     auth();
-
   }, []);
   useEffect(() => {
     if (loggedIn) {
       getLPList()
     }
-  }, [loggedIn])
+  }, [loggedIn]);
+
   useEffect(() => {
     setResMessage(userResMsg);
   }, [userResMsg]);
+
   useEffect(() => {
     setResMessage(LPResMsg)
   }, [LPResMsg]);
+
   async function submitEmailModalWrapper(data) {
     data.emailTo = userData.email;
     const response = await submitEmailModal(data);
@@ -63,11 +57,12 @@ function App() {
   return (
     <div className="App">
       <CurrentUserContext.Provider value={userData}>
-        <Header loggedIn={loggedIn} signOut={signOut} />
+        <Header loggedIn={loggedIn} signOut={signOut} deleteUserMe={deleteUserMe} userData={userData} />
         <Notice resMessage={resMessage} />
         {showEmailModal && <EmailModal submitForm={submitEmailModalWrapper} openEmailModal={openEmailModal} emailModalData={emailModalData} />}
         <Routes>
-          <Route path="/present" element={<Present />} />
+          <Route path="/" element={<Present />} />
+          <Route path="/*" element={<NotFoundPage />} />
           <Route path="/sign-up" element={<SignUp submit={signUp} isLoading={isLoadingUser} />} />
           <Route path="/sign-in" element={<SignIn submit={signIn} isLoading={isLoadingUser} />} />
           <Route path="/local-posts"
@@ -92,6 +87,7 @@ function App() {
               localData={data}
               auth={auth}
               loggedIn={loggedIn} />} />
+
         </Routes>
         <Footer />
       </CurrentUserContext.Provider>

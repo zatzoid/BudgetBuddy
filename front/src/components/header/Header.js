@@ -4,6 +4,7 @@ import { NavLink } from 'react-router-dom'
 
 export default function Header(props) {
     const [showMenu, setShowMenu] = useState(false);
+    const [delModalShowed, setDelModalShowed] = useState(false)
 
     function openMenu() {
         if (showMenu) {
@@ -11,6 +12,12 @@ export default function Header(props) {
         }
         setShowMenu(true);
     };
+    function openModalDeleteUser() {
+        if (delModalShowed) {
+            return setDelModalShowed(false)
+        }
+        setDelModalShowed(true);
+    }
 
     return (
         <header className='header' >
@@ -29,15 +36,29 @@ export default function Header(props) {
                 </div>
                 <div className={`header__navbar-wrapper ${showMenu && 'header__navbar-wrapper_active'}`}>
                     <nav className="header__navbar">
-                        <NavLink to='/local-posts' onClick={()=>{openMenu()}} className='header__link'>
+                        <NavLink to='/local-posts' onClick={() => { openMenu() }} className='header__link'>
                             Личные посты</NavLink>
-                        <NavLink to='/present' onClick={()=>{openMenu()}} className='header__link'>
-                           Презентация</NavLink>
+                        <NavLink to='/' onClick={() => { openMenu() }} className='header__link'>
+                            Презентация</NavLink>
 
                     </nav>
                     <button className="header__acc-btn" onClick={() => { props.signOut(); openMenu() }}>Выйти из аккаунта</button>
-                    <button className="header__acc-btn">Удалить аккаунт</button>
+                    {/*  props.deleteUserMe({ email: props.userData.email }); openMenu()  */}
+                    <button className="header__acc-btn" onClick={() => { openModalDeleteUser() }}>Удалить аккаунт</button>
                 </div>
+            </div>
+            <div className={`headerModal ${delModalShowed && 'headerModal_active'}`}>
+                <div className="headerModal__content">
+                    <p className="headerModal__text">
+                        вы удалите аккаунт, все сделанные им записи, и уведомления на почту которые еще не отправлены из базы.
+                    </p>
+                    <div className="headerModal__btn-block">
+                        <button className="headerModal__btn headerModal__btn_ok" onClick={() => { props.deleteUserMe({ email: props.userData.email }); openMenu(); openModalDeleteUser() }}>ладно</button>
+                        <button className="headerModal__btn headerModal__btn_cancel" onClick={() => openModalDeleteUser()}>я передумал</button>
+                    </div>
+
+                </div>
+
             </div>
         </header >
     );

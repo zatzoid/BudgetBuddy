@@ -21,60 +21,105 @@
 
 .present {
     overflow: hidden;
-    min-height: calc(100vh - 120px);
 }
 
 .present-wrapper {
     transition: all .5s;
+    height: calc(100vh - 120px);
+    max-width: var(--width-max);
+    margin: auto;
 }
 
-.present__el {}
-
-.present__el_one {
-    background-color: red;
+.present__el {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px);
+    position: relative;
+    padding: 15px 15px;
+    box-sizing: border-box;
 }
 
-.present__el_two {
-    background-color: green;
+
+.preset__redirect-container {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
 }
+
+.present__redirect-btn {
+    background-color: var(--col-sec);
+    border: 2px solid var(--col-main);
+    padding: 10px 15px;
+    border-radius: 30px;
+    font-weight: 300;
+    text-decoration: none;
+    color: black;
+}
+
+.presetn__description {
+    margin-top: 30px;
+    border-top: 2px solid var(--col-main);
+    border-bottom: 2px solid var(--col-main);
+}
+
+.presetn__description-heading {}
+
+.presetn__description-text {}
+
+.presetn__description-link {
+    color: var(--col-main-dark);
+}
+
+
+.present__el_two {}
 
 .present__el_three {
     background-color: yellow;
 }
 
+.present__el-btn {
+    position: absolute;
+    bottom: 20px;
+    left: calc(35%);
+    opacity: 0.2;
+    width: 100px;
+    height: 40px;
+    border: none;
+
+    background-color: var(--col-clear);
+    background-image: url(../../images/arrow-down-icon.svg);
+    background-size: 30px;
+    background-position: center;
+    background-repeat: no-repeat;
+    animation: jumping 1s infinite alternate;
+    cursor: pointer;
+}
+
+.present__el-btn_top {
+    animation: jumpingTop 1s infinite alternate;
+    top: 15px;
+    left: 80%;
+    cursor: pointer;
+}
+
 @media screen and (max-width: 700px) {
-    .present-wrapper {
-        height: calc(100vh - 120px);
+
+
+    .presetn__description-heading {
+        font-size: 20px;
     }
 
-    .present__el {
-        display: flex;
-        flex-direction: column;
-         height: calc(100vh - 120px);
-        position: relative;
+    .presetn__description-text {
+        font-size: 12px;
     }
 
-    .present__el-btn {
-        position: absolute;
-        bottom: 20px;
-        left: calc(50% - 40px);
-        opacity: 0.2;
-        width: 80px;
-        height: 55px;
-        border: none;
-        background-color: var(--col-clear);
-        background-image: url(../../images/arrow-down-icon.svg);
-        background-size: 30px;
-        background-position: center;
-        background-repeat: repeat-y;
-
-        animation: jumping 1s infinite alternate;
+    .presetn__description-text {
+        margin: 5px 0;
     }
 
-    .present__el-btn_top {
-        animation: jumpingTop 1s infinite alternate;
-
-        top: 15px;
-        left: 80%;
+    .present__description-Phead {
+        margin: 5px 0;
+        font-size: 15px;
     }
+
 }

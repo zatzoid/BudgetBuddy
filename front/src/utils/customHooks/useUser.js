@@ -9,14 +9,12 @@ export const useUser = () => {
     const navigate = useNavigate();
     function _onError(e) {
         setIsloadingUser(false)
-        setUserResMsg(e.message);
+        setUserResMsg(e);
         if (e.statusCode === 400) {
             setUserResMsg(`Введенны не корректные данные в поле ${e.validation.body.keys[0]}`);
             return
         }
 
-
-        console.log(e)
     }
     function _onLoading() {
         setIsloadingUser(true)
@@ -31,13 +29,10 @@ export const useUser = () => {
         _onLoading()
         try {
             const signUpStatus = await userApi.signUp(data);
-            if (signUpStatus.ok) {
-                await auth()
-                _successLoading(signUpStatus.message)
-            } else {
-                _successLoading(signUpStatus.message)
-            }
-
+            console(signUpStatus)
+            await auth();
+            navigate('/local-posts');
+            _successLoading(signUpStatus.message);
         }
         catch (e) {
             _onError(e)
@@ -47,10 +42,10 @@ export const useUser = () => {
         _onLoading()
         try {
             const signUpStatus = await userApi.signIn(data);
-            await auth()
+            await auth();
+            navigate('/local-posts');
             setIsloadingUser(false);
             setUserResMsg({ message: signUpStatus.message, status: true });
-
         }
         catch (e) {
             _onError(e)
@@ -58,33 +53,25 @@ export const useUser = () => {
 
     };
     async function auth() {
-
         try {
             const getUserData = await userApi.getUserMe();
-            if (getUserData.ok) {
-                const userData = await getUserData.json();
-                setUserData(userData.data.userData);
-                setLoggedIn(true);
-                navigate('/local-posts');
-                return { success: true }
-            }
-            else {
-                navigate('/sign-in');
-                return { success: false, message: 'Ошибка авторизации' }
-            }
+            setUserData(getUserData.data.userData);
+            setLoggedIn(true);
+            return { success: true }
         }
         catch (e) {
-            navigate('/sign-in');
             console.log(e)
+            return { success: false }
         }
     };
-   
+
     async function signOut() {
         _onLoading()
         try {
             const signUpStatus = await userApi.signOut();
-            _successLoading( { message: signUpStatus.message, status: true })
-            navigate('/sign-in')
+            _successLoading({ message: signUpStatus.message, status: true });
+            setLoggedIn(false);
+            navigate('/sign-in');
 
         }
         catch (e) {
@@ -95,24 +82,28 @@ export const useUser = () => {
         _onLoading()
         try {
             const newUserData = await userApi.changeProfile(data);
-            const userData = await newUserData.json();
-            if (newUserData.ok) {
-                _successLoading({ message: userData.data.message, status: true });
-                setUserData(userData.data.userData);
-                return { success: true }
-            } else {
-                _onError(userData);
-                return { success: false }
-
-            }
+            _successLoading({ message: newUserData.data.message, status: true });
+            setUserData(newUserData.data.userData);
+            return { success: true }
         }
         catch (e) {
             _onError(e)
             return { success: false }
         }
     }
+    async function deleteUserMe(data) {
+        _onLoading()
+        try {
+            const deleteStatus = await userApi.deleteUserMe(data);
+            _successLoading({ message: deleteStatus.message, status: true });
+            setLoggedIn(false);
+            navigate('./sign-up');
+        } catch (e) {
+            _onError(e)
+        }
+    }
 
 
 
-    return { loggedIn, signUp, signIn, signOut, changeUserInfo, isLoadingUser, userResMsg, userData, auth }
+    return { loggedIn, signUp, signIn, signOut, changeUserInfo, deleteUserMe, isLoadingUser, userResMsg, userData, auth }
 }

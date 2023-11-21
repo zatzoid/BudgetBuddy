@@ -19,18 +19,23 @@ const transporter = nodemailer.createTransport({
 module.exports = async function EmailSender(data, next) {
     // send mail with defined transport object
     try {
-       
+        const date = new Date(data.dateToSend);
+        const currentDay = date.getDate();
+        const currentYear = date.getFullYear();
+        const currentMonth = date.getMonth()
         const { mainData, message, emailTo } = data
         const info = await transporter.sendMail({
             from: `"BudgetBuddy" <${EMAIL_HOST_USER}>`, // sender address
             to: emailTo, // list of receivers
             subject: "Напоминалка от бюджетного чувака", // Subject line
             text: `${mainData.name, mainData.value}`, // plain text body
-            html: `<b>Hello world?</b> 
-            <p>${message || `Напоминаю  об оплате ${mainData.dateToSend}`}</p>
+            html: `
+            <h1>${mainData.kinde === 'profit' ? "Напоминаю о получении дохода" : "Напоминаю о расходе"}<h1>
+            <p>${` ${currentDay}-${currentMonth}-${currentYear}`}</p>
                 <p>${mainData.name} </p>
-                <p>${mainData.value} </p>`, // html body
-
+                <p>${mainData.value} </p>
+               ${message ? `<p>${message} </p> `: ''}
+                `
         });
         console.log("Message sent: %s", info.messageId);
         if (info.messageId) {

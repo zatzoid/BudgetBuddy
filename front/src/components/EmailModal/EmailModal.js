@@ -5,13 +5,18 @@ export default function EmailModal(props) {
     const [dateFocus, setDateFocus] = useState(false);
     const [dateValue, setDateValue] = useState(null);
     const [otherTextValue, setOtherTextValue] = useState(null);
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.getMonth() + 1;
+    const currentDay = currentDate.getDate();
     function submit(e) {
         e.preventDefault()
         const mainData = {
             name: props.emailModalData.data.name,
             value: props.emailModalData.data.value,
             originalCashDataId: props.emailModalData.data.originalCashDataId,
-            postId: props.emailModalData.data.postId
+            postId: props.emailModalData.data.postId,
+            kinde: props.emailModalData.data.kinde
         };
         const message = otherTextValue || null;
         props.submitForm({ date: dateValue, mainData, message });
@@ -36,9 +41,11 @@ export default function EmailModal(props) {
                     <p className="email__label-date">{`${props.emailModalData.reminde.status === null ? 'Выберите дату когда напоминанть' : 'Дата отправки:'}`}</p>
                     <input
                         value={dateValue || ''}
-                        onChange={(e) => { setDateValue(e.target.value) }}
+                        onChange={(e) => { setDateValue(e.target.value)}}
                         onFocus={() => { setDateFocus(true) }}
                         onBlur={() => { setDateFocus(false) }}
+                        min={`${currentYear}-${currentMonth}-${currentDay+ 1}`}
+                        max={'2023-12-31'}
                         required
                         disabled={props.emailModalData.reminde.status !== null}
                         className="email__imput-date"

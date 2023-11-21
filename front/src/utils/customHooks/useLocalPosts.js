@@ -70,8 +70,7 @@ export const useLocalPosts = () => {
             }
         }
         try {
-            const newPostDataJSON = await localPostApi.deleteCashDataLocalPost(uploadData);
-            const { data } = await newPostDataJSON.json();
+            const { data } = await localPostApi.deleteCashDataLocalPost(uploadData);
             refreshPost(data);
         }
         catch (e) { _onError(e) };
@@ -80,7 +79,7 @@ export const useLocalPosts = () => {
     async function patchLPCashData(dataTo) {
         _onLoading()
         const { data } = await localPostApi.patchLPCashData(dataTo);
-        refreshPost( data );
+        refreshPost(data);
     }
     function refreshPost(data) {
         _onLoading()

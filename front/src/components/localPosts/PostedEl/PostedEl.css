@@ -92,11 +92,13 @@
     background-image: url(../../../images/trash.svg);
 }
 
-
-.posted-el__action-btn_statusComplited {
+.posted-el__action-btn_statusComplited{
+    transform: rotate(90deg);
+    background-image: url(../../../images/edit.svg);
+}
+.posted-el__action-btn_statusComplited_active {
     background-image: url(../../../images/check.svg);
 }
-
 .posted-el__action-btn_email {
     background-image: url(../../../images/send-mail.svg);
 }

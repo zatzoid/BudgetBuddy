@@ -51,6 +51,7 @@ class userAPI {
             headers: this._headers,
             credentials: 'include'
         })
+        .then(this._checkError)
     };
     changeProfile(data) {
         const { email, name } = data
@@ -60,13 +61,16 @@ class userAPI {
             body: JSON.stringify({ email, name }),
             credentials: 'include'
         })
+        .then(this._checkError)
     };
-    deleteUserMe() {
+    deleteUserMe(data) {
         return fetch(`${this._link}/user-me`, {
             method: 'DELETE',
             headers: this._headers,
+            body: JSON.stringify({ data }),
             credentials: 'include'
         })
+        .then(this._checkError)
     };
 };
 

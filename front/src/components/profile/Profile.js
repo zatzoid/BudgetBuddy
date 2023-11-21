@@ -3,6 +3,8 @@ import defaultAvatar from '../../images/user.svg';
 import Border from "../border/Border";
 import { CurrentUserContext } from "../Context";
 import useFormWithValidation from "../../utils/customHooks/validator";
+import VisualBtn from '../visualbtn/VisualBtn'
+
 
 export default function Profile(props) {
     const currentUser = React.useContext(CurrentUserContext);
@@ -69,7 +71,11 @@ export default function Profile(props) {
                 <Border onFocus={emailFocus} onError={errors.email} />
                 <p className="profile__error">{errors.email}</p>
             </div>
-            {isEdit && <button className="profile__edit-submit-btn" type="submit" disabled={props.isLoading || !isValid}>V</button>}
+            {isEdit && <button 
+            className="profile__edit-submit-btn"
+             type="submit"
+              disabled={props.isLoading || !isValid}>
+                <VisualBtn loading={props.isLoading} confirm={true}/></button>}
 
         </form>
     )

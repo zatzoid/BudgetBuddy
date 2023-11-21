@@ -19,6 +19,7 @@
 @import url(./components/Present/present.css);
 @import url(./components/showMoreBtn/show-more-btn.css);
 @import url(./components/activeBtnSlider/activeBtnSlider.css);
+@import url(./components/NotFoundPage/notFoundPage.css);
 
 /* шрифты не подключены */
 body {
