@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import useTouchSlider from "../../utils/customHooks/useTouchSlider";
 import { NavLink } from 'react-router-dom'
 
-export default function Present() {
+export default function Present(props) {
     const [translateValue, setTranslateValue] = useState(0);
     const { handleTouchStartY, handleTouchMoveY, handleTouchEndY, sliderStyleY } = useTouchSlider({ slideFunction: scrollPresent, step: translateValue })
 
@@ -27,14 +27,17 @@ export default function Present() {
 
                 <section className="present__el present__el_one">
                     <div className="preset__redirect-container">
-                        <NavLink to={'/sign-up'} className="present__redirect-btn">Регистрация</NavLink>
-                        <NavLink to={'/sign-in'} className="present__redirect-btn">Вход</NavLink>
+                        {!props.loggedIn ? <>
+                            <NavLink to={'/sign-up'} className="present__redirect-btn">Регистрация</NavLink>
+                            <NavLink to={'/sign-in'} className="present__redirect-btn">Вход</NavLink>
+                            </> :
+                            <NavLink to={'/local-posts'} className="present__redirect-btn">Посты</NavLink>}
                     </div>
                     <div className="presetn__description">
                         <h2 className="presetn__description-heading">BudgetBuddy</h2>
                         <p className="presetn__description-text">Это не комерческий, учебный проект, который создавался <a
-                         className="presetn__description-link" href='https://github.com/zatzoid'
-                                target='blank'>мной</a> для оттачивания навыков в реакте и экспрессе</p>
+                            className="presetn__description-link" href='https://github.com/zatzoid'
+                            target='blank'>мной</a> для оттачивания навыков в реакте и экспрессе</p>
                         <p className="presetn__description-text">Функциональная цель проекта - это запись и мониторинг своих финансовых операций (прямо как в банковских приложениях),
                             и отправки тайминговых "напоминалок" на почту о какой либо операции </p>
                         <p className="presetn__description-text">В проекте присутсвует регистрация по почте, почта используеться только для отправки "напоминалок" в выбранную юзером дату,
@@ -70,10 +73,10 @@ export default function Present() {
 
                     <button className="present__el-btn present__el-btn_top"
                         onClick={() => { scrollPresent(-1) }} />
-                   {/*  <button className="present__el-btn" onClick={() => { scrollPresent(1) }} /> */}
+                    {/*  <button className="present__el-btn" onClick={() => { scrollPresent(1) }} /> */}
 
                 </section>
-               {/*  <section className="present__el present__el_three">
+                {/*  <section className="present__el present__el_three">
                     3
                     <button className="present__el-btn present__el-btn_top"
                         onClick={() => { scrollPresent(-1) }} />

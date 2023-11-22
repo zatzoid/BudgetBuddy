@@ -21,7 +21,6 @@
 @import url(./components/activeBtnSlider/activeBtnSlider.css);
 @import url(./components/NotFoundPage/notFoundPage.css);
 
-/* шрифты не подключены */
 body {
     --col-main: #7DCE70;
     --col-main-dark: #4a8d40;
@@ -33,6 +32,9 @@ body {
     --width-max: 770px;
     background-color: var(--col-white);
     font-family: 'Roboto', sans-serif;
+}
+button{
+    color: black;
 }
 .back-img_transport{
     background-image: url(./images/transport.svg);

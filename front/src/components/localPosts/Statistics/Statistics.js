@@ -258,7 +258,7 @@ export default function Statistics(props) {
                                 {Array.isArray(profitCategoryList) && profitCategoryList.map(el => {
                                     return (<li key={el.category} className='stats__category-values-el'>
                                         <span className={`stats__category-values-img back-img_${el.category}`} />
-                                        <p className="stats__category-values-text">{`${Math.ceil((el.value * 100) / props.totalProfit)}%`}</p>
+                                        <p className="stats__category-values-text">{`${((el.value * 100) / props.totalProfit).toFixed(1)}%`}</p>
                                         <p className="stats__category-values-text">{el.value}</p>
                                     </li>)
                                 })}
@@ -279,7 +279,7 @@ export default function Statistics(props) {
                                 {Array.isArray(loseCategoryList) && loseCategoryList.map(el => {
                                     return (<li key={el.category} className='stats__category-values-el'>
                                         <span className={`stats__category-values-img back-img_${el.category}`} />
-                                        <p className="stats__category-values-text">{`${Math.ceil((el.value * 100) / props.totalLose)}%`}</p>
+                                        <p className="stats__category-values-text">{`${((el.value * 100) / props.totalLose).toFixed(1)}%`}</p>
                                         <p className="stats__category-values-text">{el.value}</p>
                                     </li>)
                                 })}

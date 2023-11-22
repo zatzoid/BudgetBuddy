@@ -61,10 +61,10 @@ function App() {
         <Notice resMessage={resMessage} />
         {showEmailModal && <EmailModal submitForm={submitEmailModalWrapper} openEmailModal={openEmailModal} emailModalData={emailModalData} />}
         <Routes>
-          <Route path="/" element={<Present />} />
+          <Route path="/" element={<Present loggedIn={loggedIn}/>} />
           <Route path="/*" element={<NotFoundPage />} />
-          <Route path="/sign-up" element={<SignUp submit={signUp} isLoading={isLoadingUser} />} />
-          <Route path="/sign-in" element={<SignIn submit={signIn} isLoading={isLoadingUser} />} />
+          {!loggedIn &&<Route path="/sign-up" element={<SignUp submit={signUp} isLoading={isLoadingUser} />} />}
+          {!loggedIn &&<Route path="/sign-in" element={<SignIn submit={signIn} isLoading={isLoadingUser} />} />}
           <Route path="/local-posts"
             element={<ProtectedRouteElement
               element={LoaclPosts}
