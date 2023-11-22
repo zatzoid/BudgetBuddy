@@ -1,17 +1,31 @@
 const LocalPost = require('../models/localPost');
+const LPreminderData = require('../models/LPreminderData')
 const PublicPost = require('../models/publicPosts');
 const { NotFoundError } = require('../utils/errorsType');
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+
 
 function successResponse(res, data, statusCode = 200) {
     return res.status(statusCode).send({ data });
 };
-
+module.exports.getUserLocalPosts = async (req, res, next) => {
+    try {
+        const owner = req.user._id;
+        const findedPosts = await LocalPost.find({ owner: owner });
+        if (!findedPosts) {
+            return res.send({ message: 'постов не найдено' }).status(404)
+        }
+        successResponse(res, findedPosts);
+    }
+    catch (err) {
+        return next(err);
+    }
+};
 module.exports.createLocalPost = async (req, res, next) => {
     try {
-        const { cashData, choisenDate } = req.body;
+        const { choisenMonth, choisenYear } = req.body;
         const owner = req.user._id;
-        const newPost = await LocalPost.create({ cashData, choisenDate, owner });
+        const newPost = await LocalPost.create({ choisenMonth, choisenYear, owner });
         return successResponse(res, newPost);
     }
     catch (err) {
@@ -19,62 +33,95 @@ module.exports.createLocalPost = async (req, res, next) => {
     }
 
 };
-/* module.exports.deleteLocalPost = async (req, res, next) => {
-    try {
-        const postId = req.params.postId;
-        const deletedPost = await LocalPost.findOneAndDelete(postId);
-        return successResponse(res, { meessage: `Пост за ${deletedPost.choisenDate} удален` });
-    }
-    catch (err) {
-        return next(err);
-    }
-}; */
 // добавляет что то одно, получает {cashData. ...}
 module.exports.putCashDataLocalPost = async (req, res, next) => {
+
     try {
+
         const postId = req.params.postId;
-        const { profit, lose } = req.body.cashData;
         const postToPut = await LocalPost.findById(postId);
         if (!postToPut) {
             throw new NotFoundError('Пост не найден')
         }
-        if (!lose) {
-            const newProfit = { _id: new mongoose.Types.ObjectId(), ...profit };
+        if (!req.body.cashData.lose) {
+            const profit = req.body.cashData.profit;
+            const newProfit = { _id: new mongoose.Types.ObjectId(), emailStatus: null, postId: postId, category: profit.category, ...profit };
             postToPut.cashData.profit.push(newProfit);
         }
-        if (!profit) {
-            const newLose = { _id: new mongoose.Types.ObjectId(), ...lose };
+        if (!req.body.cashData.profit) {
+            const lose = req.body.cashData.lose;
+            const newLose = { _id: new mongoose.Types.ObjectId(), emailStatus: null, postId: postId, category: lose.category, ...lose };
             postToPut.cashData.lose.push(newLose);
         }
         const updatedPost = await postToPut.save();
-        return successResponse(res, { meessage: `Добавлено поле`, updatedPost });
+        return successResponse(res, { message: `Добавлено поле`, updatedPost });
     }
     catch (err) {
         return next(err);
     }
+
 }
 
 module.exports.deleteCashDataLocalPost = async (req, res, next) => {
     try {
         const postId = req.params.postId;
-        const { profit, lose } = req.body.cashData;
-        const updatedPost = await LocalPost.findById(postId);
-        if (!updatedPost) {
+
+        const postToDel = await LocalPost.findById(postId);
+        if (!postToDel) {
             throw new NotFoundError('Пост не найден');
         }
-        if (!lose) {
-            updatedPost.cashData.profit = updatedPost.cashData.profit.filter(p => p._id.toString() !== profit._id);
+        if (!req.body.cashData.lose) {
+            const { profit } = req.body.cashData;
+            postToDel.cashData.profit = postToDel.cashData.profit.filter(p => p._id.toString() !== profit._id);
+            await LPreminderData.findOneAndDelete({ originalCashDataId: profit._id });
         }
-        if (!profit) {
-            updatedPost.cashData.lose = updatedPost.cashData.lose.filter(l => l._id.toString() !== lose._id);
+        if (!req.body.cashData.profit) {
+            const { lose } = req.body.cashData;
+            postToDel.cashData.lose = postToDel.cashData.lose.filter(l => l._id.toString() !== lose._id);
+            await LPreminderData.findOneAndDelete({ originalCashDataId: lose._id });
         }
-        const savedPost = await updatedPost.save();
-        return successResponse(res, { meessage: `Запись удалена`, savedPost });
+        const updatedPost = await postToDel.save();
+        return successResponse(res, { meessage: `Запись удалена`, updatedPost });
+
     }
     catch (err) {
         return next(err);
     }
 };
+module.exports.patchCashDataLP = async (req, res, next) => {
+    try {
+        const postId = req.params.postId;
+        const postToUpdate = await LocalPost.findById(postId);
+        if (!postToUpdate) {
+            throw new NotFoundError('Пост не найден');
+        }
+        if (!req.body.data.cashData.lose) {
+            const { profit } = req.body.data.cashData;
+            const profitIndex = postToUpdate.cashData.profit.findIndex(p => p._id.toString() === profit._id);
+            if (profitIndex !== -1) {
+                postToUpdate.cashData.profit[profitIndex] = profit;
+            } else {
+                throw new NotFoundError('Profit объект не найден');
+            }
+
+        }
+        if (!req.body.data.cashData.profit) {
+            const { lose } = req.body.data.cashData;
+            const loseIndex = postToUpdate.cashData.lose.findIndex(l => l._id.toString() === lose._id);
+            if (loseIndex !== -1) {
+                postToUpdate.cashData.lose[loseIndex] = lose;
+            } else {
+                throw new NotFoundError('Lose объект не найден');
+            }
+
+        }
+        const updatedPost = await postToUpdate.save();
+        return successResponse(res, { meessage: `Статус обновлен`, updatedPost });
+    }
+    catch (err) {
+        return next(err)
+    }
+}
 
 module.exports.uploadLocalPost = async (req, res, next) => {
     try {

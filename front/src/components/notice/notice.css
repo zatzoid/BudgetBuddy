@@ -1,0 +1,36 @@
+.notice {
+    left: calc(50% - 150px);
+    position: fixed;
+    width: 300px;
+    min-height: 80px;
+    background-color: rgba(46, 46, 46, 0.836);
+    display: flex;
+    justify-content: space-between;
+    padding: 5px;
+    box-sizing: border-box;
+    transform: translateY(-200px);
+    transition: all .5s;
+    z-index: 9;
+
+}
+.notice__active{
+    transform: translateY(0);
+    z-index: 9;
+}
+
+
+.notice__message {
+    color: white;
+    text-align: center;
+    width: 100%;
+    margin: auto;
+
+}
+
+.notice__close {
+    border: none;
+    font-size: 20px;
+    width: 40px;
+    color: white;
+    background-color: var(--col-clear);
+}

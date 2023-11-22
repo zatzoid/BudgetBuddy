@@ -6,12 +6,9 @@ const publicPost = new mongoose.Schema({
         ref: 'User',
         required: true,
     },
-    heading: {
+    description: {
         type: String,
-        required: true,
-        minlength: 2,
-        maxlength: 30,
-        default: 'Название'
+        required: true
     },
     posted: {
         type: Boolean,
@@ -37,9 +34,13 @@ const publicPost = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
-    choisenDate: {
-        type: String,
+    choisenMonth: {
+        type: Number,
         required: true,
+    },
+    choisenYear: {
+        type: Number,
+        required: true
     },
     comments: [
         {

@@ -11,6 +11,7 @@ const localPost = new mongoose.Schema({
         default: false,
         required: true
     },
+
     cashData: {
         profit: [
             {
@@ -18,8 +19,32 @@ const localPost = new mongoose.Schema({
                     type: mongoose.Schema.Types.ObjectId
                     , default: mongoose.Types.ObjectId
                 },
-                type: Object,
-                required: true
+
+                data: {
+                    type: Object,
+                    required: true
+                },
+                reminde: {
+                    status: { type: String, default: null },
+                    data: { type: Object, default: null }
+
+                },
+                postId: {
+                    type: mongoose.Schema.Types.ObjectId
+                },
+                category: {
+                    type: String
+                },
+                statusComplited: {
+                    type: Boolean,
+                    default: false
+                },
+                createdAt: {
+                    type: Date,
+                    default: Date.now,
+                }
+
+
             }
 
         ],
@@ -29,8 +54,32 @@ const localPost = new mongoose.Schema({
                     type: mongoose.Schema.Types.ObjectId
                     , default: mongoose.Types.ObjectId
                 },
-                type: Object,
-                required: true
+
+                data: {
+                    type: Object,
+                    required: true
+                },
+                reminde: {
+                    status: { type: String, default: null },
+                    data: { type: Object, default: null }
+
+                },
+                postId: {
+                    type: mongoose.Schema.Types.ObjectId
+                },
+                category: {
+                    type: String,
+                    default: 'другое'
+                },
+                statusComplited: {
+                    type: Boolean,
+                    default: false
+                },
+                createdAt: {
+                    type: Date,
+                    default: Date.now,
+                }
+
             }
         ]
     },
@@ -38,9 +87,13 @@ const localPost = new mongoose.Schema({
         type: Date,
         default: Date.now,
     },
-    choisenDate: {
-        type: String,
+    choisenMonth: {
+        type: Number,
         required: true,
+    },
+    choisenYear: {
+        type: Number,
+        required: true
     }
 
 }, { versionKey: false });
