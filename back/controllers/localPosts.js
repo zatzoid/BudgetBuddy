@@ -4,6 +4,7 @@ const PublicPost = require('../models/publicPosts');
 const { NotFoundError } = require('../utils/errorsType');
 const mongoose = require('mongoose');
 
+
 function successResponse(res, data, statusCode = 200) {
     return res.status(statusCode).send({ data });
 };
@@ -32,9 +33,9 @@ module.exports.createLocalPost = async (req, res, next) => {
     }
 
 };
-
 // добавляет что то одно, получает {cashData. ...}
 module.exports.putCashDataLocalPost = async (req, res, next) => {
+
     try {
 
         const postId = req.params.postId;
@@ -58,11 +59,13 @@ module.exports.putCashDataLocalPost = async (req, res, next) => {
     catch (err) {
         return next(err);
     }
+
 }
 
 module.exports.deleteCashDataLocalPost = async (req, res, next) => {
     try {
         const postId = req.params.postId;
+
         const postToDel = await LocalPost.findById(postId);
         if (!postToDel) {
             throw new NotFoundError('Пост не найден');
@@ -79,6 +82,7 @@ module.exports.deleteCashDataLocalPost = async (req, res, next) => {
         }
         const updatedPost = await postToDel.save();
         return successResponse(res, { meessage: `Запись удалена`, updatedPost });
+
     }
     catch (err) {
         return next(err);

@@ -19,6 +19,7 @@ const localPost = new mongoose.Schema({
                     type: mongoose.Schema.Types.ObjectId
                     , default: mongoose.Types.ObjectId
                 },
+
                 data: {
                     type: Object,
                     required: true
@@ -43,6 +44,7 @@ const localPost = new mongoose.Schema({
                     default: Date.now,
                 }
 
+
             }
 
         ],
@@ -52,6 +54,7 @@ const localPost = new mongoose.Schema({
                     type: mongoose.Schema.Types.ObjectId
                     , default: mongoose.Types.ObjectId
                 },
+
                 data: {
                     type: Object,
                     required: true
@@ -76,6 +79,7 @@ const localPost = new mongoose.Schema({
                     type: Date,
                     default: Date.now,
                 }
+
             }
         ]
     },
