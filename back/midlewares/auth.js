@@ -4,8 +4,8 @@ const { LoginError } = require('../utils/errorsType');
 
 // добавление id юзера к запросу
 module.exports.Auth = (req, res, next) => {
-  const authorization = req.headers.cookie;
-  if (!authorization || !authorization.startsWith('Bearer=')) {
+  const authorization = req.cookies.Bearer;
+  if (!authorization) {
     return next(new LoginError('требуется авторизация1'));
   }
   const token = authorization.replace('Bearer=', '');

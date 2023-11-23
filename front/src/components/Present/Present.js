@@ -14,6 +14,15 @@ export default function Present(props) {
             setTranslateValue(0)
         }
     }
+    /*   useEffect(() => {
+          const handleScroll = () => scrollPresent(1);
+          if (window.innerWidth > 710) {
+              document.addEventListener('scroll', handleScroll )
+          }
+          return () => {
+              window.removeEventListener('scroll', handleScroll);
+            };
+      }, []) */
     return (
         <div className="present">
             <div className="present-wrapper"
@@ -30,7 +39,7 @@ export default function Present(props) {
                         {!props.loggedIn ? <>
                             <NavLink to={'/sign-up'} className="present__redirect-btn">Регистрация</NavLink>
                             <NavLink to={'/sign-in'} className="present__redirect-btn">Вход</NavLink>
-                            </> :
+                        </> :
                             <NavLink to={'/local-posts'} className="present__redirect-btn">Посты</NavLink>}
                     </div>
                     <div className="presetn__description">
@@ -46,8 +55,7 @@ export default function Present(props) {
                         <p className="presetn__description-text">Так же в проекте используются внутренние "куки" для авторизации, функции удаления аккаунта и логаут удаляют их. </p>
                         <p className="presetn__description-text">Удаление аккаунта. В проекте есть функция для удаления аккаунта и всех следов его прибывания,
                             она удалит как сам аккаунт так и записи созданные через этот аккаунт (в том числе и "напоминалки").</p>
-                        <p className="presetn__description-text">все svg изображения взяты с сайта <a className="presetn__description-link" href="https://www.iconpacks.net/" target="blank" >iconpacks.net</a>.</p>
-
+                      
                     </div>
 
                     <button className="present__el-btn" onClick={() => { scrollPresent(1) }} />
@@ -56,7 +64,7 @@ export default function Present(props) {
                     <div className="presetn__description">
                         <h2 className="presetn__description-heading">Гайд</h2>
                         <h3 className="present__description-Phead">Создание</h3>
-                        <p className="presetn__description-text">По наажтию кнопки "Добавить запись" создает документ в бд с выбранным месяцом и припысывается вашему юзеру.</p>
+                        <p className="presetn__description-text">По нажатию кнопки "Добавить запись" создает документ в бд с выбранным месяцом и припысывается вашему юзеру.</p>
                         <p className="presetn__description-text">Добавить доход/расход - добавляет запись(объект) в массив основного документа </p>
                         <h3 className="present__description-Phead">Действия с записями</h3>
                         <p className="presetn__description-text">После создания записи в выбранном месяце, его можно: удалить, создать уведомление на почту указанную при регистрации и "вычеркнуть"(отметить как выполнено)</p>

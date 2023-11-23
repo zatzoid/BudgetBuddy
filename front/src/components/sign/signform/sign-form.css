@@ -1,3 +1,11 @@
+@keyframes loading {
+    0%{ content: ' ';}
+    1%{ content: '.';}
+    50%{ content: '..';}
+    100%{ content: '...';}
+    
+}
+
 .sign-wrapper {
     min-height: calc(100vh - 120px);
     width: 100%;
@@ -67,16 +75,20 @@
     font-size: 15px;
     height: 17px;
 }
-
-.sign__submit-btn {
+.sign__submit-btn-wrapper{
     width: 100%;
+    border-top: 1px solid var(--col-main);
+    display: flex;
+}
+.sign__submit-btn {
+   margin: auto;
     border: none;
     background-color: var(--col-clear);
     font-size: 20px;
     padding: 8px 0;
-    border-top: 1px solid var(--col-main);
     cursor: pointer;
     transition: all .2s;
+    position: relative;
 }
 
 .sign__submit-btn:active {
@@ -85,6 +97,13 @@
 }
 
 .sign__submit-btn:disabled {
-    opacity: 0.7;
+    opacity: 0.5;
 
+}
+
+.sign__submit-btn_loading::after{
+     position: absolute;
+    left: 105%;
+    content: '';
+    animation: loading 1s infinite;
 }

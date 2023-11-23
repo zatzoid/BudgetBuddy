@@ -29,7 +29,6 @@ export const useUser = () => {
         _onLoading()
         try {
             const signUpStatus = await userApi.signUp(data);
-            console(signUpStatus)
             await auth();
             navigate('/local-posts');
             _successLoading(signUpStatus.message);

@@ -74,12 +74,15 @@ export default function SignForm(props) {
                         </p>
                     </div>}
                 <p className="sign__submit-error-msg"></p>
-                <button
-                    disabled={!isValid || props.isLoading}
-                    type="submit"
-                    className="sign__submit-btn">
-                    {props.signUp ? "Зарегистрироваться" : "Войти"}
-                </button>
+                <div className="sign__submit-btn-wrapper">
+                    <button
+                        disabled={!isValid || props.isLoading}
+                        type="submit"
+                        className={`sign__submit-btn ${props.isLoading && 'sign__submit-btn_loading'}`}>
+                        {props.signUp ? `${!props.isLoading ? "Зарегистрироваться" : 'Регистрация'}` :
+                            `${!props.isLoading ? 'Войти' : 'Вход'}`}
+                    </button>
+                </div>
             </form>
         </div>
     )

@@ -1,4 +1,5 @@
-const CURRENT_LINK = 'http://localhost:3000';
+/* const CURRENT_LINK = 'http://localhost:3000'; */
+const CURRENT_LINK = 'https://api.zatzoid-projects.ru';
 /* const CURRENT_LINK = window.innerWidth < 710 ?'http://192.168.0.15:3000' : 'http://localhost:3000'; */
 
 
