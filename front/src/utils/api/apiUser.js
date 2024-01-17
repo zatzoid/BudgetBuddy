@@ -1,6 +1,7 @@
-/* const CURRENT_LINK = 'http://localhost:3000'; */
-const CURRENT_LINK = 'https://api.zatzoid-projects.ru';
+
 /* const CURRENT_LINK = window.innerWidth < 710 ?'http://192.168.0.15:3000' : 'http://localhost:3000'; */
+
+const CURRENT_LINK = process.env.NODE_ENV !== 'development' ? 'https://api.zatzoid-projects.ru' : 'http://localhost:3000';
 
 
 class userAPI {
@@ -29,6 +30,7 @@ class userAPI {
             .then(this._checkError)
     };
     signIn(data) {
+       
         const { email, password } = data;
         return fetch(`${this._link}/sign-in`, {
             method: 'POST',
@@ -47,6 +49,7 @@ class userAPI {
             .then(this._checkError)
     };
     getUserMe() {
+        console.log(process.env.NODE_ENV)
         return fetch(`${this._link}/user-me`, {
             method: 'GET',
             headers: this._headers,
