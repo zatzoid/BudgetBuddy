@@ -68,7 +68,7 @@ export default function LocalPostForm(props) {
                     className="local-posts__form-input"
                     name="key"
                     type="text"
-                    pattern="^[a-zA-Zа-яА-Я0-9]+$"
+                    pattern="^[a-zA-Zа-яА-Я0-9 ]*$"
                     maxLength={25}
                     minLength={1}
                     onFocus={() => { setFocusKey(true) }}

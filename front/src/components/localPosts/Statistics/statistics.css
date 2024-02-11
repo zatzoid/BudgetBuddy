@@ -29,6 +29,7 @@
 }
 
 .stats__show-stats-btn {
+    cursor: pointer;
     grid-column: 1 / span 2;
     text-align: left;
     border: none;

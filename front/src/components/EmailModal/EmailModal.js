@@ -45,7 +45,6 @@ export default function EmailModal(props) {
                         onFocus={() => { setDateFocus(true) }}
                         onBlur={() => { setDateFocus(false) }}
                         min={`${currentYear}-${currentMonth}-${currentDay+ 1}`}
-                        max={'2023-12-31'}
                         required
                         disabled={props.emailModalData.reminde.status !== null}
                         className="email__imput-date"
