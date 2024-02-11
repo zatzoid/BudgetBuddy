@@ -4,7 +4,9 @@ const allowedCors = [
     'http://localhost:3010',
     'http://192.168.0.15:3010',
     'http://zatzoid-projects.ru',
-    'https://zatzoid-projects.ru'
+    'https://zatzoid-projects.ru',
+    'https://bb.zatzoid-projects.ru',
+    'http://bb.zatzoid-projects.ru'
   ];
   
   const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
