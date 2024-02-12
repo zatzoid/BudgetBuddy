@@ -49,7 +49,6 @@ class userAPI {
             .then(this._checkError)
     };
     getUserMe() {
-        console.log(process.env.NODE_ENV)
         return fetch(`${this._link}/user-me`, {
             method: 'GET',
             headers: this._headers,
