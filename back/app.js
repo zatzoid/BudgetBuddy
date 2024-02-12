@@ -23,6 +23,7 @@ const app = express();
 //https
 app.use(express.json());
 app.use(cookieParser());
+app.set('trust proxy', true);
 app.use(limiter);
 app.use(requestLogger);
 app.use(cors);
