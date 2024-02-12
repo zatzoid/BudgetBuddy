@@ -165,11 +165,12 @@ export default function Statistics(props) {
     }, [props.dataForStatistic]);
     return (
         <>
-            <button className={`stats__show-stats-btn ${statsOpened && 'stats__show-stats-btn__open'}`}
+            <button className={`stats__show-stats-btn `}
                 type="button"
                 onClick={() => { showStats() }}>
                 Статистика
                 <ShowMoreBtn active={statsOpened} />
+                <span className={`stats__show-stats-btn-triangle ${statsOpened && 'stats__show-stats-btn-triangle_open'}`}></span>
             </button>
             <div className={`stats__wrapper ${statsOpened && 'stats__wrapper_opened'}`}>
                 <nav className="stats__heading-btn-block" >

@@ -45,17 +45,24 @@
 }
 
 
-.stats__show-stats-btn__open::after {
-    content: '';
-    width: 20px;
-    height: 20px;
+.stats__show-stats-btn-triangle {
+    width: 22px;
+    height: 22px;
+    right: 9.5px;
     position: absolute;
-    right: 10px;
     bottom: -10px;
-    clip-path: polygon(100% 50%, 50% 0, 0% 50%);
+    clip-path: polygon(50% 0%, 0 50%, 100% 50%);
+    background-color: var(--col-sec);
+    z-index: 3;
+    transform: scale(-1);
+    transition: all .4s;
+}
+.stats__show-stats-btn-triangle_open  {
+    transform: scale(1);
     background-color: var(--col-white);
-    z-index: 1;
-
+    width: 17px;
+    height: 17px;
+    right: 11px;
 }
 
 .stats__heading {
@@ -114,8 +121,10 @@
     font-size: 15px;
     background-color: var(--col-clear);
     border: none;
-
-
+    cursor: pointer;
+}
+.stats__main-nav-el-btn:hover {
+    opacity: 0.7;
 }
 
 .stats__main-nav-border {

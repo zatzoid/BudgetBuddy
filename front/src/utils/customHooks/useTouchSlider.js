@@ -5,7 +5,7 @@ export default function useTouchSlider(data) {
     const [sliderStartX, setSliderStartX] = useState(null);
     const [sliderStartY, setSliderStartY] = useState(null);
     const slideStyle = {
-        transform: `translateX(-${data.step}00%)`
+        transform: `translateX(calc(-${data.step}00% - ${data.step > 0 ? 15 : 0}px))`
     }
     const sliderStyleY = {
         transform: `translateY(-${data.step}00%)`

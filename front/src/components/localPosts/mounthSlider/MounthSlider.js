@@ -6,7 +6,7 @@ export default function MounthSlider(props) {
     const { handleTouchStart, handleTouchMove, handleTouchEnd, slideStyle } = useTouchSlider({step: props.showedPost , slideFunction: props.switchMonth})
  
     return (
-        <div className="slider"
+        <section className="slider"
             onTouchStart={handleTouchStart}
             onTouchMove={handleTouchMove}
             onTouchEnd={handleTouchEnd}
@@ -30,7 +30,7 @@ export default function MounthSlider(props) {
                 <li className="slider__el"><p className="slider__value">{getMonthName(12)}</p></li>
             </ul>
             <button className="slider-btn slider-btn_right" onClick={() => { props.switchMonth(1) }}> </button>
-        </div>
+        </section>
 
     )
 }

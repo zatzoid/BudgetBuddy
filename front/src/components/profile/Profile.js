@@ -36,6 +36,7 @@ export default function Profile(props) {
         catch (e) { console.log(e) }
     }
     return (
+        <section className="profile-wrapper">
 
         <form className="profile" onSubmit={(e) => { handleSubmit(e) }}>
             <img src={defaultAvatar} alt="ava" className="profile__avatar" />
@@ -78,5 +79,6 @@ export default function Profile(props) {
                 <VisualBtn loading={props.isLoading} confirm={true}/></button>}
 
         </form>
+        </section>
     )
 }

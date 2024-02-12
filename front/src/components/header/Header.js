@@ -50,7 +50,7 @@ export default function Header(props) {
             <div className={`headerModal ${delModalShowed && 'headerModal_active'}`}>
                 <div className="headerModal__content">
                     <p className="headerModal__text">
-                        вы удалите аккаунт, все сделанные им записи, и уведомления на почту которые еще не отправлены из базы.
+                        вы удалите из базы: аккаунт, все сделанные им записи, и уведомления на почту которые еще не были отправлены .
                     </p>
                     <div className="headerModal__btn-block">
                         <button className="headerModal__btn headerModal__btn_ok" onClick={() => { props.deleteUserMe({ email: props.userData.email }); openMenu(); openModalDeleteUser() }}>ладно</button>

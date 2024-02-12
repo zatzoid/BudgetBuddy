@@ -19,8 +19,8 @@ export default function LoaclPosts(props) {
     const [showedPostData, setShowedPostData] = useState(null);
     const totalProfit = showedPostData?.cashData.profit.reduce((acc, item) => acc + Object.values(item.data)[0], 0);
     const totalLose = showedPostData?.cashData.lose.reduce((acc, item) => acc + Object.values(item.data)[0], 0);
- /*    const [showDescription, setShowDescription] = useState(false);
-    const [descriptionValue, setDescriptionValue] = useState(null); */
+    /*    const [showDescription, setShowDescription] = useState(false);
+       const [descriptionValue, setDescriptionValue] = useState(null); */
     const [dataForStatistic, setDataForStatistic] = useState(null);
     const [lpContainerStyle, setLpContainerStyle] = useState('local-posts__container');
     const [complitedElStatus, setComplitedElStatus] = useState({ lose: 'showed', profit: 'showed' });
@@ -115,10 +115,10 @@ export default function LoaclPosts(props) {
     }
 
     return (
-        <section className='local-posts'>
+        <main className='local-posts'>
             <Profile changeUserInfo={props.changeUserInfo} isLoading={props.isLoading} />
             <MounthSlider showedPost={showedPost} switchMonth={switchMonth} />
-            <div className="local-posts__wrapper">
+            <section className="local-posts__wrapper">
                 <div className={lpContainerStyle}>
                     {totalProfit + totalLose !== 0 && totalLose !== undefined && totalProfit !== undefined ?
                         <Statistics
@@ -154,68 +154,61 @@ export default function LoaclPosts(props) {
                                 {currentWW < 701 ? <ActuveBtnSlider transformValue={showedCashData} /> : ''}
 
                             </nav>
-                            <section className="lp__list-wrapper" style={slideStyle}
+                            <div className="lp__list-wrapper" style={slideStyle}
                                 onTouchStart={handleTouchStart}
                                 onTouchMove={handleTouchMove}
                                 onTouchEnd={handleTouchEnd}
                                 onMouseDown={handleTouchStart}
                                 onMouseMove={handleTouchMove}
                                 onMouseUp={handleTouchEnd}>
-                                <ul className="local-posts__list">
+                                <div className="local-posts__list-wrapper">
+                                    <LocalPostForm
+                                        complitedElStatus={complitedElStatus}
+                                        LPResMsg={props.LPResMsg}
+                                        isLoadingLP={props.isLoadingLP}
+                                        kinde={'profit'}
+                                        heading={'Добавить доход'}
+                                        submitForm={submitFormPutCashData}
+                                    />
+                                    {totalProfit > 0 && <Sorting
+                                        kinde={'profit'}
+                                        complitedElStatus={complitedElStatus}
+                                        setComplitedElStatusFoo={setComplitedElStatusFoo}
+                                        showedPostData={showedPostData}
+                                        setShowedPostData={setShowedPostDataFoo} />}
 
-                                    <li className="local-posts__posted-el">
-                                        <LocalPostForm
-                                            complitedElStatus={complitedElStatus}
-                                            LPResMsg={props.LPResMsg}
-                                            isLoadingLP={props.isLoadingLP}
-                                            kinde={'profit'}
-                                            heading={'Добавить доход'}
-                                            submitForm={submitFormPutCashData}
-                                        />
+                                    <ul className="local-posts__list">
 
-                                    </li>
-                                    <li className="lp__sort-el">
-                                       { totalProfit > 0 && <Sorting
-                                            kinde={'profit'}
-                                            complitedElStatus={complitedElStatus}
-                                            setComplitedElStatusFoo={setComplitedElStatusFoo}
-                                            showedPostData={showedPostData}
-                                            setShowedPostData={setShowedPostDataFoo} />}
-                                    </li>
-                                    {Array.isArray(showedPostData?.cashData.profit) && showedPostData?.cashData.profit.map((item) => (
-                                        <PostedEl
-                                            complitedElStatus={complitedElStatus}
-                                            patchLPCashData={props.patchLPCashData}
-                                            emailModalLodaing={props.emailModalLodaing}
-                                            openEmailModal={openEmailModal}
-                                            isLoadingLP={props.isLoadingLP}
-                                            deleteCashDataLP={deleteCashDataLP}
-                                            item={item}
-                                            key={item._id}
-                                            kinde={'profit'}
-                                            keyName={Object.keys(item.data)[0]}
-                                            value={Object.values(item.data)[0]} />
-                                    ))}
+                                        {Array.isArray(showedPostData?.cashData.profit) && showedPostData?.cashData.profit.map((item) => (
+                                            <PostedEl
+                                                complitedElStatus={complitedElStatus}
+                                                patchLPCashData={props.patchLPCashData}
+                                                emailModalLodaing={props.emailModalLodaing}
+                                                openEmailModal={openEmailModal}
+                                                isLoadingLP={props.isLoadingLP}
+                                                deleteCashDataLP={deleteCashDataLP}
+                                                item={item}
+                                                key={item._id}
+                                                kinde={'profit'}
+                                                keyName={Object.keys(item.data)[0]}
+                                                value={Object.values(item.data)[0]} />
+                                        ))}
 
-                                </ul>
-                                <ul className="local-posts__list">
-                                    <li className="local-posts__posted-el">
-                                        <LocalPostForm
+                                    </ul>
+                                </div>
+                                <div className="local-posts__list-wrapper">
+                                <LocalPostForm
                                             LPResMsg={props.LPResMsg}
                                             isLoadingLP={props.isLoadingLP}
                                             kinde={'lose'}
                                             heading={'Добавить расход'}
                                             submitForm={submitFormPutCashData} />
-
-                                    </li>
-                                    <li className="lp__sort-el">
-                                        { totalLose > 0 && <Sorting
+                                             {totalLose > 0 && <Sorting
                                             setComplitedElStatusFoo={setComplitedElStatusFoo}
                                             kinde={'lose'}
                                             showedPostData={showedPostData}
                                             setShowedPostData={setShowedPostDataFoo} />}
-
-                                    </li>
+                                <ul className="local-posts__list">
                                     {Array.isArray(showedPostData?.cashData.lose) && showedPostData?.cashData.lose.map((item) => (
                                         <PostedEl
                                             complitedElStatus={complitedElStatus}
@@ -232,7 +225,8 @@ export default function LoaclPosts(props) {
                                     ))}
 
                                 </ul>
-                            </section>
+                                </div>
+                            </div>
                             <div className='local-posts__public-btn-container'  >
                                 {/* {showDescription && <div className="local-posts__public-add-description" >
                                     <textarea
@@ -258,7 +252,7 @@ export default function LoaclPosts(props) {
                         </>}
                 </div>
 
-            </div>
-        </section>
+            </section>
+        </main>
     )
 }

@@ -50,14 +50,33 @@
 .lp__list-wrapper {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.local-posts__list-wrapper {
+    height: 100%;
+    padding: 0 5px;
+    margin: 10px 0 60px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.local-posts__list-wrapper::after {
+    position: absolute;
+    top: 0;
+    right: -7.5px;
+    content: '';
+    width: 2px;
+    background-color: var(--col-sec);
+    height: 100%;
 }
 
 .local-posts__list {
     list-style: none;
-    padding: 5px;
-    margin: 0 0 60px;
+    padding: 0;
+    margin: 0;
     height: 100%;
-    border-right: 2px solid var(--col-sec);
+
 }
 
 .local-posts__list:last-of-type {
@@ -89,7 +108,7 @@
 }
 
 .lp__list-nav-btn {
- 
+
     background-color: var(--col-clear);
     border: none;
     padding: 0;
@@ -257,11 +276,13 @@
 
     }
 
-    .local-posts__list {
+    .local-posts__list-wrapper {
         border: none;
         box-sizing: border-box;
         width: calc(100vw - 30px);
     }
+
+
 
     .lp__list-nav {
         margin-top: 15px;

@@ -156,6 +156,10 @@
     letter-spacing: 1px;
     margin-left: 8px;
     gap: 5px;
+    cursor: pointer;
+}
+.lp__form-type-label:hover{
+    opacity: 0.8;
 }
 
 .lp__form-type-input {
@@ -184,31 +188,9 @@
 
 
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 700px) {
 
-    /*  .lp__form-heading-type {
-        font-size: 13px;
+    .local-posts__form{
+        padding: 0;
     }
-
-
-    .lp__form-type-label {
-        margin-top: 8px;
-        padding-top: 0;
-        flex-direction: row;
-        font-size: 13px;
-        height: 8vw;
-        padding-top: 3vw;
-    }
-
-    .lp__form-type-input-btn {
-        left: 0;
-        max-height: 100%;
-        bottom: 0;
-        max-width: 20%;
-    }
-
-    .lp__form-type-input {
-        position: absolute;
-    } */
-
 }

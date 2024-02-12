@@ -74,7 +74,11 @@
     background-color: var(--col-clear);
     border: none;
     z-index: 10;
+    cursor: pointer;
 
+}
+.haeder__navbar-btn:hover{
+    opacity: 0.7;
 }
 
 .header__navbar-btn-line {
@@ -123,6 +127,10 @@
     padding: 5px;
     border-radius: 10px;
     transition: all .1s;
+    cursor: pointer;
+}
+.header__link:hover{
+    opacity: 0.7;
 }
 
 .header__link:active {
@@ -137,6 +145,10 @@
     border-bottom: 2px dashed var(--col-main);
     background-color: var(--col-clear);
     transition: all .1s;
+    cursor: pointer;
+}
+.header__acc-btn:hover{
+    opacity: 0.7;
 }
 
 .header__acc-btn:active {
@@ -177,6 +189,7 @@
 .headerModal__btn-block {
     display: flex;
     justify-content: space-between;
+    
 }
 
 .headerModal__btn {
@@ -185,7 +198,10 @@
     font-size: 15px;
     letter-spacing: 1px;
     font-weight: 300;
-
+    cursor: pointer;
+}
+.headerModal__btn::after{
+    opacity: 0.7;
 }
 
 .headerModal__btn_ok {
