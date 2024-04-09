@@ -18,10 +18,40 @@ const LPreminderData = new mongoose.Schema({
         default: null
     },
     mainData: {
-        type: Object
-    },
-    postId: { type: mongoose.Schema.Types.ObjectId },
-    originalCashDataId: { type: mongoose.Schema.Types.ObjectId }
+        _id: {
+            type: mongoose.Schema.Types.ObjectId
+            , default: mongoose.Types.ObjectId
+        },
+
+        data: {
+            type: Object,
+            required: true
+        },
+        reminde: {
+            status: { type: String, default: null },
+            data: { type: Object, default: null }
+
+        },
+        postId: {
+            type: mongoose.Schema.Types.ObjectId
+        },
+        category: {
+            type: String,
+            default: 'другое'
+        },
+        statusComplited: {
+            type: Boolean,
+            default: false
+        },
+        createdAt: {
+            type: Date,
+            default: Date.now,
+        }
+
+
+
+    }
+   
 }, { versionKey: false });
 
 

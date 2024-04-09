@@ -6,10 +6,19 @@ const LPreminderData = require('../models/LPreminderData')
 const { getJWT } = require('../utils/getJwt');
 const { NotFoundError, RegistrError } = require('../utils/errorsType');
 
-function successResponse(res, data, statusCode = 200) {
-    return res.status(statusCode).send({ data });
-}
+function successResponse(res, data) {
+    const statusCode = data.metaData.statusCode ? data.metaData.statusCode : 200
+    if (!data.metaData.statusCode) {
+        data.metaData.statusCode
+        data.metaData.statusCode = statusCode
+    }
+    if (!data.content) {
+        data.content
+        data.content = null
+    }
 
+    return res.status(statusCode).send(data);
+};
 module.exports.signUp = async (req, res, next) => {
     try {
         const {
@@ -30,7 +39,7 @@ module.exports.signUp = async (req, res, next) => {
                 maxAge: 3600000 * 24 * 7,
                 httpOnly: true,
             },
-        ).status(201).send({ message: 'Вы успешно зарегистрировались' });
+        ).status(201).send({ metaData: { message: 'Вы успешно зарегистрировались' } });
     } catch (err) {
         if (err.code === 11000) {
             return next(new RegistrError('почта уже зарегистрирована'));
@@ -52,12 +61,12 @@ module.exports.signIn = async (req, res, next) => {
                 maxAge: 3600000 * 24 * 7,
                 httpOnly: true,
             },
-        ).send({ message: 'Вход в аккаунт выполнен успешно' });
+        ).send({ metaData: { message: 'Вход в аккаунт выполнен успешно' } });
     } catch (err) { return next(err); }
 };
 module.exports.signOut = async (req, res, next) => {
     try {
-        return res.clearCookie('Bearer').status(200).send({ message: 'Выход из аккаунта выполнен успешно' });
+        return res.clearCookie('Bearer').status(200).send({ metaData: { message: 'Выход из аккаунта выполнен успешно' } });
     } catch (err) { return next(err); }
 };
 module.exports.getUserMe = async (req, res, next) => {
@@ -66,7 +75,7 @@ module.exports.getUserMe = async (req, res, next) => {
         if (!userData) {
             throw new NotFoundError('user not found');
         }
-        return successResponse(res, { userData, message: 'Авторизация прошла успешно' });
+        return successResponse(res, { metaData: { message: 'Авторизация прошла успешно' }, content: userData });
     }
     catch (err) { return next(err); }
 }
@@ -81,7 +90,7 @@ module.exports.changeProfile = async (req, res, next) => {
         if (!userData) {
             throw new NotFoundError('user not found');
         }
-        return successResponse(res, { userData, message: 'Данные профиля успешно изменены' });
+        return successResponse(res, { metaData: { message: 'Данные профиля успешно изменены' }, content: userData });
     } catch (err) {
         if (err.code === 11000) {
             return next(new RegistrError('почта уже зарегистрирована'));
@@ -98,7 +107,7 @@ module.exports.deleteUserMe = async (req, res, next) => {
         if (!user) {
             throw new NotFoundError('user not found');
         }
-        return res.clearCookie('Bearer').status(200).send({ message: `Аккаунт успешно удален.` });
+        return res.clearCookie('Bearer').status(200).send({ metaData: { message: `Аккаунт успешно удален.` } });
     } catch (err) {
         return next(err);
     }

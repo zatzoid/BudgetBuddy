@@ -5,8 +5,17 @@ const { NotFoundError } = require('../utils/errorsType');
 const mongoose = require('mongoose');
 
 
-function successResponse(res, data, statusCode = 200) {
-    return res.status(statusCode).send({ data });
+function successResponse(res, data) {
+    const statusCode = data.metaData.statusCode ? data.metaData.statusCode : 200
+    if (!data.metaData.statusCode) {
+        data.metaData.statusCode
+        data.metaData.statusCode = statusCode
+    }
+    if (!data.content) {
+        data.content
+        data.content = null
+    }
+    return res.status(statusCode).send(data);
 };
 module.exports.getUserLocalPosts = async (req, res, next) => {
     try {
@@ -15,7 +24,7 @@ module.exports.getUserLocalPosts = async (req, res, next) => {
         if (!findedPosts) {
             return res.send({ message: 'постов не найдено' }).status(404)
         }
-        successResponse(res, findedPosts);
+        successResponse(res, { metaData: { message: `загружено ${findedPosts.length} постов` }, content: findedPosts });
     }
     catch (err) {
         return next(err);
@@ -26,7 +35,7 @@ module.exports.createLocalPost = async (req, res, next) => {
         const { choisenMonth, choisenYear } = req.body;
         const owner = req.user._id;
         const newPost = await LocalPost.create({ choisenMonth, choisenYear, owner });
-        return successResponse(res, newPost);
+        return successResponse(res, { metaData: { message: `Создан пост. Месяц: ${choisenMonth}. Год: ${choisenYear}`, statusCode: 201 }, content: newPost });
     }
     catch (err) {
         return next(err);
@@ -54,7 +63,7 @@ module.exports.putCashDataLocalPost = async (req, res, next) => {
             postToPut.cashData.lose.push(newLose);
         }
         const updatedPost = await postToPut.save();
-        return successResponse(res, { message: `Добавлено поле`, updatedPost });
+        return successResponse(res, { metaData: { message: `Добавлено поле`, statusCode: 201 }, content: updatedPost });
     }
     catch (err) {
         return next(err);
@@ -65,7 +74,6 @@ module.exports.putCashDataLocalPost = async (req, res, next) => {
 module.exports.deleteCashDataLocalPost = async (req, res, next) => {
     try {
         const postId = req.params.postId;
-
         const postToDel = await LocalPost.findById(postId);
         if (!postToDel) {
             throw new NotFoundError('Пост не найден');
@@ -81,7 +89,7 @@ module.exports.deleteCashDataLocalPost = async (req, res, next) => {
             await LPreminderData.findOneAndDelete({ originalCashDataId: lose._id });
         }
         const updatedPost = await postToDel.save();
-        return successResponse(res, { meessage: `Запись удалена`, updatedPost });
+        return successResponse(res, { metaData: { meessage: `Запись удалена`, statusCode: 201 }, content: updatedPost });
 
     }
     catch (err) {
@@ -116,13 +124,13 @@ module.exports.patchCashDataLP = async (req, res, next) => {
 
         }
         const updatedPost = await postToUpdate.save();
-        return successResponse(res, { meessage: `Статус обновлен`, updatedPost });
+        return successResponse(res, { metaData: { meessage: `Статус обновлен`, statusCode: 201 }, content: updatedPost });
     }
     catch (err) {
         return next(err)
     }
 }
-
+//не нужно
 module.exports.uploadLocalPost = async (req, res, next) => {
     try {
         const postId = req.params.postId;

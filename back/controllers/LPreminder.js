@@ -6,11 +6,11 @@ module.exports.createEmailDataToSend = async (req, res, next) => {
         console.log(req.body)
         const { date, mainData, message, emailTo } = req.body.data;
         const dateToSend = date;
-        const { originalCashDataId, postId } = mainData;
-        const dataReminder = await LPreminderData.create({ dateToSend, mainData: { name: mainData.name, value: mainData.value, kinde: mainData.kinde }, message, emailTo, originalCashDataId, postId });
+        const { _id, postId } = mainData;
+        const dataReminder = await LPreminderData.create({ dateToSend, mainData, message, emailTo });
         const updatedPost = await localPost.findOne({ _id: postId });
         if (updatedPost) {
-            const targetElementId = originalCashDataId;
+            const targetElementId = _id;
             const cashData = updatedPost.cashData;
             const profitIndex = cashData.profit.findIndex(
                 (profitElement) => profitElement._id.toString() === targetElementId);
@@ -28,7 +28,7 @@ module.exports.createEmailDataToSend = async (req, res, next) => {
 
             await updatedPost.save();
         }
-        return res.status(200).send({ message: `Писмьо придет на почту ${emailTo}, ${dateToSend} в 1:00 по МСК`, updatedPost })
+        return res.status(200).send({ metaData: { message: `Писмьо придет на почту ${emailTo}, ${dateToSend} в 1:00 по МСК`, statusCode: 200 }, content: updatedPost })
     }
     catch (e) { return next(e) }
 }
