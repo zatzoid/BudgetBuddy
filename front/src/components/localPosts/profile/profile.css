@@ -37,11 +37,21 @@
 
 
 .profile__input {
-    background-color: var(--col-clear);
+    background-color: transparent;
     border: none;
     width: 100%;
 
 }
+
+
+.profile__input:-webkit-autofill,
+.profile__input:-webkit-autofill:hover, 
+.profile__input:-webkit-autofill:focus
+{
+    -webkit-box-shadow: 0 0 0px 1000px var(--col-sec) inset;
+    border: none;
+}
+
 
 .profile__input:focus {
     outline: none;
@@ -54,7 +64,7 @@
     width: 30px;
     height: 30px;
     transform: rotate(90deg);
-    background-image: url(../../images/edit.svg);
+    background-image: url(../../../images/edit.svg);
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
@@ -66,7 +76,7 @@
 }
 
 .profile__edit_active {
-    background-image: url(../../images/x.svg);
+    background-image: url(../../../images/x.svg);
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;

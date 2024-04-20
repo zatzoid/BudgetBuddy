@@ -4,10 +4,10 @@ import { CashData, EmailModalParams, LocalPost, MetaData } from "../types";
 
 interface callBack {
     callBack: (res: MetaData, data: LocalPost) => void
+    callBackResMsg: (data: MetaData) => void
 }
 
 export const useEmailModal = (data: callBack) => {
-
 
     const [emailModalData, setEmailModalData] = useState<CashData | null>(null);
     const [emailModalLodaing, setEmailModalLoading] = useState<boolean>(false);
@@ -23,6 +23,7 @@ export const useEmailModal = (data: callBack) => {
         catch (e) {
             setEmailModalLoading(false);
             console.log(e)
+            data.callBackResMsg({message: 'Эта функция доступна только в онлайн режиме', statusCode: 405})
             return { data: { message: 'ошибка' }, statusCode: 500 }
         }
 

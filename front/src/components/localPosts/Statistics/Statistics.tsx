@@ -1,29 +1,30 @@
-import{ useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
 /* import type { ChartData, ChartOptions } from 'chart.js'; */
 import translateCategory from "../../../utils/translateCategory";
-import ShowMoreBtn from "../../showMoreBtn/ShowMoreBtn";
+import ShowMoreBtn from "../../ui/showMoreBtn/ShowMoreBtn";
 import useTouchSlider from "../../../utils/customHooks/useTouchSlider";
-import ActuveBtnSlider from "../../activeBtnSlider/ActiveBtnSlider";
+import ActuveBtnSlider from "../../ui/activeBtnSlider/ActiveBtnSlider";
 import { CashData, LocalPost } from "../../../utils/types";
+import { CurrentContext } from "../../Context";
 interface chartData {
     labels: string[], datasets: [{ data: number[], backgroundColor: string[] }]
 }
 interface props {
     currentWW: number
-    previousLocalPost: LocalPost | null
+    localPost: { current: LocalPost | null, prev: LocalPost | null }
     totalLose: number
     totalProfit: number
-    currentLocalPost: LocalPost
 }
 
 type valuesByCategory = { category: string; value: number }[] | null;
 
 
 export default function Statistics(props: props) {
+    const { appSettings } = useContext(CurrentContext)
     const [dataForChart, setDataForChart] = useState<chartData | null>(null);
-    const [statsOpened, setStatsOpened] = useState<boolean>(false)
+    const [statsOpened, setStatsOpened] = useState<boolean>(appSettings.statsMustOpen)
     const [currentStats, setCurrentStats] = useState<string>('category');
 
     const [profitCategoryList, setProfitCategoryList] = useState<valuesByCategory>(null);
@@ -34,8 +35,8 @@ export default function Statistics(props: props) {
 
     const [profitComplitedTotal, setProfitComplitedTotal] = useState<number | null>(null);
     const [loseComplitedTotal, setLoseComplitedTotal] = useState<number | null>(null);
-    const previousTotalProfit = props.previousLocalPost?.cashData.profit.reduce((acc, item) => acc + Object.values(item.data)[0], 0) || 0
-    const previousTotalLose = props.previousLocalPost?.cashData.lose.reduce((acc, item) => acc + Object.values(item.data)[0], 0) || 0
+    const previousTotalProfit = props.localPost.prev?.cashData.profit.reduce((acc, item) => acc + Object.values(item.data)[0], 0) || 0
+    const previousTotalLose = props.localPost.prev?.cashData.lose.reduce((acc, item) => acc + Object.values(item.data)[0], 0) || 0
 
 
     const [showedStatsEl, setShowedStatsEl] = useState(0);
@@ -75,8 +76,8 @@ export default function Statistics(props: props) {
         }
     }
     function getStatsValues(data: { kinde: string }) {
-        const { cashData } = props.currentLocalPost;
-        const cashDataPrev = props?.previousLocalPost || null;
+        const { cashData } = (props.localPost.current as LocalPost);
+        const cashDataPrev = props?.localPost.prev || null;
         const currentList = createStatsValues({ kinde: data.kinde, obj: cashData })
         const previousList = createStatsValues({ kinde: data.kinde, obj: cashDataPrev?.cashData || null });
 
@@ -156,14 +157,14 @@ export default function Statistics(props: props) {
     }
 
     function predictComplitedData() {
-        const profitList = props.currentLocalPost.cashData.profit.filter(el => el.statusComplited === true);
+        const profitList = (props.localPost.current as LocalPost).cashData.profit.filter(el => el.statusComplited === true);
         if (profitList.length > 0) {
             const profitValues = profitList.reduce((acc, val) => acc + Number(Object.values(val.data)), 0);
             setProfitComplitedTotal(profitValues)
         } else {
             setProfitComplitedTotal(null)
         }
-        const loseList = props.currentLocalPost.cashData.lose.filter(el => el.statusComplited === true);
+        const loseList = (props.localPost.current as LocalPost).cashData.lose.filter(el => el.statusComplited === true);
         if (loseList.length > 0) {
             const loseValues = loseList.reduce((acc, val) => acc + Number(Object.values(val.data)), 0);
             setLoseComplitedTotal(loseValues);
@@ -191,14 +192,14 @@ export default function Statistics(props: props) {
     }
 
     useEffect(() => {
-        if (props.currentLocalPost !== null) {
-            chartPieData(props.currentLocalPost)
+        if (props.localPost.current !== null) {
+            chartPieData(props.localPost.current)
             getStatsValues({ kinde: 'profit' });
             getStatsValues({ kinde: 'lose' });
             predictComplitedData()
         }
 
-    }, [props.currentLocalPost]);
+    }, [props.localPost.current]);
     return (
         <>
             <button className={`stats__show-stats-btn `}
@@ -224,8 +225,8 @@ export default function Statistics(props: props) {
                     <div className="stats__el stats__chart" >
                         {dataForChart !== null && <div className="stats__chart-el">
                             <Pie
-                               /*  height={150}
-                                width={150} */
+                                /*  height={150}
+                                 width={150} */
                                 data={dataForChart}
                                 options={{
                                     plugins: {
@@ -242,9 +243,9 @@ export default function Statistics(props: props) {
                         <div className="stats__predict">
                             {props.totalProfit && props.totalLose ? <><p className="stats__predict-heding">Предварительный прогноз:</p>
                                 {props.totalProfit > props.totalLose && <p className="stats__predict-value stats__predict-value_ok">{
-                                    ` вы сэкономили: ${props.totalProfit - props.totalLose} +${Math.ceil((props.totalProfit / props.totalLose) * 100 - 100)}%`}</p>}
+                                    ` вы сэкономили: ${props.totalProfit - props.totalLose}₽ +${Math.ceil((props.totalProfit / props.totalLose) * 100 - 100)}%`}</p>}
                                 {props.totalProfit < props.totalLose && <p className="stats__predict-value stats__predict-value_fault"> {
-                                    `вы в минусе: ${props.totalLose - props.totalProfit} ${Math.ceil((props.totalProfit / props.totalLose) * 100 - 100)}%`} </p>}
+                                    `вы в минусе: ${props.totalLose - props.totalProfit}₽ ${Math.ceil((props.totalProfit / props.totalLose) * 100 - 100)}%`} </p>}
                                 {props.totalProfit === props.totalLose && <p className="stats__predict-value stats__predict-value_ok"> Идеально</p>}</> : ''}
                             <div className="stats__fact">
                                 {profitComplitedTotal && <>

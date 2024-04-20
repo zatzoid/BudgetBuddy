@@ -1,7 +1,7 @@
 import React, { FormEvent, useEffect, useState } from "react";
-import Border from "../border/Border";
-import { CashData, EmailModalParams } from "../../utils/types";
-import { CurrentUserContext } from "../Context";
+import Border from "../../ui/border/Border";
+import { CashData, EmailModalParams } from "../../../utils/types";
+import { CurrentContext } from "../../Context";
 interface props {
     submitForm: (data: EmailModalParams) => void
     openEmailModal: (data: CashData | null) => void
@@ -9,7 +9,7 @@ interface props {
 }
 
 export default function EmailModal(props: props) {
-    const currentUser = React.useContext(CurrentUserContext);
+    const {userData} = React.useContext(CurrentContext);
     const [dateFocus, setDateFocus] = useState<boolean>(false);
     const [dateValue, setDateValue] = useState<string>('');
     const [otherTextValue, setOtherTextValue] = useState<string>('Просто напомнить');
@@ -26,7 +26,7 @@ export default function EmailModal(props: props) {
             date: dateValue,
             mainData: (cashData as CashData),
             message: message,
-            emailTo: (currentUser?.email as string)
+            emailTo: (userData?.email as string)
         });
         props.openEmailModal(null)
     }

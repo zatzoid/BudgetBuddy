@@ -1,8 +1,8 @@
-import  { useEffect, useState } from "react";
-import VisualBtn from "../../visualbtn/VisualBtn";
+import { useState } from "react";
+import VisualBtn from "../../ui/visualbtn/VisualBtn";
 import { CashData, CashDataPatch } from "../../../utils/types";
 interface props {
-    showComplitedPosts: { lose: string, profit: string }
+    hidenComplitedPost: { lose: string, profit: string }
     patchLPCashData: (data: CashDataPatch) => void
     emailModalLodaing: boolean
     openEmailModal: (data: CashData) => void
@@ -16,51 +16,54 @@ interface props {
 
 export default function PostedEl(props: props) {
     const [actionShowed, setActionShowed] = useState(false);
-    const [currentDateString, setCurrentDateString] = useState<string>('');
-    const date = new Date(props.item.createdAt);
-    const day = date.getDate();
-    const month = date.getMonth() + 1;
-    const year = date.getFullYear();
-    const hour = date.getHours();
-    const minutes = date.getMinutes();
+
     const itemName = Object.keys(props.item.data)[0];
     const itemValue = Number(Object.values(props.item.data)[0])
 
 
     function changeStatusComplited() {
-        const item = props.item;
+
+        const item = { ...props.item };
         item.statusComplited = !item.statusComplited;
         const cashData = { [props.kinde]: item };
 
-
         props.patchLPCashData({ cashData });
-        setActionShowed(!actionShowed)
+        setActionShowed(!actionShowed);
     }
     function deleteCashDataLP() {
         const item = props.item;
         const cashData = { [props.kinde]: item };
         props.deleteCashDataLP({ cashData });
     }
-    useEffect(() => {
+
+    function getCreatedDate(createdAt: Date): string {
+
+        //today
         const currentDate = new Date();
         const currentDay = currentDate.getDate();
         const previousDay = currentDate.getDate() - 1;
         const currentMonth = currentDate.getMonth() + 1;
         const currentYear = currentDate.getFullYear();
-        function checkToday() {
-            if (currentDay === day && currentMonth === month && currentYear === year) {
-                setCurrentDateString('Сегодня')
-            } else if (previousDay === day && currentMonth === month && currentYear === year) {
-                setCurrentDateString('Вчера')
-            }
+        //createdAt
+        const date = new Date(createdAt);
+        const day = date.getDate().toFixed(0).padStart(2, '0')
+        const month = (date.getMonth() + 1).toFixed(0).padStart(2, '0')
+        const year = date.getFullYear();
+        const hour = date.getHours().toFixed(0).padStart(2, '0')
+        const minutes = date.getMinutes().toFixed(0).padStart(2, '0')
+
+        if (currentDay === date.getDate() && currentMonth === date.getMonth() + 1 && currentYear === year) {
+            return 'Добавлено сегодня'
+        } else if (previousDay === date.getDate() && currentMonth === date.getMonth() + 1 && currentYear === year) {
+            return 'Добавлено вчера'
         }
-        checkToday()
-    }, [])
+        return `Добавлено ${day}-${month}-${year} в ${hour}:${minutes}`
+    }
 
     return (
         //props.item.statusComplited &&
         <li
-            style={{ display: props.item.statusComplited ? props.showComplitedPosts[props.kinde]: "block" }}
+            style={{ display: props.item.statusComplited ? props.hidenComplitedPost[props.kinde] : "block" }}
             className='posted-el' >
             <div className={`posted-el__action ${actionShowed && 'posted-el__action_active'}`}>
                 <button
@@ -98,8 +101,7 @@ export default function PostedEl(props: props) {
                 </button>
                 <p className="posted-el-value posted-el-value_value">{itemValue}</p>
                 <p className="posted-el__date">
-                    {currentDateString.length > 2 ? `Добавлено ${currentDateString}` :
-                        `Добавлено ${day}-${month}-${year} в ${hour}:${minutes > 9 ? minutes : `0${minutes}`}`}
+                    {getCreatedDate(props.item.createdAt)}
                 </p>
             </div>
 

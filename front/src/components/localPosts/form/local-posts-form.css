@@ -49,12 +49,14 @@
 .local-posts__form-input:focus {
     outline: none;
 }
-.lp__form-input-err-msg{
+
+.lp__form-input-err-msg {
     color: var(--col-red);
     font-size: 10px;
-    height: 12px;
+    min-height: 12px;
     display: block;
 }
+
 .local-posts__from-btn-wrapper {
     display: flex;
     justify-content: space-around;
@@ -63,43 +65,64 @@
 
 .local-posts__from-btn {
     cursor: pointer;
-    padding: 0;
+    padding: 5px 20px;
+    box-sizing: content-box;
     margin-top: 5px;
     width: 30px;
     height: 30px;
     border: none;
     background-color: var(--col-clear);
     position: relative;
-
-
+    border-radius: 20px;
+    position: relative;
+    overflow: hidden;
 }
 
 .local-posts__from-btn::after {
-    content: '';
     position: absolute;
-    width: 100px;
-    height: 35px;
+    content: '';
+    width: 200%;
+    height: 200%;
     top: 0;
-    left: -35px;
+    left: 0;
     z-index: -1;
-    background-color: var(--col-sec);
-    border-radius: 20px;
+    transition: all .5s;
+    transform: scale(0);
+    background-color: red;
+    border-radius: 50%;
 }
 
-.local-posts__from-btn:last-of-type::after {
-    opacity: 0.3;
-    background-color: var(--col-red);
+.local-posts__from-btn:hover::after, .local-posts__from-btn:focus::after {
+    transform: scale(2);
+    outline: none;
 }
+.local-posts__from-btn:disabled  {
+    opacity: 0.5;
+}
+
+.local-posts__from-btn_sbmt::after{
+    background-color: var(--col-sec);
+}
+.local-posts__from-btn_reset::after{
+    background-color: var(--col-red);
+    opacity: 0.5;
+}
+
+
+
 
 .local-posts__from-btn:disabled {
     opacity: 0.5;
 }
 
-.local-posts__from-btn_reset {
-    padding-top: 2px;
-    box-sizing: content-box;
-}
 
+.lp__form-text{
+    margin: 0;
+    margin-bottom: 5px;
+   
+    font-size: 15px;
+    font-weight: 300;
+}
 .lp__form-type-btn {
     cursor: pointer;
     position: relative;
@@ -158,7 +181,8 @@
     gap: 5px;
     cursor: pointer;
 }
-.lp__form-type-label:hover{
+
+.lp__form-type-label:hover {
     opacity: 0.8;
 }
 
@@ -190,7 +214,7 @@
 
 @media screen and (max-width: 700px) {
 
-    .local-posts__form{
+    .local-posts__form {
         padding: 0;
     }
 }

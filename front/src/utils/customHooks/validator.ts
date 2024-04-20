@@ -6,7 +6,7 @@ export default function useFormWithValidation() {
     const [values, setValues] = React.useState<Input>({});
     const [errors, setErrors] = React.useState<Input>({});
     const [isValid, setIsValid] = React.useState<boolean>(false);
-   /*  target.closest("form") */
+    /*  target.closest("form") */
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>, form: HTMLFormElement) => {
         const target = event.target;
@@ -19,13 +19,20 @@ export default function useFormWithValidation() {
             setErrors({ ...errors, [name]: !isValidEmail ? `Введен некорректный email ${values.email}` : target.validationMessage });
             setIsValid(form.checkValidity() && !errors.email);
             return
+        } else if (name === 'name') {
+            
+            setErrors({ ...errors, [name]: value.length < 2 ? `Имя должно содержать минимум 2 символа ` : target.validationMessage });
+            setIsValid(form.checkValidity() && !errors.name);
+            return
         }
+      
         setErrors({ ...errors, [name]: target.validationMessage });
         setIsValid(form.checkValidity() && !errors.email);
     };
 
     const resetForm = useCallback(() => {
         setValues({})
+        setIsValid(false)
     }, [])
 
     return { values, handleChange, resetForm, errors, isValid };

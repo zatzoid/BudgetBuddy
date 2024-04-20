@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import ProtectedRouteElement from "./ProtectedRoutEl";
-import { CurrentUserContext } from "./Context";
+import { CurrentContext } from "./Context";
 import Header from "./header/Header";
 import Footer from "./footer/footer";
 import SignIn from "./sign/SignIn";
@@ -11,38 +11,128 @@ import PublicPost from "./publicPosts/publicPosts";
 import { useUser } from "../utils/customHooks/useUser";
 import { useLocalPosts } from "../utils/customHooks/useLocalPosts";
 import Notice from "./notice/Notice";
-import EmailModal from "./EmailModal/EmailModal";
+import EmailModal from "./localPosts/EmailModal/EmailModal";
 import { useEmailModal } from "../utils/customHooks/useEmailModal";
 import Present from "./Present/Present";
 import NotFoundPage from "./NotFoundPage/NotFoundPage";
-import {  MetaData } from "../utils/types";
+import { AppSettings, MetaData, appMode } from "../utils/types";
+import { apiReq } from "../utils/api/apiReq";
 
 
 
-/* 
-
-1. переписать на тс.
-запуске✅
-дебаг✅
-2. рефакторинг мелкий
-3. переделать notice  в монетку сбоку экрана
-  с отображением статуса запроса 
-  с динамической проверкий связи с базой
-4. ОФФЛАЙН МОД 
-  на локальном джсоне и фейк айпиай
-5. компонент border переделать в canvas
 
 
-*/
+
+
 function App() {
-  const { loggedIn, signUp, signIn, signOut, changeUserInfo, deleteUserMe, isLoadingUser, userData, auth } = useUser({ callBackResMsg: setResMsg });
-  const { getLPList, createLPel, putCashDataLP, deleteCashDataLP, refreshPost, patchLPCashData, LPList, isLoadingLP } = useLocalPosts({ callBackResMsg: setResMsg });
-  const { emailModalData, emailModalLodaing, submitEmailModal, openEmailModal } = useEmailModal({callBack: refreshPost});
+  const [appSettings, setAppSettings] = useState<AppSettings>(getAppSettingsFromLS())
+  const { loggedIn, signUp, signIn, signOut, changeUserInfo, deleteUserMe, isLoadingUser, userData, switchAppModeUser, auth } = useUser({ callBackResMsg: setResMsg, startAppSettings: appSettings });
+  const { getLPList, createLPel, putCashDataLP, deleteCashDataLP, refreshPost, patchLPCashData, switchAppModeLp, LPList, isLoadingLP } = useLocalPosts({ callBackResMsg: setResMsg, startAppSettings: appSettings });
+  const { emailModalData, emailModalLodaing, submitEmailModal, openEmailModal } = useEmailModal({callBackResMsg: setResMsg, callBack: refreshPost });
   const [resMessage, setResMessage] = useState<MetaData | null>(null);
+  const [hardcoreRouting, setHardcoreRouting] = useState<boolean>(false);
+
+  const [appMode, setAppMode] = useState<appMode>({ mode: appSettings.startAppMode })
+
+  async function switchAppMode(mode: appMode) {
+    setResMsg({ message: 'загрузка', statusCode: 102 })
+    try {
+
+      if (mode.mode === 'online') {
+        const { metaData } = await apiReq.checkStatus();
+        setResMsg(metaData)
+
+
+      } else if (mode.mode === 'offline') {
+
+        setResMsg({ message: `Приложение запущенно в ${mode.mode} моде.`, statusCode: 200 })
+      }
+
+      setAppMode(mode);
+      switchAppModeLp(mode);
+      switchAppModeUser(mode);
+
+
+
+    } catch (error: unknown) {
+
+      setResMsg({ message: 'Сервер не отвечает', statusCode: 500 })
+
+    }
+
+
+  }
+
+
+  function getAppSettingsFromLS(): AppSettings {
+    const settings = localStorage.getItem('settings') || null;
+    if (settings) {
+      const parsedSettings = JSON.parse(settings);
+      return parsedSettings
+
+    } else {
+      return {
+        statsMustOpen: false,
+        startAppMode: 'online',
+        profitHideComplited: false,
+        profitSorting: '',
+        loseHideComplited: false,
+        loseSorting: '',
+        noticeMustOpen: false
+      }
+    }
+
+  }
+
+
+
+
+  function updateAppSettings(event: React.ChangeEvent<HTMLInputElement>) {
+
+    const newSettings = { ...appSettings } as AppSettings;
+    const settingsName = event.target.name
+    if (settingsName in newSettings) {
+
+      const keyName = settingsName as keyof AppSettings;
+
+      const settingsValue = typeof newSettings[keyName] === "boolean" ? event.target.checked : event.target.value
+      const target = { [keyName]: settingsValue } as Partial<AppSettings>
+
+      if (typeof settingsValue === typeof newSettings[keyName]) {
+
+
+        (newSettings[keyName] as AppSettings[typeof keyName]) = target[keyName] as AppSettings[typeof keyName]
+      }
+    }
+
+    setAppSettings(newSettings);
+    putAppSettingIntoLs(newSettings);
+
+  }
+
+  function putAppSettingIntoLs(data: AppSettings) {
+    const settings = localStorage.getItem('settings') || null;
+    if (settings) {
+      localStorage.removeItem('settings')
+    }
+    const lsData = JSON.stringify(data);
+    localStorage.setItem('settings', lsData)
+  }
+
+
 
   useEffect(() => {
-    auth();
+    firstRender();
   }, []);
+
+  async function firstRender() {
+
+    await auth();
+    setHardcoreRouting(true);
+
+
+
+  }
   useEffect(() => {
     if (loggedIn) {
       getLPList()
@@ -52,28 +142,44 @@ function App() {
 
 
   function setResMsg(data: MetaData) {
-    console.log('api response::', data);
     setResMessage(data);
-
   }
+
+
 
 
 
   return (
     <div className="App">
-      <CurrentUserContext.Provider value={userData}>
-        <Header loggedIn={loggedIn} signOut={signOut} deleteUserMe={deleteUserMe} />
-        <Notice resMessage={resMessage} />
+      <CurrentContext.Provider value={{
+        userData, appMode, appSettings
+      }}>
+        <Header loggedIn={loggedIn} signOut={signOut} deleteUserMe={deleteUserMe} updateAppSettings={updateAppSettings} />
+        <Notice resMessage={resMessage} switchMode={switchAppMode} />
         {emailModalData !== null && <EmailModal submitForm={submitEmailModal} openEmailModal={openEmailModal} emailModalData={emailModalData} />}
-        <Routes>
+        {hardcoreRouting && <Routes>
           <Route path="/" element={<Present loggedIn={loggedIn} />} />
           <Route path="/*" element={<NotFoundPage />} />
-          {!loggedIn && <Route path="/sign-up" element={<SignUp submit={signUp} isLoading={isLoadingUser} />} />}
-          {!loggedIn && <Route path="/sign-in" element={<SignIn submit={signIn} isLoading={isLoadingUser} />} />}
+
+          <Route path="/sign-up"
+            element={<ProtectedRouteElement
+              loggedIn={!loggedIn}
+              redirect={'/local-posts'}
+              element={SignUp}
+              submit={signUp}
+              isLoading={isLoadingUser} />} />
+          <Route path="/sign-in"
+            element={<ProtectedRouteElement
+              loggedIn={!loggedIn}
+              redirect={'/local-posts'}
+              element={SignIn}
+              submit={signIn}
+              isLoading={isLoadingUser} />} />
           <Route path="/local-posts"
             element={<ProtectedRouteElement
               element={LocalPosts}
               loggedIn={loggedIn}
+
               auth={auth}
               isLoading={isLoadingUser}
               changeUserInfo={changeUserInfo}
@@ -90,11 +196,12 @@ function App() {
             element={<ProtectedRouteElement
               element={PublicPost}
               auth={auth}
+
               loggedIn={loggedIn} />} />
 
-        </Routes>
+        </Routes>}
         <Footer />
-      </CurrentUserContext.Provider>
+      </CurrentContext.Provider>
     </div>
   );
 }

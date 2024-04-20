@@ -1,4 +1,11 @@
+
 export interface User {
+    avatar: string
+    name: string
+    email: string
+}
+export interface UserExtends {
+    _id: string
     avatar: string
     name: string
     email: string
@@ -17,9 +24,9 @@ export interface MetaData {
     statusCode: number
     message: string
 }
-export interface ApiRes{
+export interface ApiRes {
     metaData: MetaData
-    content: LocalPost | LocalPost[]
+    content: LocalPost | LocalPost[] | UserExtends
 }
 export interface LocalPost {
     owner: string
@@ -48,7 +55,7 @@ export interface CashData {
     data: CashDataData
     reminde: {
         status: string | null
-        data: { dateToSend: string, message: string }
+        data: { dateToSend: string, message: string } | null
     },
     postId: string
     category: string
@@ -76,4 +83,22 @@ export interface EmailModalParams {
     date: string,
     message: string,
     emailTo: string
+}
+export type AppMode = 'offline' | 'online' | 'local'
+
+export type Kinde = 'profit' | 'lose';
+export interface appMode {
+    mode: AppMode
+}
+
+
+export interface AppSettings {
+    statsMustOpen: boolean
+    startAppMode: AppMode
+    profitHideComplited: boolean
+    profitSorting: string 
+    loseHideComplited: boolean
+    loseSorting: string 
+    noticeMustOpen: boolean
+
 }

@@ -1,20 +1,21 @@
-import { useEffect, useState } from "react";
-import Profile from "../profile/Profile";
+import { useContext, useEffect, useState } from "react";
+import Profile from "./profile/Profile";
 import MounthSlider from "./mounthSlider/MounthSlider";
 import PostedEl from "./PostedEl/PostedEl";
 import LocalPostForm from "./form/localPostForm";
 import Sorting from "./Sorting/Sorting";
 import Statistics from "./Statistics/Statistics";
-import ActuveBtnSlider from "../activeBtnSlider/ActiveBtnSlider";
+import ActuveBtnSlider from "../ui/activeBtnSlider/ActiveBtnSlider";
 import useTouchSlider from "../../utils/customHooks/useTouchSlider";
-import { ApiRes, CashDataPatch, CashData, LocalPost, CashDataFromClient } from "../../utils/types";
+import { CashDataPatch, CashData, LocalPost, CashDataFromClient, MetaData, Kinde } from "../../utils/types";
+import { CurrentContext } from "../Context";
 
 interface props {
     isLoading: boolean
     changeUserInfo: () => Promise<{ success: boolean }>
     localData: LocalPost[]
     isLoadingLP: boolean
-    LPResMsg: ApiRes
+    LPResMsg: MetaData
     emailModalLodaing: boolean
     openEmailModal: (data: CashData) => void
     deleteCashDataLP: (data: CashDataPatch) => void
@@ -27,17 +28,25 @@ interface props {
 
 
 export default function LocalPosts(props: props) {
+    const { appSettings } = useContext(CurrentContext)
     const date = new Date();
     const [showedPost, setShowedPost] = useState<number>(date.getMonth() + 1);
-    const [showedPostData, setShowedPostData] = useState<LocalPost | null>(null);
-    const totalProfit = showedPostData?.cashData.profit.reduce((acc: number, item: CashData) => acc + Number(Object.values(item.data)[0]), 0);
-    const totalLose = showedPostData?.cashData.lose.reduce((acc: number, item: CashData) => acc + Number(Object.values(item.data)[0]), 0);
+    const [showedPostData, setShowedPostData] = useState<{ current: LocalPost | null, prev: LocalPost | null }>({ current: null, prev: null });
     const [lpContainerStyle, setLpContainerStyle] = useState<string>('local-posts__container');
-    const [showComplitedPosts, setShowComplitedPosts] = useState<{ lose: string, profit: string }>({ lose: 'block', profit: 'block' });
-    const [previousLocalPost, setPreviousLocalPost] = useState<LocalPost | null>(null);
-    const [showedCashData, setShwoedCashData] = useState<number>(0);
-    const { handleTouchStart, handleTouchMove, handleTouchEnd, slideStyle } = useTouchSlider({ step: showedCashData, callback: slideCashData })
+    const [hidenComplitedPosts, setHidenComplitedPosts] = useState<{ lose: string, profit: string }>({ lose: appSettings.loseHideComplited ? 'none' : 'block', profit: appSettings.profitHideComplited ? 'none' : 'block' });
+
+    // для мобилок
+    // отображаемый тип кэш даты profit/lose
+    const [currentKindeShowed, setCurrentKindeShowed] = useState<number>(0);
+
+    const { handleTouchStart, handleTouchMove, handleTouchEnd, slideStyle } = useTouchSlider({ step: currentKindeShowed, callback: slideCashData })
     const [currentWW, setCurrentWW] = useState<number>(window.innerWidth);
+
+    const totalProfit = showedPostData.current?.cashData.profit.reduce((acc: number, item: CashData) => acc + Number(Object.values(item.data)[0]), 0);
+    const totalLose = showedPostData.current?.cashData.lose.reduce((acc: number, item: CashData) => acc + Number(Object.values(item.data)[0]), 0);
+    const [currentSorting, setCurrentSorting] = useState<{ kinde: Kinde, value: string }[]>([{ kinde: 'profit', value: appSettings.profitSorting }, { kinde: 'lose', value: appSettings.loseSorting }])
+
+
 
     function checkWW() {
         setCurrentWW(window.innerWidth);
@@ -53,29 +62,19 @@ export default function LocalPosts(props: props) {
 
 
 
-    function filterList() {
-        const currentData = (props.localData?.filter(item => item.choisenMonth === showedPost));
-        const previousData = ((props.localData?.filter(item => item.choisenMonth === showedPost - 1)));
+    function getCurrentPost() {
+        const currentData = props.localData?.filter(item => item.choisenMonth === showedPost)[0];
+        const previousData = props.localData?.filter(item => item.choisenMonth === showedPost - 1)[0] || null;
         if (currentData) {
-            setShowedPostData(currentData[0]);
+            if (currentSorting.length > 0) {
+                //вызывается 2 раза на каждый тип cashData
+                currentSorting.forEach(el => { currentData.cashData[el.kinde] = (sortMassive(el, false, currentData) as CashData[]) })
+            }
 
-            previousData.length > 0 ? setPreviousLocalPost(previousData[0]) : setPreviousLocalPost(null);
         }
+        setShowedPostData({ current: currentData, prev: previousData });
     }
 
-    useEffect(() => {
-        filterList()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.localData]);
-
-    useEffect(() => {
-        filterList()
-        setLpContainerStyle('local-posts__container')
-        setTimeout(() => {
-            setLpContainerStyle('local-posts__container local-posts__container_active')
-        }, 100);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [showedPost]);
 
     function switchMonth(e: number) {
         if (showedPost + e < 1) {
@@ -90,25 +89,118 @@ export default function LocalPosts(props: props) {
 
     }
 
-    function setShowedPostDataFoo(data: LocalPost) {
-        setShowedPostData(data)
+
+
+    function sortMassive(data: { kinde: Kinde, value: string }, mustUpdate: boolean = true, currentArray: LocalPost = (showedPostData.current as LocalPost)): CashData[] | void {
+        //если mustUpdate = true
+        // возвращает cashData[] того типа который передан в data.kinde
+        // в ином случае самостоятельно изменяет стейт перменную текущего поста -showedPostData
+        const copyLocalPost = ({ ...currentArray } as LocalPost);
+        const copyCashData = { ...copyLocalPost.cashData };
+        const kinde = data.kinde;
+        const cashDataArray = copyCashData[(kinde as Kinde)];
+
+        //сохранение текущей сортировки
+        const currentSortIndex = currentSorting.findIndex(el => el.kinde === data.kinde);
+        if (currentSortIndex >= 0) {
+            const prevSorting = [...currentSorting];
+            prevSorting[currentSortIndex] = { kinde: data.kinde, value: data.value }
+            setCurrentSorting(prevSorting);
+
+        } else {
+            setCurrentSorting([...currentSorting, { kinde: data.kinde, value: data.value }])
+        }
+
+
+
+        /* сортировка выбором по типу*/
+        if (data.value.includes('sum')) {
+            //сортировка от большего к меньшему или наоборот
+            cashDataArray.sort(function (a: CashData, b: CashData): number {
+                return data.value.includes('fromSmall') ?
+                    Number(Object.values(a.data)) - Number(Object.values(b.data))
+                    :
+                    Number(Object.values(b.data)) - Number(Object.values(a.data))
+
+
+            })
+        }
+        else if (data.value.includes('category')) {
+            cashDataArray.sort(function (a: CashData, b: CashData): number {
+                return a.category.localeCompare(b.category)
+            })
+
+        } else if (data.value.includes('statusComplited')) {
+            cashDataArray.sort(function (a: CashData, b: CashData): number {
+                return b.statusComplited ? 1 : -1 - (a.statusComplited ? 1 : -1)
+            })
+
+        } else if (data.value.includes('date')) {
+            cashDataArray.sort(function (a: CashData, b: CashData): number {
+                const dateA = new Date(a.createdAt);
+                const dateB = new Date(b.createdAt);
+                return Number(dateB) - Number(dateA)
+            })
+        }
+
+        copyLocalPost.cashData[kinde] = cashDataArray;
+
+        if (mustUpdate) {
+            setShowedPostData({ prev: showedPostData.prev, current: copyLocalPost })
+        } else {
+            return cashDataArray
+        }
+
+
     }
-    function setShowComplitedPostsFoo(data: { kinde: string, value: string }) {
-        const newObj = { ...showComplitedPosts, [data.kinde]: data.value }
-        setShowComplitedPosts(newObj);
+
+    function hideComplited(event: React.ChangeEvent<HTMLInputElement>) {
+
+        const data = { kinde: (event.currentTarget.value as Kinde) }
+        const currentVal = hidenComplitedPosts[data.kinde]
+        let newData = currentVal
+
+        if (currentVal === 'block') {
+            newData = 'none'
+        }
+        else {
+            newData = 'block'
+        }
+
+        const newObj = { ...hidenComplitedPosts, [data.kinde]: newData }
+        setHidenComplitedPosts(newObj);
     }
+
 
 
     function slideCashData() {
         if (window.innerWidth < 700) {
-            if (showedCashData === 1) {
-                setShwoedCashData(0)
+            if (currentKindeShowed === 1) {
+                setCurrentKindeShowed(0)
                 return
             }
-            setShwoedCashData(1)
+            setCurrentKindeShowed(1)
         }
 
     }
+
+
+    useEffect(() => {
+        getCurrentPost();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.localData]);
+
+    useEffect(() => {
+        //эффект замены отображаемых данных
+        getCurrentPost()
+        setLpContainerStyle('local-posts__container')
+        setTimeout(() => {
+            setLpContainerStyle('local-posts__container local-posts__container_active')
+        }, 100);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showedPost]);
+
 
     return (
         <main className='local-posts'>
@@ -119,12 +211,12 @@ export default function LocalPosts(props: props) {
                     {(totalProfit as number) + (totalLose as number) !== 0 && totalLose !== undefined && totalProfit !== undefined ?
                         <Statistics
                             currentWW={currentWW}
-                            previousLocalPost={previousLocalPost}
+                            localPost={showedPostData}
                             totalLose={totalLose}
                             totalProfit={totalProfit}
-                            currentLocalPost={(showedPostData as LocalPost)} /> :
+                        /> :
                         ''}
-                    {!showedPostData ?
+                    {!showedPostData.current ?
                         <div className="local-post__empty-el">
                             <p className="local-post__empty-el-text">{props.isLoadingLP ? 'Добавляем запись' : 'Добавить запись'}</p>
                             <button
@@ -147,7 +239,7 @@ export default function LocalPosts(props: props) {
 
                                 </button>
 
-                                {(currentWW as number) < 701 ? <ActuveBtnSlider transformValue={showedCashData} /> : ''}
+                                {(currentWW as number) < 701 ? <ActuveBtnSlider transformValue={currentKindeShowed} /> : ''}
 
                             </nav>
                             <div className="lp__list-wrapper" style={slideStyle}
@@ -163,31 +255,37 @@ export default function LocalPosts(props: props) {
                                         isLoadingLP={props.isLoadingLP}
                                         kinde={'profit'}
                                         heading={'Добавить доход'}
-                                        postId={(showedPostData as LocalPost)._id}
+                                        postId={(showedPostData.current as LocalPost)._id}
                                         submitForm={props.putCashDataLP}
                                     />
-                                    {(totalProfit as number) > 0 && <Sorting
-                                        kinde={'profit'}
-                                        setShowComplitedPostsFoo={setShowComplitedPostsFoo}
-                                        showedPostData={showedPostData}
-                                        setShowedPostData={setShowedPostDataFoo} />}
+                                    {(totalProfit as number) > 0 &&
+                                        <Sorting
+                                            defaultVal={appSettings.profitSorting}
+                                            kinde={'profit'}
+                                            hidenComplitedPosts={hidenComplitedPosts}
+                                            hideComplited={hideComplited}
+                                            sortMassive={sortMassive} />}
 
                                     <ul className="local-posts__list">
 
-                                        {Array.isArray(showedPostData?.cashData.profit) && showedPostData?.cashData.profit.map((item) => (
-                                            <PostedEl
-                                                showComplitedPosts={showComplitedPosts}
-                                                patchLPCashData={props.patchLPCashData}
-                                                emailModalLodaing={props.emailModalLodaing}
-                                                openEmailModal={props.openEmailModal}
-                                                isLoadingLP={props.isLoadingLP}
-                                                deleteCashDataLP={props.deleteCashDataLP}
-                                                item={item}
-                                                key={item._id}
-                                                kinde={'profit'}
-                                             /*    keyName={Object.keys(item.data)[0]}
-                                                value={Object.values(item.data)[0]}  *//>
-                                        ))}
+                                        {Array.isArray((showedPostData.current as LocalPost)?.cashData.profit) && showedPostData.current?.cashData.profit.length > 0
+                                            ?
+                                            (showedPostData.current as LocalPost)?.cashData.profit.map((item) => (
+                                                <PostedEl
+                                                    hidenComplitedPost={hidenComplitedPosts}
+                                                    patchLPCashData={props.patchLPCashData}
+                                                    emailModalLodaing={props.emailModalLodaing}
+                                                    openEmailModal={props.openEmailModal}
+                                                    isLoadingLP={props.isLoadingLP}
+                                                    deleteCashDataLP={props.deleteCashDataLP}
+                                                    item={item}
+                                                    key={item._id}
+                                                    kinde={'profit'}
+                                                />
+                                            )) :
+                                            <li className="local-posts__list-elPlaceholder">
+                                                <p className="local-posts__list-elPlaceholder-text">Тут еще нету статей доходов</p>
+                                            </li>}
 
                                     </ul>
                                 </div>
@@ -197,53 +295,42 @@ export default function LocalPosts(props: props) {
                                         isLoadingLP={props.isLoadingLP}
                                         kinde={'lose'}
                                         heading={'Добавить расход'}
-                                        postId={(showedPostData as LocalPost)._id}
+                                        postId={(showedPostData.current as LocalPost)._id}
                                         submitForm={props.putCashDataLP} />
-                                    {(totalLose as number) > 0 && <Sorting
-                                        setShowComplitedPostsFoo={setShowComplitedPostsFoo}
-                                        kinde={'lose'}
-                                        showedPostData={showedPostData}
-                                        setShowedPostData={setShowedPostDataFoo} />}
+                                    {(totalLose as number) > 0
+                                        &&
+                                        <Sorting
+                                            defaultVal={appSettings.loseSorting}
+                                            kinde={'lose'}
+                                            hidenComplitedPosts={hidenComplitedPosts}
+                                            hideComplited={hideComplited}
+                                            sortMassive={sortMassive} />}
                                     <ul className="local-posts__list">
-                                        {Array.isArray(showedPostData?.cashData.lose) && showedPostData?.cashData.lose.map((item) => (
-                                            <PostedEl
-                                                showComplitedPosts={showComplitedPosts}
-                                                patchLPCashData={props.patchLPCashData}
-                                                emailModalLodaing={props.emailModalLodaing}
-                                                openEmailModal={props.openEmailModal}
-                                                isLoadingLP={props.isLoadingLP}
-                                                deleteCashDataLP={props.deleteCashDataLP}
-                                                item={item}
-                                                key={item._id}
-                                                kinde={'lose'}
-                                                /* keyName={Object.keys(item.data)[0]}
-                                                value={Object.values(item.data)[0]} */ />
-                                        ))}
+                                        {Array.isArray((showedPostData.current as LocalPost)?.cashData.lose) && showedPostData.current?.cashData.lose.length > 0
+                                            ?
+                                            (showedPostData.current as LocalPost)?.cashData.lose.map((item) => (
+                                                <PostedEl
+                                                    hidenComplitedPost={hidenComplitedPosts}
+                                                    patchLPCashData={props.patchLPCashData}
+                                                    emailModalLodaing={props.emailModalLodaing}
+                                                    openEmailModal={props.openEmailModal}
+                                                    isLoadingLP={props.isLoadingLP}
+                                                    deleteCashDataLP={props.deleteCashDataLP}
+                                                    item={item}
+                                                    key={item._id}
+                                                    kinde={'lose'}
+                                                />
+                                            ))
+                                            :
+                                            <li className="local-posts__list-elPlaceholder">
+                                                <p className="local-posts__list-elPlaceholder-text">Тут еще нету статей расходов</p>
+                                            </li>}
 
                                     </ul>
                                 </div>
                             </div>
                             <div className='local-posts__public-btn-container'  >
-                                {/* {showDescription && <div className="local-posts__public-add-description" >
-                                    <textarea
-                                        required
-                                        className="local-posts__public-add-description-value"
-                                        placeholder="Добавьте описание (это обязательно)"
-                                        value={descriptionValue || ''}
-                                        onChange={(e) => { setDescriptionValue(e.target.value) }}
-                                    />
-                                    <button className="local-posts__public-add-description-btn" >Опубликовать</button>
-                                    <button 
-                                        onClick={() => { setShowDescription(false) }}
-                                        className="local-posts__public-add-description-btn">Отмена</button>
-                                </div>}
-                                {!showedPostData.posted &&
-                                    <button
-                                        onClick={() => { setShowDescription(true) }}
-                                        className={`local-posts__public-btn ${showDescription && 'local-posts__public-btn_active'}`}>
-                                        Опубликовать запись</button>}
 
-                                {showedPostData.posted && <p className="local-posts__public-btn_posted">Запись опубликована</p>} */}
                             </div>
                         </>}
                 </div>

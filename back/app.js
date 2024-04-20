@@ -15,6 +15,7 @@ const { emailFinder } = require('./utils/reminder/EmailFinder');
 const cors = require('./midlewares/cors');
 const NotFoundError = require('./utils/errorsType');
 const { requestLogger, errorLogger } = require('./midlewares/logger');
+const { checkStatus } = require('./controllers/status');
 //const { limiter } = require('./midlewares/limiter')
 
 const { PORT = 3000, MONGODB_PORT } = process.env;
@@ -29,6 +30,7 @@ app.use(requestLogger);
 app.use(cors);
 app.post('/sign-up', validRegister, signUp);
 app.post('/sign-in', validLogin, signIn);
+app.get('/status', checkStatus)
 app.use(Auth);
 app.use('/', routes);
 app.use('*', (req, res, next) => { next(new NotFoundError('nothing')); });
