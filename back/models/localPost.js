@@ -33,7 +33,8 @@ const localPost = new mongoose.Schema({
                     type: mongoose.Schema.Types.ObjectId
                 },
                 category: {
-                    type: String
+                    type: String,
+                    default: 'другое'
                 },
                 statusComplited: {
                     type: Boolean,

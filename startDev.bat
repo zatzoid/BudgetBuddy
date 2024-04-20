@@ -9,4 +9,4 @@ cd ..
 
 rem Запуск фронтенда
 cd front
-start npm run start
+start npm run dev

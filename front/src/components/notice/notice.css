@@ -1,36 +1,284 @@
+@keyframes loading {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    90% {
+        transform: translateY(2px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
 .notice {
-    left: calc(50% - 150px);
+    z-index: 5;
     position: fixed;
-    width: 300px;
-    min-height: 80px;
-    background-color: rgba(46, 46, 46, 0.836);
+    top: 70px;
+    right: 0;
     display: flex;
-    justify-content: space-between;
-    padding: 5px;
-    box-sizing: border-box;
-    transform: translateY(-200px);
-    transition: all .5s;
-    z-index: 9;
+    flex-wrap: nowrap;
+    gap: 5px;
+
 
 }
-.notice__active{
-    transform: translateY(0);
-    z-index: 9;
+
+.notice__circle {
+    cursor: pointer;
+    border-radius: 50%;
+    border: 2px dashed;
+    width: 60px;
+    height: 60px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 
+
+.notice__circle-items {
+    width: 30px;
+    height: 30px;
+    position: relative;
+}
+
+.notice__circle-item {
+    position: absolute;
+    display: block;
+    background-color: var(--col-gold-dark);
+    border-radius: 5px;
+}
+
+/* notice__circle-item_loading */
+.notice__circle-item_loading.notice__circle-item#one {
+    animation: loading 1s ease 0.3s infinite normal;
+    border-radius: 50%;
+    /*  width: 10px;
+    height: 10px; */
+
+    border-top: 5px solid;
+    border-bottom: 5px solid;
+    border-left: 5px solid;
+    border-right: 5px solid;
+
+    top: calc(50% - 5px);
+    left: -2px;
+}
+
+.notice__circle-item_loading.notice__circle-item#two {
+    animation: loading 1s ease 0.6s infinite normal;
+    border-radius: 50%;
+    /* width: 10px;
+    height: 10px; */
+
+    border-top: 5px solid;
+    border-bottom: 5px solid;
+    border-left: 5px solid;
+    border-right: 5px solid;
+
+    top: calc(50% - 5px);
+    left: calc(50% - 5px);
+
+}
+
+.notice__circle-item_loading.notice__circle-item#three {
+    animation: loading 1s ease 0.9s infinite normal;
+    border-radius: 50%;
+  /*   width: 10px;
+    height: 10px; */
+
+    border-top: 5px solid;
+    border-bottom: 5px solid;
+    border-left: 5px solid;
+    border-right: 5px solid;
+
+    top: calc(50% - 5px);
+    right: -2px;
+}
+
+/* notice__circle-item_success */
+.notice__circle-item_success.notice__circle-item#one {
+    /*   width: 20px;
+    height: 3px; */
+
+    border-top: 3.5px solid;
+    border-bottom: 3.5px solid;
+    border-left: 10px solid;
+    border-right: 10px solid;
+
+    top: 10px;
+    left: -6px;
+    transform-origin: left bottom;
+    transform: rotate(45deg);
+
+
+}
+
+.notice__circle-item_success.notice__circle-item#two {
+    /*  width: 5px;
+    height: 5px; */
+
+    border-top: 3.5px solid;
+    border-bottom: 3.5px solid;
+    border-left: 3.5px solid;
+    border-right: 3.5px solid;
+
+    top: calc(60% + 5px);
+    left: calc(26% - 2.5px);
+    transform: rotate(45deg);
+    border-radius: 50%;
+}
+
+.notice__circle-item_success.notice__circle-item#three {
+    /* width: 40px;
+    height: 5px; */
+
+    border-top: 3.5px solid;
+    border-bottom: 3.5px solid;
+    border-left: 20px solid;
+    border-right: 20px solid;
+
+    top: -5px;
+    right: -6px;
+    transform-origin: right bottom;
+    transform: rotate(313deg);
+   
+}
+
+/* .notice__circle-item_fail */
+.notice__circle-item_fail.notice__circle-item#one {
+    /*    width: 40px;
+    height: 7px; */
+
+    border-top: 3.5px solid;
+    border-bottom: 3.5px solid;
+    border-left: 20px solid;
+    border-right: 20px solid;
+
+    top: calc(50% - 3.5px);
+    left: calc(50% - 20px);
+    transform: rotate(45deg);
+}
+
+.notice__circle-item_fail.notice__circle-item#two {
+    /* width: 7px;
+    height: 7px; */
+    border-top: 3.5px solid;
+    border-bottom: 3.5px solid;
+    border-left: 3.5px solid;
+    border-right: 3.5px solid;
+
+    top: calc(50% - 3px);
+    left: calc(50% - 3px);
+    transform: rotate(45deg);
+}
+
+.notice__circle-item_fail.notice__circle-item#three {
+    /*  width: 40px;
+    height: 7px; */
+
+    border-top: 3.5px solid;
+    border-bottom: 3.5px solid;
+    border-left: 20px solid;
+    border-right: 20px solid;
+
+    top: calc(50% - 3px);
+    left: calc(50% - 20px);
+    transform: rotate(-45deg);
+}
+
+/*  */
 .notice__message {
-    color: white;
-    text-align: center;
-    width: 100%;
-    margin: auto;
+   
+    margin-top: 32px;
+    background-color: rgba(177, 176, 176, 0.37);
+    backdrop-filter: blur(10px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-radius: 20px 0 20px 20px;
+   max-width: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .5s;
+
 
 }
 
-.notice__close {
-    border: none;
-    font-size: 20px;
-    width: 40px;
-    color: white;
-    background-color: var(--col-clear);
+.notice__message_active {
+    max-height: 500px;
+    max-width: 200px;
+}
+
+.notice__message-btn{
+    border-radius: 20px;
+    border: 2px solid;
+    transition: all .5s;
+    width: 100px;
+    height: 25px;
+    font-size: 15px;
+   cursor: pointer;
+}
+.notice__message-btn:disabled{
+    opacity: 0.5;
+    cursor: default;
+}
+
+.notice__message-datas {
+    padding: 10px;
+
+}
+.notice__message-datas-modal{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+
+
+.notice__message-data {
+    margin: 0;
+    display: flex;
+}
+
+.notice__message-data-color {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    display: block;
+}
+
+.notice__message-data-color_loading {
+    background-color: var(--col-gold);
+}
+
+.notice__message-data-color_success {
+    background-color: var(--col-main);
+}
+
+.notice__message-data-color_fail {
+    background-color: var(--col-red);
+}
+
+.notice_col-online {
+    border-color: var(--col-gold-dark) !important;
+    background-color: var(--col-gold) !important;
+
+}
+
+.notice_col-local {
+    border-color: var(--col-orange-dark) !important;
+    background-color: var(--col-orange) !important;
+}
+
+.notice_col-offline {
+    border-color: var(--col-red-dark) !important;
+    background-color: var(--col-red) !important;
 }

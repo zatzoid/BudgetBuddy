@@ -7,6 +7,7 @@ module.exports.validLogin = celebrate({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
+  
 });
 module.exports.validRegister = celebrate({
   body: Joi.object().keys({

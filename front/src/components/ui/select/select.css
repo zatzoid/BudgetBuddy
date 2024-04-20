@@ -1,0 +1,119 @@
+@keyframes padding {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(2px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.select {
+    width: 100%;
+    position: relative;
+
+}
+
+.select__choisen {
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    text-align: right;
+    padding: 0;
+    position: relative;
+    padding-right: 15px;
+
+}
+.select__choisen_animate:hover::after {
+    animation: padding 1s ease infinite alternate-reverse;
+
+}
+
+.select__choisen::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: calc(50% - 2.5px);
+    border-top: 5px solid black;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid transparent;
+    transition: all .5s;
+
+}
+
+.select__choisen_active::after {
+    transform: translateY(-5px);
+    border-bottom: 5px solid black;
+    border-top: 5px solid transparent;
+ 
+}
+
+.select__options {
+
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: rgba(138, 138, 138, 0.37);
+    backdrop-filter: blur(10px);
+    max-height: 1px;
+    transition: max-height .5s;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.select__options_active {
+    max-height: 500px;
+
+}
+
+
+.select__option {
+    position: relative;
+    width: 100%;
+}
+
+
+
+.select__option-icon {
+    width: 28px;
+    height: 28px;
+    margin-right: 5px;
+    display: block;
+    background-size: cover;
+   
+
+}
+
+.select__option-input {
+    position: absolute;
+    opacity: 0;
+}
+
+.select__option-input:checked+.select__option-text {
+    background-color: var(--col-main-dark);
+}
+
+.select__option-input:hover+.select__option-text {
+    background-color: var(--col-main);
+}
+
+.select__option-text {
+    margin: 0;
+    transition: all .2s;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    width: 100%;
+    align-items: center;
+
+}
