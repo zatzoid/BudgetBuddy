@@ -5,7 +5,7 @@ export default function NotFoundPage() {
     return (
         <div className="NFPage">
             <p className="NFPage__text">Такой страницы нет</p>
-            <button className="NFPage__btn" onClick={() => { navigate(-1) }}>вернуться назад</button>
+            <button className="NFPage__btn" onClick={() => { navigate('/') }}>вернуться назад</button>
         </div>
     )
 }
