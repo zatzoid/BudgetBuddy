@@ -13,6 +13,7 @@ server.txt
 
 # production
 /build
+/front/build
 
 # misc
 .DS_Store
