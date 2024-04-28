@@ -1,4 +1,3 @@
-import React from "react";
 import getMonthName from "../../../utils/getMonthName";
 import useTouchSlider from "../../../utils/customHooks/useTouchSlider";
 interface props {

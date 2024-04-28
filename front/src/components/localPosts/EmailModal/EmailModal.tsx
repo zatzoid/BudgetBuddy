@@ -1,6 +1,6 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import Border from "../../ui/border/Border";
-import { CashData, EmailModalParams } from "../../../utils/types";
+import { CashData, CashDataReminde, EmailModalParams } from "../../../utils/types";
 import { CurrentContext } from "../../Context";
 interface props {
     submitForm: (data: EmailModalParams) => void
@@ -17,7 +17,6 @@ export default function EmailModal(props: props) {
     const currentYear = currentDate.getFullYear();
     const currentMonth = currentDate.getMonth() + 1;
     const currentDay = currentDate.getDate();
-    const modalData = (props.emailModalData as CashData)
     function submit(e: FormEvent) {
         e.preventDefault()
         const cashData = props.emailModalData
@@ -31,11 +30,10 @@ export default function EmailModal(props: props) {
         props.openEmailModal(null)
     }
     useEffect(() => {
-        console.log(props.emailModalData);
         if (props.emailModalData !== null && props.emailModalData.reminde.status !== null) {
-
-            setDateValue(modalData.reminde.data.dateToSend);
-            setOtherTextValue(modalData.reminde.data.message);
+            const modalData = (props.emailModalData as CashData)
+            setDateValue((modalData.reminde.data as CashDataReminde).dateToSend);
+            setOtherTextValue((modalData.reminde.data as CashDataReminde).message);
 
 
         }

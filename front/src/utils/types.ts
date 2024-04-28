@@ -55,7 +55,7 @@ export interface CashData {
     data: CashDataData
     reminde: {
         status: string | null
-        data: { dateToSend: string, message: string } | null
+        data: CashDataReminde | null
     },
     postId: string
     category: string
@@ -64,6 +64,10 @@ export interface CashData {
 
 
 
+}
+export interface CashDataReminde {
+    dateToSend: string
+    message: string
 }
 
 // kindeName: {cashData: ....}
@@ -96,9 +100,9 @@ export interface AppSettings {
     statsMustOpen: boolean
     startAppMode: AppMode
     profitHideComplited: boolean
-    profitSorting: string 
+    profitSorting: string
     loseHideComplited: boolean
-    loseSorting: string 
+    loseSorting: string
     noticeMustOpen: boolean
 
 }

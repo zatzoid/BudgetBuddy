@@ -9,7 +9,7 @@ interface props {
 
 export default function Present(props: props) {
     const [translateValue, setTranslateValue] = useState(0);
-    const { handleTouchStartY, handleTouchMoveY, handleTouchEndY, sliderStyleY } = useTouchSlider({ callback: scrollPresent, step: translateValue })
+    const { handleTouchStartY, handleTouchMove, handleTouchEnd, sliderStyleY } = useTouchSlider({ callback: scrollPresent, step: translateValue })
 
     function scrollPresent(val: number) {
         if (translateValue + val < 2) {
@@ -25,11 +25,11 @@ export default function Present(props: props) {
             <div className="present-wrapper"
                 style={sliderStyleY}
                 onTouchStart={handleTouchStartY}
-                onTouchMove={handleTouchMoveY}
-                onTouchEnd={handleTouchEndY}
+                onTouchMove={handleTouchMove}
+                onTouchEnd={handleTouchEnd}
                 onMouseDown={handleTouchStartY}
-                onMouseMove={handleTouchMoveY}
-                onMouseUp={handleTouchEndY}>
+                onMouseMove={handleTouchMove}
+                onMouseUp={handleTouchEnd}>
 
                 <section className="present__el present__el_one">
                     <div className="preset__redirect-container">
