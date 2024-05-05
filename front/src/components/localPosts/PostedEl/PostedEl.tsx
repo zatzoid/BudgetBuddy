@@ -19,7 +19,6 @@ export default function PostedEl(props: props) {
 
     const itemName = Object.keys(props.item.data)[0];
     const itemValue = Number(Object.values(props.item.data)[0]);
-    console.log('rerender posted EL', itemName);
 
 
     function changeStatusComplited() {

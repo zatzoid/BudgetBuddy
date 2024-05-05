@@ -28,7 +28,6 @@ interface props {
 
 
 export default function LocalPosts(props: props) {
-    console.log('rerender LocalPosts');
     const { appSettings } = useContext(CurrentContext)
     const date = new Date();
     const [showedPost, setShowedPost] = useState<number>(date.getMonth() + 1);

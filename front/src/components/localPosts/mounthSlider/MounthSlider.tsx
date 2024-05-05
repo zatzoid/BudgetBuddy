@@ -8,7 +8,6 @@ interface props {
 
 export default function MounthSlider(props: props) {
     const { handleTouchStart, handleTouchMove, handleTouchEnd, slideStyle } = useTouchSlider({ step: props.showedPost, callback: props.switchMonth })
-    console.log('rerender mountSlider 🎅');
     return (
         <section className="slider"
             onTouchStart={() => handleTouchStart}

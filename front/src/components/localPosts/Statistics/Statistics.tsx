@@ -22,7 +22,6 @@ type valuesByCategory = { category: string; value: number }[] | null;
 
 
 export default function Statistics(props: props) {
-    console.log('rerender statistic 🎀');
     const { appSettings } = useContext(CurrentContext);
     const [statsOpened, setStatsOpened] = useState<boolean>(appSettings.statsMustOpen);
     //слайдер между "сравнение с прошлым месяцом"  "анализ по категориям"

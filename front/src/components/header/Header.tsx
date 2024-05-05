@@ -13,7 +13,6 @@ interface props {
 }
 
 export default function Header(props: props) {
-    console.log('rerender HEADER 👨‍🎓');
     const { userData, appSettings } = React.useContext(CurrentContext);
     const [showMenu, setShowMenu] = useState<boolean>(false);
     const [delModalShowed, setDelModalShowed] = useState<boolean>(false)

@@ -20,7 +20,6 @@ export default function Profile(props: props) {
     const [nameFocus, setNameFocus] = useState<boolean>(false);
     const [emailFocus, setEmailFocus] = useState<boolean>(false);
     const form = useRef<HTMLFormElement | null>(null)
-    console.log('rerender Profile 👨');
 
     function editMod() {
         if (!isEdit) {
