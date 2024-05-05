@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import VisualBtn from "../../ui/visualbtn/VisualBtn";
 import { CashData, CashDataPatch } from "../../../utils/types";
 interface props {
@@ -18,7 +18,8 @@ export default function PostedEl(props: props) {
     const [actionShowed, setActionShowed] = useState(false);
 
     const itemName = Object.keys(props.item.data)[0];
-    const itemValue = Number(Object.values(props.item.data)[0])
+    const itemValue = Number(Object.values(props.item.data)[0]);
+    console.log('rerender posted EL', itemName);
 
 
     function changeStatusComplited() {
@@ -35,8 +36,9 @@ export default function PostedEl(props: props) {
         const cashData = { [props.kinde]: item };
         props.deleteCashDataLP({ cashData });
     }
-
+const dateOfItem = useMemo( ()=> getCreatedDate(props.item.createdAt),[props.item])
     function getCreatedDate(createdAt: Date): string {
+        console.log('call created DAte');
 
         //today
         const currentDate = new Date();
@@ -101,7 +103,7 @@ export default function PostedEl(props: props) {
                 </button>
                 <p className="posted-el-value posted-el-value_value">{itemValue}</p>
                 <p className="posted-el__date">
-                    {getCreatedDate(props.item.createdAt)}
+                    {dateOfItem}
                 </p>
             </div>
 

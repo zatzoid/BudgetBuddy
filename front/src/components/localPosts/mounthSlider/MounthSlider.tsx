@@ -2,13 +2,13 @@ import getMonthName from "../../../utils/getMonthName";
 import useTouchSlider from "../../../utils/customHooks/useTouchSlider";
 interface props {
     showedPost: number
-    switchMonth: (data: number)=> void
+    switchMonth: (data: number) => void
 
 }
 
 export default function MounthSlider(props: props) {
     const { handleTouchStart, handleTouchMove, handleTouchEnd, slideStyle } = useTouchSlider({ step: props.showedPost, callback: props.switchMonth })
-
+    console.log('rerender mountSlider 🎅');
     return (
         <section className="slider"
             onTouchStart={() => handleTouchStart}

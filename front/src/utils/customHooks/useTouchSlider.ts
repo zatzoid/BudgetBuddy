@@ -1,4 +1,3 @@
-import { useState } from "react";
 interface props {
     step: number
     callback: (arg: number) => void;
@@ -6,8 +5,9 @@ interface props {
 
 
 export default function useTouchSlider(data: props) {
-    const { step, callback } = data
-    const [sliderStartX, setSliderStartX] = useState<null | number>(null);
+    const { step, callback } = data;
+    let sliderStartX: null | number = null
+   // const [sliderStartX, setSliderStartX] = useState<null | number>(null);
     const slideStyle = {
         transform: `translateX(calc(-${step}00% - ${step > 0 ? 15 : 0}px))`
     }
@@ -17,13 +17,13 @@ export default function useTouchSlider(data: props) {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     function handleTouchStart(e: any) {
-        setSliderStartX(e.nativeEvent instanceof TouchEvent ? e.nativeEvent.touches[0].clientX : e.nativeEvent instanceof MouseEvent ? e.nativeEvent.clientX : 0);
+        sliderStartX = (e.nativeEvent instanceof TouchEvent ? e.nativeEvent.touches[0].clientX : e.nativeEvent instanceof MouseEvent ? e.nativeEvent.clientX : 0);
 
 
     }
 
     function handleTouchStartY(e: React.SyntheticEvent) {
-        setSliderStartX(e.nativeEvent instanceof TouchEvent ? e.nativeEvent.touches[0].clientY : e.nativeEvent instanceof MouseEvent ? e.nativeEvent.clientY : 0);
+        sliderStartX = (e.nativeEvent instanceof TouchEvent ? e.nativeEvent.touches[0].clientY : e.nativeEvent instanceof MouseEvent ? e.nativeEvent.clientY : 0);
 
     }
 
@@ -36,10 +36,10 @@ export default function useTouchSlider(data: props) {
         const deltaX = currentX - sliderStartX;
         if (deltaX > 100) {
             callback(-1);
-            setSliderStartX(null);
+            sliderStartX = (null);
         } else if (deltaX < -100) {
             callback(1);
-            setSliderStartX(null);
+            sliderStartX = (null);
         }
     }
 
@@ -47,7 +47,7 @@ export default function useTouchSlider(data: props) {
 
     // Обработчик окончания касания или клика
     function handleTouchEnd() {
-        setSliderStartX(null);
+        sliderStartX = (null);
     }
     
 

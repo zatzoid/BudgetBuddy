@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import { Pie } from 'react-chartjs-2';
 import 'chart.js/auto';
 /* import type { ChartData, ChartOptions } from 'chart.js'; */
@@ -22,64 +22,87 @@ type valuesByCategory = { category: string; value: number }[] | null;
 
 
 export default function Statistics(props: props) {
-    const { appSettings } = useContext(CurrentContext)
-    const [dataForChart, setDataForChart] = useState<chartData | null>(null);
-    const [statsOpened, setStatsOpened] = useState<boolean>(appSettings.statsMustOpen)
+    console.log('rerender statistic 🎀');
+    const { appSettings } = useContext(CurrentContext);
+    const [statsOpened, setStatsOpened] = useState<boolean>(appSettings.statsMustOpen);
+    //слайдер между "сравнение с прошлым месяцом"  "анализ по категориям"
     const [currentStats, setCurrentStats] = useState<string>('category');
 
-    const [profitCategoryList, setProfitCategoryList] = useState<valuesByCategory>(null);
-    const [profitPrecentCategoryList, setProfitPrecentCategoryList] = useState<valuesByCategory>(null);
 
-    const [loseCategoryList, setLoseCategoryList] = useState<valuesByCategory>(null);
-    const [losePrecentCategoryList, setLosePrecentCategoryList] = useState<valuesByCategory>(null);
+    const [dataForChart, setDataForChart] = useState<chartData>({
+        labels: ['доход', 'расход'],
+        datasets: [
+            {
+                data: [props.totalProfit, props.totalLose],
+                backgroundColor: ["#f12652", "#7DCE70"],
+            },
+        ]
+    })
+    const [profitCategoryData, setProfitCategoryData] = useState<{ total: valuesByCategory, precent: valuesByCategory }>({ total: null, precent: null });
+    const [loseCategoryData, setLoseCategoryData] = useState<{ total: valuesByCategory, precent: valuesByCategory }>({ total: null, precent: null });
+    const [totalComplited, setTotalComplited] = useState<{ lose: number, profit: number }>({ lose: 0, profit: 0 })
 
-    const [profitComplitedTotal, setProfitComplitedTotal] = useState<number | null>(null);
-    const [loseComplitedTotal, setLoseComplitedTotal] = useState<number | null>(null);
-    const previousTotalProfit = props.localPost.prev?.cashData.profit.reduce((acc, item) => acc + Object.values(item.data)[0], 0) || 0
-    const previousTotalLose = props.localPost.prev?.cashData.lose.reduce((acc, item) => acc + Object.values(item.data)[0], 0) || 0
+    const previousTotalProfit = useMemo(() => props.localPost.prev?.cashData.profit.reduce((acc, item) => acc + Object.values(item.data)[0], 0) || 0, [props.localPost.current, statsOpened])
+    const previousTotalLose = useMemo(() => props.localPost.prev?.cashData.lose.reduce((acc, item) => acc + Object.values(item.data)[0], 0) || 0, [props.localPost.current, statsOpened])
 
-
+    // для мобилок
+    // слайдер chart и main
     const [showedStatsEl, setShowedStatsEl] = useState(0);
     const { handleTouchStart, handleTouchMove, handleTouchEnd, slideStyle } = useTouchSlider({ step: showedStatsEl, callback: choisStats })
 
-    function chartPieData(data: LocalPost | null) {
-        if (data !== null) {
-            const chartData: chartData = {
-                labels: [],
-                datasets: [
-                    {
-                        data: [],
-                        backgroundColor: [],
-                    },
-                ]
+    useEffect(() => {
+        if (statsOpened) {
+            setProfitCategoryData(getValuesByCategory({ localPost: props.localPost, kinde: 'profit' }));
+            setLoseCategoryData(getValuesByCategory({ localPost: props.localPost, kinde: 'lose' }));
+            setDataForChart(chartPieData(props.localPost.current));
+            setTotalComplited(getTotalValues(props.localPost));
 
-            };
-
-            data?.cashData.profit.forEach((item) => {
-                const key = Object.keys(item.data)[0];
-                const value = Object.values(item.data)[0];
-                chartData.labels.push(key);
-                chartData.datasets[0].data.push(value);
-                chartData.datasets[0].backgroundColor.push("#7DCE70");
-            });
-
-            data?.cashData.lose.forEach((item) => {
-                const key = Object.keys(item.data)[0];
-                const value = Object.values(item.data)[0];
-                chartData.labels.push(key);
-                chartData.datasets[0].data.push(value);
-                chartData.datasets[0].backgroundColor.push("#f12652");
-            });
-            setDataForChart(chartData);
-        } else {
-            setDataForChart(null);
         }
+
+
+    }, [props.localPost, statsOpened])
+
+    function chartPieData(data: LocalPost | null): chartData {
+        const chartData: chartData = {
+            labels: [],
+            datasets: [
+                {
+                    data: [],
+                    backgroundColor: [],
+                },
+            ]
+
+        };
+
+
+        data?.cashData.profit.forEach((item) => {
+            const key = Object.keys(item.data)[0];
+            const value = Object.values(item.data)[0];
+            chartData.labels.push(key);
+            chartData.datasets[0].data.push(value);
+            chartData.datasets[0].backgroundColor.push("#7DCE70");
+        });
+
+        data?.cashData.lose.forEach((item) => {
+            const key = Object.keys(item.data)[0];
+            const value = Object.values(item.data)[0];
+            chartData.labels.push(key);
+            chartData.datasets[0].data.push(value);
+            chartData.datasets[0].backgroundColor.push("#f12652");
+        });
+        return chartData;
+
     }
-    function getStatsValues(data: { kinde: string }) {
-        const { cashData } = (props.localPost.current as LocalPost);
-        const cashDataPrev = props?.localPost.prev || null;
-        const currentList = createStatsValues({ kinde: data.kinde, obj: cashData })
+    function getValuesByCategory(data: { localPost: { current: LocalPost | null, prev: LocalPost | null }, kinde: string }): { total: valuesByCategory, precent: valuesByCategory } {
+
+        const { cashData } = (data.localPost.current as LocalPost);
+        const cashDataPrev = data.localPost.prev || null;
+        const currentList = createStatsValues({ kinde: data.kinde, obj: cashData });
         const previousList = createStatsValues({ kinde: data.kinde, obj: cashDataPrev?.cashData || null });
+        const precentValues = createPrecentValues({ curList: currentList, prevList: previousList, kinde: data.kinde });
+
+        return { total: currentList, precent: precentValues }
+
 
         function createStatsValues(data: { kinde: string, obj: { [key: string]: CashData[] } | null }): valuesByCategory {
             if (data.obj && data.obj[data.kinde].length > 0) {
@@ -109,15 +132,7 @@ export default function Statistics(props: props) {
         }
 
 
-
-        data.kinde === 'profit' ? setProfitCategoryList(currentList) : setLoseCategoryList(currentList);
-
-        const prevValues = createPrevValues({ curList: currentList, prevList: previousList, kinde: data.kinde });
-
-        data.kinde === 'profit' ? setProfitPrecentCategoryList(prevValues) : setLosePrecentCategoryList(prevValues);
-
-
-        function createPrevValues(data: { curList: valuesByCategory, prevList: valuesByCategory, kinde: string }): valuesByCategory {
+        function createPrecentValues(data: { curList: valuesByCategory, prevList: valuesByCategory, kinde: string }): valuesByCategory {
             if (data.prevList && data.curList) {
 
                 const currentList = data.curList;
@@ -156,21 +171,20 @@ export default function Statistics(props: props) {
 
     }
 
-    function predictComplitedData() {
-        const profitList = (props.localPost.current as LocalPost).cashData.profit.filter(el => el.statusComplited === true);
-        if (profitList.length > 0) {
-            const profitValues = profitList.reduce((acc, val) => acc + Number(Object.values(val.data)), 0);
-            setProfitComplitedTotal(profitValues)
-        } else {
-            setProfitComplitedTotal(null)
-        }
-        const loseList = (props.localPost.current as LocalPost).cashData.lose.filter(el => el.statusComplited === true);
-        if (loseList.length > 0) {
-            const loseValues = loseList.reduce((acc, val) => acc + Number(Object.values(val.data)), 0);
-            setLoseComplitedTotal(loseValues);
-        } else {
-            setLoseComplitedTotal(null)
-        }
+    function getTotalValues(localPost: { current: LocalPost | null, prev: LocalPost | null }): { profit: number, lose: number } {
+
+        const profitList = (localPost.current as LocalPost).cashData.profit.filter(el => el.statusComplited === true);
+        const profit = profitList.length > 0
+            ? profitList.reduce((acc, val) => acc + Number(Object.values(val.data)), 0)
+            : 0;
+
+        const loseList = (localPost.current as LocalPost).cashData.lose.filter(el => el.statusComplited === true);
+        const lose = loseList.length > 0
+            ? loseList.reduce((acc, val) => acc + Number(Object.values(val.data)), 0)
+            : 0
+
+
+        return { profit, lose }
 
     }
 
@@ -191,15 +205,6 @@ export default function Statistics(props: props) {
         }
     }
 
-    useEffect(() => {
-        if (props.localPost.current !== null) {
-            chartPieData(props.localPost.current)
-            getStatsValues({ kinde: 'profit' });
-            getStatsValues({ kinde: 'lose' });
-            predictComplitedData()
-        }
-
-    }, [props.localPost.current]);
     return (
         <>
             <button className={`stats__show-stats-btn `}
@@ -222,8 +227,8 @@ export default function Statistics(props: props) {
                     onMouseDown={handleTouchStart}
                     onMouseMove={handleTouchMove}
                     onMouseUp={handleTouchEnd}>
-                    <div className="stats__el stats__chart" >
-                        {dataForChart !== null && <div className="stats__chart-el">
+                    <div className="stats__el stats__elChart" >
+                        {dataForChart !== null && <div className="stats__elChart-pie ">
                             <Pie
                                 /*  height={150}
                                  width={150} */
@@ -240,82 +245,82 @@ export default function Statistics(props: props) {
 
                             />
                         </div>}
-                        <div className="stats__predict">
-                            {props.totalProfit && props.totalLose ? <><p className="stats__predict-heding">Предварительный прогноз:</p>
-                                {props.totalProfit > props.totalLose && <p className="stats__predict-value stats__predict-value_ok">{
+                        <div className="stats__elChart-predict">
+                            {props.totalProfit && props.totalLose ? <><p className="stats__elChart-predict-heding">Предварительный прогноз:</p>
+                                {props.totalProfit > props.totalLose && <p className="stats__elChart-predict-value stats__elChart-predict-value_ok">{
                                     ` вы сэкономили: ${props.totalProfit - props.totalLose}₽ +${Math.ceil((props.totalProfit / props.totalLose) * 100 - 100)}%`}</p>}
-                                {props.totalProfit < props.totalLose && <p className="stats__predict-value stats__predict-value_fault"> {
+                                {props.totalProfit < props.totalLose && <p className="stats__elChart-predict-value stats__elChart-predict-value_fault"> {
                                     `вы в минусе: ${props.totalLose - props.totalProfit}₽ ${Math.ceil((props.totalProfit / props.totalLose) * 100 - 100)}%`} </p>}
-                                {props.totalProfit === props.totalLose && <p className="stats__predict-value stats__predict-value_ok"> Идеально</p>}</> : ''}
-                            <div className="stats__fact">
-                                {profitComplitedTotal && <>
-                                    <p className="stats__fact-heading">Сумма полученного дохода:</p>
-                                    <p className="stats__fact-value">{profitComplitedTotal} ₽  {Math.ceil((profitComplitedTotal / props.totalProfit) * 100)}% от обещего дохода</p>
+                                {props.totalProfit === props.totalLose && <p className="stats__elChart-predict-value stats__elChart-predict-value_ok"> Идеально</p>}</> : ''}
+                            <div className="stats__elChart-predict-fact">
+                                {totalComplited.profit && <>
+                                    <p className="stats__elChart-predict-fact-heading">Сумма полученного дохода:</p>
+                                    <p className="stats__elChart-predict-fact-value">{totalComplited.profit} ₽  {Math.ceil((totalComplited.profit / props.totalProfit) * 100)}% от обещего дохода</p>
                                 </>}
-                                {loseComplitedTotal && <>
-                                    <p className="stats__fact-heading">Сумма уплаченного расхода:</p>
-                                    <p className="stats__fact-value">{loseComplitedTotal} ₽  {Math.ceil((loseComplitedTotal / props.totalLose) * 100)} % от обещего расхода</p>
+                                {totalComplited.lose && <>
+                                    <p className="stats__elChart-predict-fact-heading">Сумма уплаченного расхода:</p>
+                                    <p className="stats__elChart-predict-fact-value">{totalComplited.lose} ₽  {Math.ceil((totalComplited.lose / props.totalLose) * 100)} % от обещего расхода</p>
                                 </>}
                             </div>
 
                         </div>
                     </div>
-                    <div className="stats__el stats__main">
+                    <div className="stats__el stats__elMain">
 
-                        <ul className="stats__main-nav">
+                        <ul className="stats__elMain-nav">
                             <li onClick={() => { setCurrentStats('month') }}
-                                className="stats__main-nav-el">
-                                <button className="stats__main-nav-el-btn">сравнение с прошлым месяцом</button>
+                                className="stats__elMain-nav-el">
+                                <button className="stats__elMain-nav-el-btn">сравнение с прошлым месяцом</button>
                             </li>
                             <li onClick={() => { setCurrentStats('category') }}
-                                className="stats__main-nav-el">
-                                <button className="stats__main-nav-el-btn">анализ по категориям</button>
+                                className="stats__elMain-nav-el">
+                                <button className="stats__elMain-nav-el-btn">анализ по категориям</button>
                             </li>
-                            <li className={`stats__main-nav-border stats__main-nav-border_${currentStats}`}>
+                            <li className={`stats__elMain-nav-border stats__elMain-nav-border_${currentStats}`}>
                             </li>
                         </ul>
 
-                        {currentStats === 'category' ? <div className="stats__category">
+                        {currentStats === 'category' ? <div className="stats__elMain-category">
 
-                            {profitCategoryList && <ul className="stats__category-values">
+                            {profitCategoryData.total && <ul className="stats__elMain-category-values">
                                 <li>
-                                    <p className="stats__category-values-heading">доход</p>
+                                    <p className="stats__elMain-category-values-heading">доход</p>
                                 </li>
-                                <li className="stats__category-line">
-                                    {Array.isArray(profitCategoryList) && profitCategoryList.map(el => {
+                                <li className="stats__elMain-category-line">
+                                    {Array.isArray(profitCategoryData.total) && profitCategoryData.total.map(el => {
                                         return (<span
                                             key={el.category}
                                             title={`${translateCategory(el.category)}`}
                                             style={{ width: `${Math.ceil((el.value * 100) / props.totalProfit)}%` }}
-                                            className={`stats__category-line-el back-col_${el.category}`} />)
+                                            className={`stats__elMain-category-line-el back-col_${el.category}`} />)
                                     })}
                                 </li>
-                                {Array.isArray(profitCategoryList) && profitCategoryList.map(el => {
-                                    return (<li key={el.category} className='stats__category-values-el'>
-                                        <span className={`stats__category-values-img back-img_${el.category}`} />
-                                        <p className="stats__category-values-text">{`${((el.value * 100) / props.totalProfit).toFixed(1)}%`}</p>
-                                        <p className="stats__category-values-text">{el.value}</p>
+                                {Array.isArray(profitCategoryData.total) && profitCategoryData.total.map(el => {
+                                    return (<li key={el.category} className='stats__elMain-category-values-el'>
+                                        <span className={`stats__elMain-category-values-img back-img_${el.category}`} />
+                                        <p className="stats__elMain-category-values-text">{`${((el.value * 100) / props.totalProfit).toFixed(1)}%`}</p>
+                                        <p className="stats__elMain-category-values-text">{el.value}</p>
                                     </li>)
                                 })}
                             </ul>}
-                            {loseCategoryList && <ul className="stats__category-values">
+                            {loseCategoryData.total && <ul className="stats__elMain-category-values">
                                 <li>
-                                    <p className="stats__category-values-heading">расход</p>
+                                    <p className="stats__elMain-category-values-heading">расход</p>
                                 </li>
-                                <li className="stats__category-line">
-                                    {Array.isArray(loseCategoryList) && loseCategoryList.map(el => {
+                                <li className="stats__elMain-category-line">
+                                    {Array.isArray(loseCategoryData.total) && loseCategoryData.total.map(el => {
                                         return (<span
                                             key={el.category}
                                             title={`${translateCategory(el.category)}`}
                                             style={{ width: `${Math.ceil((el.value * 100) / props.totalLose)}%` }}
-                                            className={`stats__category-line-el back-col_${el.category}`} />)
+                                            className={`stats__elMain-category-line-el back-col_${el.category}`} />)
                                     })}
                                 </li>
-                                {Array.isArray(loseCategoryList) && loseCategoryList.map(el => {
-                                    return (<li key={el.category} className='stats__category-values-el'>
-                                        <span className={`stats__category-values-img back-img_${el.category}`} />
-                                        <p className="stats__category-values-text">{`${((el.value * 100) / props.totalLose).toFixed(1)}%`}</p>
-                                        <p className="stats__category-values-text">{el.value}</p>
+                                {Array.isArray(loseCategoryData.total) && loseCategoryData.total.map(el => {
+                                    return (<li key={el.category} className='stats__elMain-category-values-el'>
+                                        <span className={`stats__elMain-category-values-img back-img_${el.category}`} />
+                                        <p className="stats__elMain-category-values-text">{`${((el.value * 100) / props.totalLose).toFixed(1)}%`}</p>
+                                        <p className="stats__elMain-category-values-text">{el.value}</p>
                                     </li>)
                                 })}
                             </ul>}
@@ -340,10 +345,10 @@ export default function Statistics(props: props) {
                                     </div>
                                     <ul className="stats__month">
                                         <li className="stats__month-el" style={{ gridColumn: '1 / span 2' }}>
-                                            {losePrecentCategoryList || profitPrecentCategoryList ? <p className="stats__month-heading">текущий месяц к прошлому по категориям</p> :
+                                            {loseCategoryData.precent || profitCategoryData.precent ? <p className="stats__month-heading">текущий месяц к прошлому по категориям</p> :
                                                 <p className="stats__month-cap">нет данных для сравнения</p>}
                                         </li>
-                                        {Array.isArray(profitPrecentCategoryList) && profitPrecentCategoryList.map((el) => {
+                                        {Array.isArray(profitCategoryData.precent) && profitCategoryData.precent.map((el) => {
 
                                             return (<li className="stats__month-el" style={{ gridColumn: '1' }} key={el.category}>
                                                 <span className={`stats__month-img back-img_${el.category}`} />
@@ -352,7 +357,7 @@ export default function Statistics(props: props) {
                                             </li>)
 
                                         })}
-                                        {Array.isArray(losePrecentCategoryList) && losePrecentCategoryList.map((el, index) => {
+                                        {Array.isArray(loseCategoryData.precent) && loseCategoryData.precent.map((el, index) => {
 
                                             return (<li className="stats__month-el" style={{ gridColumn: '2', gridRow: `${index + 2}` }} key={el.category}>
                                                 <span className={`stats__month-img back-img_${el.category}`} />

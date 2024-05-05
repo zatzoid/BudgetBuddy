@@ -11,8 +11,8 @@
 .local-posts {
     width: 100%;
     max-width: var(--width-max);
-    width: calc(100% - 20px);
     min-height: calc(100vh - 120px);
+    padding: 0px;
     padding-top: 100px;
     box-sizing: border-box;
 

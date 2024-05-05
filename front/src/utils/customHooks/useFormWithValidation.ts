@@ -1,12 +1,28 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Input } from "../types";
 
+interface props {
+    values?: defaultValues
+}
+type defaultValues = { name: string, value: string }[]
 
-export default function useFormWithValidation() {
-    const [values, setValues] = React.useState<Input>({});
-    const [errors, setErrors] = React.useState<Input>({});
-    const [isValid, setIsValid] = React.useState<boolean>(false);
-    /*  target.closest("form") */
+
+export default function useFormWithValidation(props?: props) {
+    const [values, setValues] = useState<Input>({});
+    const [errors, setErrors] = useState<Input>({});
+    const [isValid, setIsValid] = useState<boolean>(false);
+
+    useEffect(() => {
+       
+        if (props && props.values) {
+            props.values.forEach((val) => {
+                values[val.name] = val.value;
+                console.log(values);
+            })
+        }
+
+    }, [])
+
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>, form: HTMLFormElement) => {
         const target = event.target;
@@ -20,12 +36,12 @@ export default function useFormWithValidation() {
             setIsValid(form.checkValidity() && !errors.email);
             return
         } else if (name === 'name') {
-            
+
             setErrors({ ...errors, [name]: value.length < 2 ? `Имя должно содержать минимум 2 символа ` : target.validationMessage });
             setIsValid(form.checkValidity() && !errors.name);
             return
         }
-      
+
         setErrors({ ...errors, [name]: target.validationMessage });
         setIsValid(form.checkValidity() && !errors.email);
     };
