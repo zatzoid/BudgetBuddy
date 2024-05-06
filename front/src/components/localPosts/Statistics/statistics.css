@@ -4,9 +4,10 @@
     padding-bottom: 30px;
     position: relative;
     transition: all .5s;
-   
+
 }
-.stats::after{
+
+.stats::after {
     content: '';
     height: 90%;
     width: 2px;
@@ -21,11 +22,11 @@
     transition: max-height .5s;
     overflow: hidden;
 
-   
+
 }
 
 .stats__wrapper_opened {
-    max-height: 450px;
+    max-height: 4800px;
 }
 
 .stats__show-stats-btn {
@@ -57,7 +58,8 @@
     transform: scale(-1);
     transition: all .4s;
 }
-.stats__show-stats-btn-triangle_open  {
+
+.stats__show-stats-btn-triangle_open {
     transform: scale(1);
     background-color: var(--col-white);
     width: 17px;
@@ -71,10 +73,13 @@
     font-weight: 700;
 }
 
-
-
-.stats__main {
+.stats__el{
     padding: 15px;
+    box-sizing: border-box;
+}
+
+.stats__elMain {
+   
 }
 
 .stats__heading-btn-block {
@@ -98,7 +103,7 @@
 
 }
 
-.stats__main-nav {
+.stats__elMain-nav {
     list-style: none;
     padding: 0 0 5px;
     display: grid;
@@ -109,25 +114,26 @@
 
 
 
-.stats__main-nav-el {
+.stats__elMain-nav-el {
 
     margin: 0;
     z-index: 2;
     text-align: center;
 }
 
-.stats__main-nav-el-btn {
+.stats__elMain-nav-el-btn {
     margin: 0;
     font-size: 15px;
     background-color: var(--col-clear);
     border: none;
     cursor: pointer;
 }
-.stats__main-nav-el-btn:hover {
+
+.stats__elMain-nav-el-btn:hover {
     opacity: 0.7;
 }
 
-.stats__main-nav-border {
+.stats__elMain-nav-border {
     position: absolute;
     bottom: 0;
     background-color: var(--col-sec);
@@ -140,11 +146,11 @@
     border-radius: 10px 10px 0 0;
 }
 
-.stats__main-nav-border_category {
+.stats__elMain-nav-border_category {
     transform: translateX(100%);
 }
 
-.stats__category-line {
+.stats__elMain-category-line {
     overflow: hidden;
     display: flex;
     height: 20px;
@@ -154,33 +160,33 @@
     margin: 5px 0;
 }
 
-.stats__category-values-heading {
+.stats__elMain-category-values-heading {
     margin: 0;
     text-align: center;
     font-weight: 700;
 }
 
-.stats__category-line-el {
+.stats__elMain-category-line-el {
     height: 100%;
 }
 
 
 
-.stats__category-values {
+.stats__elMain-category-values {
     list-style: none;
     padding: 0;
 }
 
-.stats__category-values-el {
+.stats__elMain-category-values-el {
     display: flex;
     gap: 5px;
 }
 
-.stats__category-values-text {
+.stats__elMain-category-values-text {
     margin: 0;
 }
 
-.stats__category-values-img {
+.stats__elMain-category-values-img {
     width: 20px;
     height: 20px;
     background-position: center;
@@ -188,48 +194,47 @@
     background-size: contain;
 }
 
-.stats__chart {
+.stats__elChart {
     justify-content: center;
-    padding: 15px;
     box-sizing: border-box;
 }
 
 
-.stats__chart-el {
+.stats__elChart-pie {
     display: flex;
     justify-content: center;
     height: 250px;
 }
 
 
-.stats__predict-heding {
+.stats__elChart-predict-heding {
     font-size: 15px;
     font-weight: 500;
     margin-bottom: 0;
 }
 
-.stats__predict-value {
+.stats__elChart-predict-value {
     font-size: 14px;
     margin: 2px 0;
 }
 
-.stats__predict-value_ok {
+.stats__elChart-predict-value_ok {
     border-bottom: 2px solid var(--col-main);
 }
 
-.stats__predict-value_fault {
+.stats__elChart-predict-value_fault {
     border-bottom: 2px solid var(--col-red);
 }
 
 
 
-.stats__fact-heading {
+.stats__elChart-predict-fact-heading {
     font-weight: 500;
     margin: 2px 0;
     font-size: 15px;
 }
 
-.stats__fact-value {
+.stats__elChart-predict-fact-value {
     margin: 2px 0;
     font-size: 14px;
     font-weight: 400;
@@ -260,14 +265,17 @@
     margin: auto;
     text-align: center;
 }
-.stats__el{
+
+.stats__el {
     padding-bottom: 0;
 }
+
 .stats__month-el {
     display: flex;
     gap: 10px;
 }
-.stats__month-img{
+
+.stats__month-img {
     width: 20px;
     height: 20px;
     background-position: center;
@@ -276,11 +284,28 @@
 }
 
 @media screen and (max-width: 700px) {
-    .stats{
-        gap: 22px;
+    .stats {
+        gap: 15px;
+        box-sizing: border-box;
+        grid-template-columns: repeat(2, 100%);
+
     }
-    .stats::after{
-            display: none;
+
+    .stats::after {
+        display: none;
+    }
+
+    .stats__el {
+
+       
+        width: 100%;
+       
+
+    }
+
+    .stats__elChart {
+        width: 100%;
+        border: none;
     }
 
     .stats__heading-btn-block {
@@ -331,21 +356,15 @@
 
     }
 
-    .stats__el {
-        margin-right: 15px;
-        width: calc(100vw - 75px);
-    }
 
-    .stats__chart {
-        width: calc(100vw - 45px);
-        border: none;
-    }
 
-    .stats__main-nav-el-btn {
+
+
+    .stats__elMain-nav-el-btn {
         font-size: 12px;
     }
 
-    .stats__main-nav::after {
+    .stats__elMain-nav::after {
         content: '';
         position: absolute;
         width: 100%;

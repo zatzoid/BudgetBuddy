@@ -25,6 +25,7 @@ import { apiReq } from "../utils/api/apiReq";
 
 
 function App() {
+  console.log('rerender app');
   const [appSettings, setAppSettings] = useState<AppSettings>(getAppSettingsFromLS())
   const { loggedIn, signUp, signIn, signOut, changeUserInfo, deleteUserMe, isLoadingUser, userData, switchAppModeUser, auth } = useUser({ callBackResMsg: setResMsg, startAppSettings: appSettings });
   const { getLPList, createLPel, putCashDataLP, deleteCashDataLP, refreshPost, patchLPCashData, switchAppModeLp, LPList, isLoadingLP } = useLocalPosts({ callBackResMsg: setResMsg, startAppSettings: appSettings });
@@ -181,7 +182,7 @@ function App() {
               loggedIn={loggedIn}
 
               auth={auth}
-              isLoading={isLoadingUser}
+              isLoadingUser={isLoadingUser}
               changeUserInfo={changeUserInfo}
               localData={LPList}
               isLoadingLP={isLoadingLP}

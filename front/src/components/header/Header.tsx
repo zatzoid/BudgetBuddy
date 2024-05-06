@@ -13,7 +13,7 @@ interface props {
 }
 
 export default function Header(props: props) {
-    const { userData,  appSettings } = React.useContext(CurrentContext);
+    const { userData, appSettings } = React.useContext(CurrentContext);
     const [showMenu, setShowMenu] = useState<boolean>(false);
     const [delModalShowed, setDelModalShowed] = useState<boolean>(false)
     const location = useLocation();
@@ -76,9 +76,9 @@ export default function Header(props: props) {
 
                             <li className="header__navbar-settings-el">
                                 <p className="header__navbar-text">Настройка доходов:</p>
-                                <CheckBox text="Всегда скрывать вычеркнутые" isChecked={appSettings.profitHideComplited} callBack={props.updateAppSettings}  name="profitHideComplited"/>
+                                <CheckBox text="Всегда скрывать вычеркнутые" isChecked={appSettings.profitHideComplited} callBack={props.updateAppSettings} name="profitHideComplited" />
                                 <Select
-                             
+
                                     zIndex={6}
                                     optionsArray={sortingSelect}
                                     selectName="profitSorting"
@@ -87,9 +87,9 @@ export default function Header(props: props) {
                             </li>
                             <li className="header__navbar-settings-el">
                                 <p className="header__navbar-text">Настройка расходов:</p>
-                                <CheckBox text="Всегда скрывать вычеркнутые" isChecked={appSettings.loseHideComplited} callBack={props.updateAppSettings} name="loseHideComplited"/>
+                                <CheckBox text="Всегда скрывать вычеркнутые" isChecked={appSettings.loseHideComplited} callBack={props.updateAppSettings} name="loseHideComplited" />
                                 <Select
-                                
+
                                     optionsArray={sortingSelect}
                                     selectName="loseSorting"
                                     defaultVal={appSettings.loseSorting}
@@ -97,8 +97,8 @@ export default function Header(props: props) {
                             </li>
                             <li className="header__navbar-settings-el">
                                 <p className="header__navbar-text">Режим работы приложения:</p>
-                                <CheckBox text="Онлайн" isChecked={appSettings.startAppMode === 'online'} callBack={props.updateAppSettings} name="startAppMode" value="online"/>
-                                <CheckBox text="Оффлайн" isChecked={appSettings.startAppMode === 'offline'} callBack={props.updateAppSettings} name="startAppMode" value="offline"/>
+                                <CheckBox text="Онлайн" isChecked={appSettings.startAppMode === 'online'} callBack={props.updateAppSettings} name="startAppMode" value="online" />
+                                <CheckBox text="Оффлайн" isChecked={appSettings.startAppMode === 'offline'} callBack={props.updateAppSettings} name="startAppMode" value="offline" />
                             </li>
 
 

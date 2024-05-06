@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import Profile from "./profile/Profile";
 import MounthSlider from "./mounthSlider/MounthSlider";
 import PostedEl from "./PostedEl/PostedEl";
@@ -11,7 +11,7 @@ import { CashDataPatch, CashData, LocalPost, CashDataFromClient, MetaData, Kinde
 import { CurrentContext } from "../Context";
 
 interface props {
-    isLoading: boolean
+    isLoadingUser: boolean
     changeUserInfo: () => Promise<{ success: boolean }>
     localData: LocalPost[]
     isLoadingLP: boolean
@@ -174,6 +174,7 @@ export default function LocalPosts(props: props) {
 
 
     function slideCashData() {
+
         if (window.innerWidth < 700) {
             if (currentKindeShowed === 1) {
                 setCurrentKindeShowed(0)
@@ -202,10 +203,61 @@ export default function LocalPosts(props: props) {
     }, [showedPost]);
 
 
+
+    /* рендер элементов из массива */
+
+    const postedElsRenderProfit = useMemo(() => {
+        return renderPostedEl('profit')
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showedPostData.current?.cashData.profit, hidenComplitedPosts.profit])
+
+    const postedElsRenderLose = useMemo(() => {
+        return renderPostedEl('lose')
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showedPostData.current?.cashData.lose, hidenComplitedPosts.lose])
+
+    function renderPostedEl(kinde: Kinde): JSX.Element {
+        if (Array.isArray((showedPostData.current as LocalPost)?.cashData[kinde])
+            &&
+            (showedPostData.current as LocalPost)?.cashData[kinde].length > 0) {
+
+            return (<>
+                {(showedPostData.current as LocalPost)?.cashData[kinde].map((item) => (
+                    <PostedEl
+                        hidenComplitedPost={hidenComplitedPosts}
+                        patchLPCashData={props.patchLPCashData}
+                        emailModalLodaing={props.emailModalLodaing}
+                        openEmailModal={props.openEmailModal}
+                        isLoadingLP={props.isLoadingLP}
+                        deleteCashDataLP={props.deleteCashDataLP}
+                        item={item}
+                        key={item._id}
+                        kinde={kinde}
+                    />
+                ))}
+            </>)
+        } else {
+            return (<li className="local-posts__list-elPlaceholder">
+                <p className="local-posts__list-elPlaceholder-text">{`Тут еще нету статей ${kinde === 'lose' ? 'расходов' : 'доходов'}`}</p>
+            </li>)
+        }
+
+
+    }
+    /* профиль */
+    //надо выносить стейты значений полей
+
+    /* слайдер месяцев */
+    const memoMounthSlider = useMemo(() => <MounthSlider showedPost={showedPost} switchMonth={switchMonth} />, [showedPost]);
+
+
+
     return (
         <main className='local-posts'>
-            <Profile changeUserInfo={props.changeUserInfo} isLoading={props.isLoading} />
-            <MounthSlider showedPost={showedPost} switchMonth={switchMonth} />
+            <Profile changeUserInfo={props.changeUserInfo} isLoading={props.isLoadingUser} />
+            {memoMounthSlider}
             <section className="local-posts__wrapper">
                 <div className={lpContainerStyle}>
                     {(totalProfit as number) + (totalLose as number) !== 0 && totalLose !== undefined && totalProfit !== undefined ?
@@ -213,8 +265,7 @@ export default function LocalPosts(props: props) {
                             currentWW={currentWW}
                             localPost={showedPostData}
                             totalLose={totalLose}
-                            totalProfit={totalProfit}
-                        /> :
+                            totalProfit={totalProfit} /> :
                         ''}
                     {!showedPostData.current ?
                         <div className="local-post__empty-el">
@@ -268,24 +319,7 @@ export default function LocalPosts(props: props) {
 
                                     <ul className="local-posts__list">
 
-                                        {Array.isArray((showedPostData.current as LocalPost)?.cashData.profit) && showedPostData.current?.cashData.profit.length > 0
-                                            ?
-                                            (showedPostData.current as LocalPost)?.cashData.profit.map((item) => (
-                                                <PostedEl
-                                                    hidenComplitedPost={hidenComplitedPosts}
-                                                    patchLPCashData={props.patchLPCashData}
-                                                    emailModalLodaing={props.emailModalLodaing}
-                                                    openEmailModal={props.openEmailModal}
-                                                    isLoadingLP={props.isLoadingLP}
-                                                    deleteCashDataLP={props.deleteCashDataLP}
-                                                    item={item}
-                                                    key={item._id}
-                                                    kinde={'profit'}
-                                                />
-                                            )) :
-                                            <li className="local-posts__list-elPlaceholder">
-                                                <p className="local-posts__list-elPlaceholder-text">Тут еще нету статей доходов</p>
-                                            </li>}
+                                        {postedElsRenderProfit}
 
                                     </ul>
                                 </div>
@@ -306,25 +340,7 @@ export default function LocalPosts(props: props) {
                                             hideComplited={hideComplited}
                                             sortMassive={sortMassive} />}
                                     <ul className="local-posts__list">
-                                        {Array.isArray((showedPostData.current as LocalPost)?.cashData.lose) && showedPostData.current?.cashData.lose.length > 0
-                                            ?
-                                            (showedPostData.current as LocalPost)?.cashData.lose.map((item) => (
-                                                <PostedEl
-                                                    hidenComplitedPost={hidenComplitedPosts}
-                                                    patchLPCashData={props.patchLPCashData}
-                                                    emailModalLodaing={props.emailModalLodaing}
-                                                    openEmailModal={props.openEmailModal}
-                                                    isLoadingLP={props.isLoadingLP}
-                                                    deleteCashDataLP={props.deleteCashDataLP}
-                                                    item={item}
-                                                    key={item._id}
-                                                    kinde={'lose'}
-                                                />
-                                            ))
-                                            :
-                                            <li className="local-posts__list-elPlaceholder">
-                                                <p className="local-posts__list-elPlaceholder-text">Тут еще нету статей расходов</p>
-                                            </li>}
+                                        {postedElsRenderLose}
 
                                     </ul>
                                 </div>

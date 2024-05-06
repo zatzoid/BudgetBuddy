@@ -24,7 +24,6 @@ class localPostAPI extends Api {
         return fetch(`${this._link}/local-posts`, {
             method: 'GET',
             headers: this._headers,
-            credentials: 'include'
         })
             .then(this._checkError)
             .catch(this._errorHandler)
