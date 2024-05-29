@@ -1,19 +1,21 @@
 import React, { useState } from "react";
-import { NavLink, useLocation } from 'react-router-dom'
-import { User } from "../../utils/types";
-import { CurrentContext } from "../Context";
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import CheckBox from "../ui/checkBox/checkBox";
 import Select from "../ui/select/Select";
+import { useAppDispatch, useAppSelector } from "../../utils/store/hooks";
+import { deleteUserMe, signOut } from "../../utils/store/userMeSlice";
+import { updateAppSettings } from "../../utils/store/appSettingsSlice";
+import { AppSettings } from "../../utils/types";
 
-interface props {
-    loggedIn: boolean
-    signOut: () => void
-    deleteUserMe: (email: string) => void
-    updateAppSettings: (e: React.ChangeEvent<HTMLInputElement>) => void
-}
 
-export default function Header(props: props) {
-    const { userData,  appSettings } = React.useContext(CurrentContext);
+
+export default function Header() {
+
+    const appSettings = useAppSelector(store => store.appSettings);
+    const userMe = useAppSelector(store => store.userMe)
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate()
+
     const [showMenu, setShowMenu] = useState<boolean>(false);
     const [delModalShowed, setDelModalShowed] = useState<boolean>(false)
     const location = useLocation();
@@ -24,8 +26,46 @@ export default function Header(props: props) {
         { name: 'от меньшей суммы', value: 'fromSmall sum' },
         { name: 'от большей суммы', value: '-- sum' },
 
-    ]
+    ];
 
+
+    function handleUpdateAppSettings(event: React.ChangeEvent<HTMLInputElement>) {
+
+        const newSettings = { ...appSettings } as AppSettings;
+        const settingsName = event.target.name
+        if (settingsName in newSettings) {
+
+            const keyName = settingsName as keyof AppSettings;
+
+            const settingsValue = typeof newSettings[keyName] === "boolean" ? event.target.checked : event.target.value
+            const target = { [keyName]: settingsValue } as Partial<AppSettings>
+
+            if (typeof settingsValue === typeof newSettings[keyName]) {
+
+
+                (newSettings[keyName] as AppSettings[typeof keyName]) = target[keyName] as AppSettings[typeof keyName]
+            }
+        }
+
+        dispatch(updateAppSettings(newSettings))
+
+    }
+
+    async function handleSignOut() {
+        try {
+            await dispatch(signOut());
+            setShowMenu(!showMenu);
+            navigate('/sign-in')
+        } catch (error) {
+            console.log(error);
+        }
+       
+    }
+    function handleDeleteUserMe() {
+        dispatch(deleteUserMe((userMe.email as string)));
+        setShowMenu(!showMenu);
+        setDelModalShowed(!delModalShowed)
+    }
 
 
 
@@ -33,10 +73,10 @@ export default function Header(props: props) {
         <header className='header' >
             <div className="header__wrapper">
                 <div className="header__content">
-                    <h1 className={`header__heading ${!props.loggedIn && 'header__heading_unlogged '}`}>
+                    <h1 className={`header__heading ${!userMe.isLoggedIn && 'header__heading_unlogged '}`}>
                         BudgetBuddy</h1>
                     {
-                        props.loggedIn &&
+                        userMe.isLoggedIn &&
                         <button className="haeder__navbar-btn" onClick={() => { setShowMenu(!showMenu) }}>
                             <hr className={`header__navbar-btn-line ${showMenu && 'header__navbar-btn-line_top'}`} />
                             <hr className={`header__navbar-btn-line ${showMenu && 'header__navbar-btn-line_center'}`} />
@@ -68,43 +108,67 @@ export default function Header(props: props) {
                         <ul className="header__navbar-settings">
 
                             <li className="header__navbar-settings-el">
-                                <CheckBox text="Оставить статистику всегда открытой" isChecked={appSettings.statsMustOpen} callBack={props.updateAppSettings} name="statsMustOpen" />
+                                <CheckBox
+                                    text="Оставить статистику всегда открытой"
+                                    isChecked={appSettings.statsMustOpen}
+                                    callBack={handleUpdateAppSettings}
+                                    name="statsMustOpen" />
                             </li>
                             <li className="header__navbar-settings-el">
-                                <CheckBox text="Показывать статус запросов полностью" isChecked={appSettings.noticeMustOpen} callBack={props.updateAppSettings} name="noticeMustOpen" />
+                                <CheckBox
+                                    text="Показывать статус запросов полностью"
+                                    isChecked={appSettings.noticeMustOpen}
+                                    callBack={handleUpdateAppSettings}
+                                    name="noticeMustOpen" />
                             </li>
 
                             <li className="header__navbar-settings-el">
                                 <p className="header__navbar-text">Настройка доходов:</p>
-                                <CheckBox text="Всегда скрывать вычеркнутые" isChecked={appSettings.profitHideComplited} callBack={props.updateAppSettings}  name="profitHideComplited"/>
+                                <CheckBox
+                                    text="Всегда скрывать вычеркнутые"
+                                    isChecked={appSettings.profitHideComplited}
+                                    callBack={handleUpdateAppSettings}
+                                    name="profitHideComplited" />
                                 <Select
-                             
+
                                     zIndex={6}
                                     optionsArray={sortingSelect}
                                     selectName="profitSorting"
                                     defaultVal={appSettings.profitSorting}
-                                    callBack={props.updateAppSettings} />
+                                    callBack={handleUpdateAppSettings} />
                             </li>
                             <li className="header__navbar-settings-el">
                                 <p className="header__navbar-text">Настройка расходов:</p>
-                                <CheckBox text="Всегда скрывать вычеркнутые" isChecked={appSettings.loseHideComplited} callBack={props.updateAppSettings} name="loseHideComplited"/>
+                                <CheckBox
+                                    text="Всегда скрывать вычеркнутые"
+                                    isChecked={appSettings.loseHideComplited}
+                                    callBack={handleUpdateAppSettings}
+                                    name="loseHideComplited" />
                                 <Select
-                                
+
                                     optionsArray={sortingSelect}
                                     selectName="loseSorting"
                                     defaultVal={appSettings.loseSorting}
-                                    callBack={props.updateAppSettings} />
+                                    callBack={handleUpdateAppSettings} />
                             </li>
                             <li className="header__navbar-settings-el">
                                 <p className="header__navbar-text">Режим работы приложения:</p>
-                                <CheckBox text="Онлайн" isChecked={appSettings.startAppMode === 'online'} callBack={props.updateAppSettings} name="startAppMode" value="online"/>
-                                <CheckBox text="Оффлайн" isChecked={appSettings.startAppMode === 'offline'} callBack={props.updateAppSettings} name="startAppMode" value="offline"/>
+                                <CheckBox text="Онлайн"
+                                    isChecked={appSettings.startAppMode === 'online'}
+                                    callBack={handleUpdateAppSettings}
+                                    name="startAppMode"
+                                    value="online" />
+                                <CheckBox text="Оффлайн"
+                                    isChecked={appSettings.startAppMode === 'offline'}
+                                    callBack={handleUpdateAppSettings}
+                                    name="startAppMode"
+                                    value="offline" />
                             </li>
 
 
                         </ul>
                     </div>
-                    <button className="header__acc-btn" onClick={() => { props.signOut(); setShowMenu(!showMenu) }}>Выйти из аккаунта</button>
+                    <button className="header__acc-btn" onClick={() => { handleSignOut() }}>Выйти из аккаунта</button>
                     <button className="header__acc-btn" onClick={() => { setDelModalShowed(!delModalShowed) }}>Удалить аккаунт</button>
                 </div>
             </div>
@@ -114,7 +178,7 @@ export default function Header(props: props) {
                         вы удалите из базы: аккаунт, все сделанные им записи, и уведомления на почту которые еще не были отправлены .
                     </p>
                     <div className="headerModal__btn-block">
-                        <button className="headerModal__btn headerModal__btn_ok" onClick={() => { props.deleteUserMe((userData as User).email); setShowMenu(!showMenu); setDelModalShowed(!delModalShowed) }}>ладно</button>
+                        <button className="headerModal__btn headerModal__btn_ok" onClick={() => { handleDeleteUserMe() }}>ладно</button>
                         <button className="headerModal__btn headerModal__btn_cancel" onClick={() => setDelModalShowed(!delModalShowed)}>я передумал</button>
                     </div>
 

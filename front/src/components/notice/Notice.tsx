@@ -1,33 +1,42 @@
-import { useContext, useEffect, useState } from "react";
-import { MetaData, appMode } from "../../utils/types";
-import { CurrentContext } from "../Context";
-interface props {
-    resMessage: MetaData | null
-    switchMode: (mode: appMode) => void
-}
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch, RootState } from "../../utils/store";
+import { useSelector } from "react-redux";
+import { switchAppMode } from "../../utils/store/appModeSlice";
+import { AppMode } from "../../utils/types";
 
-export default function Notice(props: props) {
-    const [isShow, setIsShow] = useState<boolean>(true);
+export default function Notice() {
+
+    
     const [apiResStatus, setApiResStatus] = useState<string>('loading');
-    const { appMode, appSettings } = useContext(CurrentContext);
+
+
+    const dispatch = useDispatch<AppDispatch>()
+    const apiStatus = useSelector((state: RootState) => state.apiStatus);
+    const appMode = useSelector((state: RootState) => state.appMode);
+    const appSettings = useSelector((state: RootState) => state.appSettings);
+    const [isShow, setIsShow] = useState<boolean>(appSettings.noticeMustOpen);
+
+
+
 
     useEffect(() => {
-        if (props.resMessage !== null) {
+        if (apiStatus !== null) {
             if (appSettings.noticeMustOpen) {
                 setIsShow(true);
             }
 
 
 
-            if (props.resMessage.statusCode === 102) {
+            if (apiStatus.statusCode === 102 || apiStatus.isLoading) {
                 setApiResStatus('loading')
 
             }
-            else if (props.resMessage.statusCode >= 200 && props.resMessage.statusCode < 300) {
+            else if (apiStatus.statusCode >= 200 && apiStatus.statusCode < 300) {
                 setApiResStatus('success')
 
             }
-            else if (props.resMessage.statusCode >= 400) {
+            else if (apiStatus.statusCode >= 400) {
                 setApiResStatus('fail')
             }
         }
@@ -36,8 +45,11 @@ export default function Notice(props: props) {
         }
 
 
-    }, [props.resMessage]);
+    }, [apiStatus]);
 
+    function handleSwitchAppMode(str: AppMode) {
+        dispatch(switchAppMode({ mode: str }))
+    }
 
 
     return (
@@ -45,9 +57,9 @@ export default function Notice(props: props) {
 
             <div className={`notice__message ${isShow ? 'notice__message_active' : ''}`}>
                 <div className="notice__message-datas">
-                    <p className="notice__message-data">{props.resMessage?.statusCode}<span className={`notice__message-data-color notice__message-data-color_${apiResStatus}`}></span></p>
-                    <p className="notice__message-data">{props.resMessage?.message}</p>
-                    {props.resMessage?.statusCode && props.resMessage?.statusCode >= 500 && <div className="notice__message-datas-modal">
+                    <p className="notice__message-data">{apiStatus?.statusCode}<span className={`notice__message-data-color notice__message-data-color_${apiResStatus}`}></span></p>
+                    <p className="notice__message-data">{apiStatus?.message}</p>
+                    {apiStatus?.statusCode && apiStatus?.statusCode >= 500 && <div className="notice__message-datas-modal">
 
                         <p className="notice__message-data">Похоже сервер в данный момент не отвечает, можете перейти в другой режим работы</p>
 
@@ -55,15 +67,15 @@ export default function Notice(props: props) {
                         <button
                             className="notice__message-btn notice_col-online"
 
-                            onClick={() => props.switchMode({ mode: 'online' })}
-                            disabled={appMode.mode === 'online' || props.resMessage?.statusCode === 102}
+                            onClick={() => handleSwitchAppMode('online')}
+                            disabled={appMode.mode === 'online' || apiStatus.isLoading}
                             title="работа с сервером">
                             Онлайн</button>
 
                         <button
                             className="notice__message-btn notice_col-offline"
-                            onClick={() => props.switchMode({ mode: 'offline' })}
-                            disabled={appMode.mode === 'offline' || props.resMessage?.statusCode === 102}
+                            onClick={() => handleSwitchAppMode('offline')}
+                            disabled={appMode.mode === 'offline' || apiStatus.isLoading}
                             title="работа в офлайне, тестовый режим работы без сервера, и сохранением данных в самом приложении">
                             Оффлайн</button>
 

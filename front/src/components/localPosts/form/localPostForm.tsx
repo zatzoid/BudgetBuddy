@@ -18,6 +18,7 @@ interface props {
 }
 
 export default function LocalPostForm(props: props) {
+    
     const { values, handleChange, resetForm, errors, isValid } = useFormWithValidation()
     const [focusKey, setFocusKey] = useState<boolean>(false);
     const [focusValue, setFocusValue] = useState<boolean>(false);

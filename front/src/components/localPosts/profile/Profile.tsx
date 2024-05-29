@@ -1,44 +1,51 @@
 import React, { useEffect, useRef, useState } from "react";
 import defaultAvatar from '../../../images/user.svg';
 import Border from "../../ui/border/Border";
-import { CurrentContext } from "../../Context";
 import useFormWithValidation from "../../../utils/customHooks/validator";
 import VisualBtn from '../../ui/visualbtn/VisualBtn'
-import { Input, User } from "../../../utils/types";
+import { User } from "../../../utils/types";
+import { useAppDispatch } from "../../../utils/store/hooks";
+import { changeUserInfo } from "../../../utils/store/userMeSlice";
+import { apiStatus } from "../../../utils/store/apiStatusSlice";
+
 
 interface props {
-    changeUserInfo: (data: Input) => Promise<{ success: boolean }>
-    isLoading: boolean
+    userMe: User
+    apiStatus: apiStatus
 }
 
+const Profile = React.memo((props: props) => {
+    const { userMe, apiStatus } = props
 
-export default function Profile(props: props) {
-    const { userData } = React.useContext(CurrentContext);
-    const { values, handleChange, errors, isValid } = useFormWithValidation();
+    const dispatch = useAppDispatch()
+    const { values, handleChange, errors, isValid } = useFormWithValidation({ 'name': userMe?.name, 'email': userMe?.email });
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const [nameFocus, setNameFocus] = useState<boolean>(false);
     const [emailFocus, setEmailFocus] = useState<boolean>(false);
-    const form = useRef<HTMLFormElement | null>(null)
+    const form = useRef<HTMLFormElement | null>(null);
+
+
+    
+    useEffect(() => {
+        
+        console.log('render prof')
+    })
 
     function editMod() {
         if (!isEdit) {
             return setIsEdit(true)
         }
-        values.name = (userData as User).name || '';
-        values.email = (userData as User).email || '';
+        values.name = (userMe as User).name;
+        values.email = (userMe as User).email;
         setIsEdit(false)
     }
 
-    useEffect(() => {
-        values.name = (userData as User)?.name || '';
-        values.email = (userData as User)?.email || '';
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+   
     async function handleSubmit(e: React.FormEvent) {
         e.preventDefault()
         try {
-            const data = await props.changeUserInfo(values);
-            if (data.success) {
+            await dispatch(changeUserInfo(values))
+            if (apiStatus.statusCode === 200) {
                 setIsEdit(false);
             }
         }
@@ -65,10 +72,10 @@ export default function Profile(props: props) {
                         autoComplete="off"
                         className="profile__input" />
                     <Border onFocus={nameFocus} onError={errors.name ? true : false} />
-                    <p className="profile__error">{errors.name}</p>
+                   
                 </div>
                 <button onClick={() => { editMod() }}
-                    disabled={props.isLoading}
+                    disabled={apiStatus.isLoading}
                     type="button"
                     className={`profile__edit ${isEdit && 'profile__edit_active'}`}></button>
                 <div className="profile__data-block">
@@ -82,15 +89,17 @@ export default function Profile(props: props) {
                         type="email"
                         className="profile__input" />
                     <Border onFocus={emailFocus} onError={errors.email ? true : false} />
-                    <p className="profile__error">{errors.email}</p>
+                  
                 </div>
                 {isEdit && <button
                     className="profile__edit-submit-btn"
                     type="submit"
-                    disabled={props.isLoading || !isValid}>
-                    <VisualBtn loading={props.isLoading} confirm={true} /></button>}
+                    disabled={apiStatus.isLoading || !isValid}>
+                    <VisualBtn loading={apiStatus.isLoading} confirm={true} /></button>}
 
             </form>
         </section>
     )
-}
+})
+
+export default Profile

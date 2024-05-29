@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Profile from "./profile/Profile";
 import MounthSlider from "./mounthSlider/MounthSlider";
 import PostedEl from "./PostedEl/PostedEl";
@@ -7,46 +7,66 @@ import Sorting from "./Sorting/Sorting";
 import Statistics from "./Statistics/Statistics";
 import ActuveBtnSlider from "../ui/activeBtnSlider/ActiveBtnSlider";
 import useTouchSlider from "../../utils/customHooks/useTouchSlider";
-import { CashDataPatch, CashData, LocalPost, CashDataFromClient, MetaData, Kinde } from "../../utils/types";
-import { CurrentContext } from "../Context";
+import { CashDataPatch, CashData, LocalPost, CashDataFromClient, Kinde } from "../../utils/types";
+import { useAppDispatch, useAppSelector } from "../../utils/store/hooks";
+import { createLPel, deleteCashDataLP, patchLPCashData, putCashDataLP } from "../../utils/store/localPostsSlice";
+import ShowMoreBtn from "../ui/showMoreBtn/ShowMoreBtn";
 
 interface props {
-    isLoading: boolean
-    changeUserInfo: () => Promise<{ success: boolean }>
-    localData: LocalPost[]
-    isLoadingLP: boolean
-    LPResMsg: MetaData
-    emailModalLodaing: boolean
-    openEmailModal: (data: CashData) => void
-    deleteCashDataLP: (data: CashDataPatch) => void
-    putCashDataLP: (data: CashDataFromClient) => void
-    patchLPCashData: () => void
-    createPost: (data: { choisenMonth: number, choisenYear: number }) => void
+    openEmailModal: (data: CashData | null) => void
+
 }
 
 
 
 
 export default function LocalPosts(props: props) {
-    const { appSettings } = useContext(CurrentContext)
+    const dispatch = useAppDispatch()
+    const appSettings = useAppSelector(store => store.appSettings);
+    const localPosts = useAppSelector(store => store.localPosts);
+    const apiStatus = useAppSelector(store => store.apiStatus);
+    const userMe = useAppSelector(store => store.userMe);
+
+
     const date = new Date();
+    const [statsOpened, setStatsOpened] = useState<boolean>(appSettings.statsMustOpen);
     const [showedPost, setShowedPost] = useState<number>(date.getMonth() + 1);
     const [showedPostData, setShowedPostData] = useState<{ current: LocalPost | null, prev: LocalPost | null }>({ current: null, prev: null });
     const [lpContainerStyle, setLpContainerStyle] = useState<string>('local-posts__container');
     const [hidenComplitedPosts, setHidenComplitedPosts] = useState<{ lose: string, profit: string }>({ lose: appSettings.loseHideComplited ? 'none' : 'block', profit: appSettings.profitHideComplited ? 'none' : 'block' });
-
+    const [currentSorting, setCurrentSorting] = useState<{ kinde: Kinde, value: string }[]>([{ kinde: 'profit', value: appSettings.profitSorting }, { kinde: 'lose', value: appSettings.loseSorting }])
     // для мобилок
     // отображаемый тип кэш даты profit/lose
+    // слайдер | profit | > | lose |
     const [currentKindeShowed, setCurrentKindeShowed] = useState<number>(0);
 
-    const { handleTouchStart, handleTouchMove, handleTouchEnd, slideStyle } = useTouchSlider({ step: currentKindeShowed, callback: slideCashData })
+
     const [currentWW, setCurrentWW] = useState<number>(window.innerWidth);
 
-    const totalProfit = showedPostData.current?.cashData.profit.reduce((acc: number, item: CashData) => acc + Number(Object.values(item.data)[0]), 0);
-    const totalLose = showedPostData.current?.cashData.lose.reduce((acc: number, item: CashData) => acc + Number(Object.values(item.data)[0]), 0);
-    const [currentSorting, setCurrentSorting] = useState<{ kinde: Kinde, value: string }[]>([{ kinde: 'profit', value: appSettings.profitSorting }, { kinde: 'lose', value: appSettings.loseSorting }])
+    const totalProfit = useMemo((): number => {
+        if (!showedPostData.current) {
+            return 0
+        }
+        return showedPostData.current?.cashData.profit.reduce((acc: number, item: CashData): number => acc + Number(Object.values(item.data)[0]), 0);
+    }, [showedPostData])
+    const totalLose = useMemo((): number => {
+        if (!showedPostData.current) {
+            return 0
+        }
+        return showedPostData.current?.cashData.lose.reduce((acc: number, item: CashData): number => acc + Number(Object.values(item.data)[0]), 0);
+    }, [showedPostData])
 
+    const slideCashData = useCallback(() => {
+        if (window.innerWidth < 700) {
+            if (currentKindeShowed === 1) {
+                setCurrentKindeShowed(0)
+                return
+            }
+            setCurrentKindeShowed(1)
+        }
 
+    }, [currentKindeShowed])
+    const { handleTouchStart, handleTouchMove, handleTouchEnd, slideStyle } = useTouchSlider({ step: currentKindeShowed, callback: slideCashData })
 
     function checkWW() {
         setCurrentWW(window.innerWidth);
@@ -63,9 +83,10 @@ export default function LocalPosts(props: props) {
 
 
     function getCurrentPost() {
-        const currentData = props.localData?.filter(item => item.choisenMonth === showedPost)[0];
-        const previousData = props.localData?.filter(item => item.choisenMonth === showedPost - 1)[0] || null;
-        if (currentData) {
+        const currentData = structuredClone(localPosts.filter(item => item.choisenMonth === showedPost)[0]);
+        const previousData = structuredClone(localPosts.filter(item => item.choisenMonth === showedPost - 1)[0] || null);
+
+        if (currentData && currentData.cashData.lose.length > 0 && currentData.cashData.profit.length > 0) {
             if (currentSorting.length > 0) {
                 //вызывается 2 раза на каждый тип cashData
                 currentSorting.forEach(el => { currentData.cashData[el.kinde] = (sortMassive(el, false, currentData) as CashData[]) })
@@ -76,7 +97,7 @@ export default function LocalPosts(props: props) {
     }
 
 
-    function switchMonth(e: number) {
+    const switchMonth = useCallback((e: number) => {
         if (showedPost + e < 1) {
             setShowedPost(12)
             return
@@ -87,11 +108,12 @@ export default function LocalPosts(props: props) {
         }
         setShowedPost(showedPost + e)
 
-    }
+    }, [showedPost])
 
 
 
-    function sortMassive(data: { kinde: Kinde, value: string }, mustUpdate: boolean = true, currentArray: LocalPost = (showedPostData.current as LocalPost)): CashData[] | void {
+
+    const sortMassive = useCallback((data: { kinde: Kinde, value: string }, mustUpdate: boolean = true, currentArray: LocalPost = (showedPostData.current as LocalPost)): CashData[] | void=> {
         //если mustUpdate = true
         // возвращает cashData[] того типа который передан в data.kinde
         // в ином случае самостоятельно изменяет стейт перменную текущего поста -showedPostData
@@ -152,9 +174,8 @@ export default function LocalPosts(props: props) {
         }
 
 
-    }
-
-    function hideComplited(event: React.ChangeEvent<HTMLInputElement>) {
+    },[showedPostData, currentSorting])
+    const hideComplited = useCallback((event: React.ChangeEvent<HTMLInputElement>)=> {
 
         const data = { kinde: (event.currentTarget.value as Kinde) }
         const currentVal = hidenComplitedPosts[data.kinde]
@@ -169,27 +190,27 @@ export default function LocalPosts(props: props) {
 
         const newObj = { ...hidenComplitedPosts, [data.kinde]: newData }
         setHidenComplitedPosts(newObj);
+    },[hidenComplitedPosts])
+    function handlePutCashDataLP(data: CashDataFromClient) {
+        dispatch(putCashDataLP(data))
+    }
+    function handlePatchLPCashData(data: CashDataPatch) {
+        dispatch(patchLPCashData(data))
+    }
+    function handleDeleteCashDataLP(data: CashDataPatch) {
+        dispatch(deleteCashDataLP(data))
     }
 
 
 
-    function slideCashData() {
-        if (window.innerWidth < 700) {
-            if (currentKindeShowed === 1) {
-                setCurrentKindeShowed(0)
-                return
-            }
-            setCurrentKindeShowed(1)
-        }
 
-    }
 
 
     useEffect(() => {
         getCurrentPost();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.localData]);
+    }, [localPosts]);
 
     useEffect(() => {
         //эффект замены отображаемых данных
@@ -201,28 +222,38 @@ export default function LocalPosts(props: props) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [showedPost]);
 
-
     return (
-        <main className='local-posts'>
-            <Profile changeUserInfo={props.changeUserInfo} isLoading={props.isLoading} />
+        <main className={`local-posts`}>
+
+            <Profile apiStatus={apiStatus} userMe={userMe} />
             <MounthSlider showedPost={showedPost} switchMonth={switchMonth} />
             <section className="local-posts__wrapper">
                 <div className={lpContainerStyle}>
-                    {(totalProfit as number) + (totalLose as number) !== 0 && totalLose !== undefined && totalProfit !== undefined ?
-                        <Statistics
+                    <button className={`stats__show-stats-btn `}
+                        type="button"
+                        onClick={() => { setStatsOpened(!statsOpened) }}>
+                        Статистика
+                        <ShowMoreBtn active={statsOpened} />
+                        <span className={`stats__show-stats-btn-triangle ${statsOpened && 'stats__show-stats-btn-triangle_open'}`}></span>
+                    </button>
+                    <div className={`stats__wrapper ${statsOpened && 'stats__wrapper_opened'}`}>
+                        {Number(totalLose) + Number(totalProfit) > 0 ? <Statistics
                             currentWW={currentWW}
                             localPost={showedPostData}
                             totalLose={totalLose}
                             totalProfit={totalProfit}
+                            statsOpened={statsOpened}
                         /> :
-                        ''}
+                            <div className={`stats__wrapper ${statsOpened && 'stats__wrapper_opened'}`}> <p>пусто</p></div>}
+                    </div>
+
                     {!showedPostData.current ?
                         <div className="local-post__empty-el">
-                            <p className="local-post__empty-el-text">{props.isLoadingLP ? 'Добавляем запись' : 'Добавить запись'}</p>
+                            <p className="local-post__empty-el-text">{apiStatus.isLoading ? 'Добавляем запись' : 'Добавить запись'}</p>
                             <button
-                                disabled={props.isLoadingLP}
-                                onClick={() => { props.createPost({ choisenMonth: showedPost, choisenYear: 2023 }) }}
-                                className={`local-post__empty-el-add-btn ${props.isLoadingLP && 'local-post__empty-el-add-btn_loading'}`}
+                                disabled={apiStatus.isLoading}
+                                onClick={() => { dispatch(createLPel({ choisenMonth: showedPost, choisenYear: 2023 })) }}
+                                className={`local-post__empty-el-add-btn ${apiStatus.isLoading && 'local-post__empty-el-add-btn_loading'}`}
                                 type="button"
                             >+</button>
                         </div>
@@ -251,12 +282,12 @@ export default function LocalPosts(props: props) {
                                 onMouseUp={handleTouchEnd}>
                                 <div className="local-posts__list-wrapper">
                                     <LocalPostForm
-                                        LPResMsg={props.LPResMsg}
-                                        isLoadingLP={props.isLoadingLP}
+                                        LPResMsg={apiStatus}
+                                        isLoadingLP={apiStatus.isLoading}
                                         kinde={'profit'}
                                         heading={'Добавить доход'}
                                         postId={(showedPostData.current as LocalPost)._id}
-                                        submitForm={props.putCashDataLP}
+                                        submitForm={handlePutCashDataLP}
                                     />
                                     {(totalProfit as number) > 0 &&
                                         <Sorting
@@ -273,11 +304,11 @@ export default function LocalPosts(props: props) {
                                             (showedPostData.current as LocalPost)?.cashData.profit.map((item) => (
                                                 <PostedEl
                                                     hidenComplitedPost={hidenComplitedPosts}
-                                                    patchLPCashData={props.patchLPCashData}
-                                                    emailModalLodaing={props.emailModalLodaing}
+
                                                     openEmailModal={props.openEmailModal}
-                                                    isLoadingLP={props.isLoadingLP}
-                                                    deleteCashDataLP={props.deleteCashDataLP}
+                                                    isLoading={apiStatus.isLoading}
+                                                    patchLPCashData={handlePatchLPCashData}
+                                                    deleteCashDataLP={handleDeleteCashDataLP}
                                                     item={item}
                                                     key={item._id}
                                                     kinde={'profit'}
@@ -291,12 +322,12 @@ export default function LocalPosts(props: props) {
                                 </div>
                                 <div className="local-posts__list-wrapper">
                                     <LocalPostForm
-                                        LPResMsg={props.LPResMsg}
-                                        isLoadingLP={props.isLoadingLP}
+                                        LPResMsg={apiStatus}
+                                        isLoadingLP={apiStatus.isLoading}
                                         kinde={'lose'}
                                         heading={'Добавить расход'}
                                         postId={(showedPostData.current as LocalPost)._id}
-                                        submitForm={props.putCashDataLP} />
+                                        submitForm={handlePutCashDataLP} />
                                     {(totalLose as number) > 0
                                         &&
                                         <Sorting
@@ -311,11 +342,10 @@ export default function LocalPosts(props: props) {
                                             (showedPostData.current as LocalPost)?.cashData.lose.map((item) => (
                                                 <PostedEl
                                                     hidenComplitedPost={hidenComplitedPosts}
-                                                    patchLPCashData={props.patchLPCashData}
-                                                    emailModalLodaing={props.emailModalLodaing}
                                                     openEmailModal={props.openEmailModal}
-                                                    isLoadingLP={props.isLoadingLP}
-                                                    deleteCashDataLP={props.deleteCashDataLP}
+                                                    isLoading={apiStatus.isLoading}
+                                                    patchLPCashData={handlePatchLPCashData}
+                                                    deleteCashDataLP={handleDeleteCashDataLP}
                                                     item={item}
                                                     key={item._id}
                                                     kinde={'lose'}
