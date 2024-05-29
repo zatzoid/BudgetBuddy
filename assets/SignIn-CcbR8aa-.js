@@ -1,0 +1,1 @@
+import{u as o,a as p,j as i,s as r}from"./index-B12e38bU.js";import{S as e}from"./SignForm-C0NOKpcC.js";import"./validator-CElGg4ze.js";function g(){const n=o(),t=p(s=>s.apiStatus);function a(s){n(r(s))}return i.jsx(i.Fragment,{children:i.jsx(e,{isLoading:t.isLoading,submit:a,signUp:!1})})}export{g as default};

@@ -1,0 +1,1 @@
+import{g as s,j as a}from"./index-B12e38bU.js";function n(){const e=s();return a.jsxs("div",{className:"NFPage",children:[a.jsx("p",{className:"NFPage__text",children:"Такой страницы нет"}),a.jsx("button",{className:"NFPage__btn",onClick:()=>{e("/")},children:"вернуться назад"})]})}export{n as default};
