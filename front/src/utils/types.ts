@@ -3,6 +3,8 @@ export interface User {
     avatar: string
     name: string
     email: string
+    isLoggedIn? : boolean
+    _id?: string 
 }
 export interface UserExtends {
     _id: string
@@ -32,12 +34,11 @@ export interface LocalPost {
     owner: string
     posted: boolean
     _id: string
-    postId: string
     cashData: {
         profit: CashData[],
         lose: CashData[]
     },
-    createdAt: Date,
+    createdAt: Date | string,
     choisenMonth: number,
     choisenYear: number
 }
@@ -60,7 +61,7 @@ export interface CashData {
     postId: string
     category: string
     statusComplited: boolean
-    createdAt: Date
+    createdAt: Date | string
 
 
 

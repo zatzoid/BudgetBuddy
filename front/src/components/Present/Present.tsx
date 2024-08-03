@@ -1,13 +1,12 @@
 import { useState } from "react";
 import useTouchSlider from "../../utils/customHooks/useTouchSlider";
 import { NavLink } from 'react-router-dom'
+import { useAppSelector } from "../../utils/store/hooks";
 
 
-interface props {
-    loggedIn: boolean
-}
 
-export default function Present(props: props) {
+export default function Present() {
+    const userMe = useAppSelector(store => store.userMe)
     const [translateValue, setTranslateValue] = useState(0);
     const { handleTouchStartY, handleTouchMove, handleTouchEnd, sliderStyleY } = useTouchSlider({ callback: scrollPresent, step: translateValue })
 
@@ -33,7 +32,7 @@ export default function Present(props: props) {
 
                 <section className="present__el present__el_one">
                     <div className="preset__redirect-container">
-                        {!props.loggedIn ? <>
+                        {!userMe.isLoggedIn ? <>
                             <NavLink to={'/sign-up'} className="present__redirect-btn">Регистрация</NavLink>
                             <NavLink to={'/sign-in'} className="present__redirect-btn">Вход</NavLink>
                         </> :

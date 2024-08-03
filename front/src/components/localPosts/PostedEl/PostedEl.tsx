@@ -4,9 +4,9 @@ import { CashData, CashDataPatch } from "../../../utils/types";
 interface props {
     hidenComplitedPost: { lose: string, profit: string }
     patchLPCashData: (data: CashDataPatch) => void
-    emailModalLodaing: boolean
+   
     openEmailModal: (data: CashData) => void
-    isLoadingLP: boolean
+    isLoading: boolean
     deleteCashDataLP: (data: CashDataPatch) => void
     item: CashData
     key: string
@@ -68,19 +68,19 @@ const dateOfItem = useMemo( ()=> getCreatedDate(props.item.createdAt),[props.ite
             className='posted-el' >
             <div className={`posted-el__action ${actionShowed && 'posted-el__action_active'}`}>
                 <button
-                    disabled={props.isLoadingLP}
+                    disabled={props.isLoading}
                     onClick={() => { deleteCashDataLP() }}
                     className="posted-el__action-btn posted-el__action-btn_del" >
                 </button>
                 <button
-                    disabled={props.emailModalLodaing}
+                    disabled={props.isLoading}
                     onClick={() => { props.openEmailModal(props.item) }}
                     className={`posted-el__action-btn posted-el__action-btn_email  posted-el__action-btn_email-${props.item.reminde.status}`} >
 
                 </button>
                 <button
                     onClick={() => { changeStatusComplited() }}
-                    disabled={props.isLoadingLP}
+                    disabled={props.isLoading}
                     className={`posted-el__action-btn  ${props.item.statusComplited ? 'posted-el__action-btn_statusComplited_active ' : 'posted-el__action-btn_statusComplited'}`}>
                 </button>
                 <p className="posted-el__action-btn-desc">удалить запись</p>
@@ -102,7 +102,7 @@ const dateOfItem = useMemo( ()=> getCreatedDate(props.item.createdAt),[props.ite
                 </button>
                 <p className="posted-el-value posted-el-value_value">{itemValue}</p>
                 <p className="posted-el__date">
-                    {dateOfItem}
+                    {getCreatedDate((props.item.createdAt as Date))}
                 </p>
             </div>
 

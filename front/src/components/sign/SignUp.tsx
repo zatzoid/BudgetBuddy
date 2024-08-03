@@ -1,16 +1,22 @@
 
 import SignForm from "./signform/SignForm";
 import { UserSign } from "../../utils/types";
-interface props {
-    isLoading: boolean
-    submit: (data: UserSign) => void
-}
-export default function SignUp(props: props) {
+import { useAppDispatch, useAppSelector } from "../../utils/store/hooks";
+import { signUp } from "../../utils/store/userMeSlice";
+
+export default function SignUp() {
+    
+    const dispatch = useAppDispatch()
+    const  apiStatus  = useAppSelector(store => store.apiStatus);
+    function handleSignUp(data: UserSign) {
+        dispatch(signUp(data))
+    }
+    
     return (
         <>
             <SignForm
-                isLoading={props.isLoading}
-                submit={props.submit}
+                isLoading={apiStatus.isLoading}
+                submit={handleSignUp}
                 signUp={true}
 
             />
