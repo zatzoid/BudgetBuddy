@@ -17,12 +17,14 @@ function successResponse(res, data) {
     }
     return res.status(statusCode).send(data);
 };
+
+
 module.exports.getUserLocalPosts = async (req, res, next) => {
     try {
         const owner = req.user._id;
         const findedPosts = await LocalPost.find({ owner: owner });
         if (!findedPosts) {
-            return res.send({ message: 'постов не найдено' }).status(404)
+           throw new NotFoundError('постов не найдено')
         }
         successResponse(res, { metaData: { message: `загружено ${findedPosts.length} постов` }, content: findedPosts });
     }
@@ -30,6 +32,8 @@ module.exports.getUserLocalPosts = async (req, res, next) => {
         return next(err);
     }
 };
+
+
 module.exports.createLocalPost = async (req, res, next) => {
     try {
         const { choisenMonth, choisenYear } = req.body;
@@ -42,6 +46,8 @@ module.exports.createLocalPost = async (req, res, next) => {
     }
 
 };
+
+
 // добавляет что то одно, получает {cashData. ...}
 module.exports.putCashDataLocalPost = async (req, res, next) => {
 
@@ -71,6 +77,7 @@ module.exports.putCashDataLocalPost = async (req, res, next) => {
 
 }
 
+
 module.exports.deleteCashDataLocalPost = async (req, res, next) => {
     try {
         const postId = req.params.postId;
@@ -96,6 +103,8 @@ module.exports.deleteCashDataLocalPost = async (req, res, next) => {
         return next(err);
     }
 };
+
+
 module.exports.patchCashDataLP = async (req, res, next) => {
     try {
         const postId = req.params.postId;
@@ -130,6 +139,8 @@ module.exports.patchCashDataLP = async (req, res, next) => {
         return next(err)
     }
 }
+
+
 //не нужно
 module.exports.uploadLocalPost = async (req, res, next) => {
     try {
