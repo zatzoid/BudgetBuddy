@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import defaultAvatar from '../../../images/user.svg';
 import Border from "../../ui/border/Border";
 import useFormWithValidation from "../../../utils/customHooks/validator";
@@ -63,7 +63,7 @@ const Profile = React.memo((props: props) => {
                         disabled={!isEdit}
                         onFocus={(e) => { setNameFocus(true); handleChange(e, (form.current as HTMLFormElement)) }}
                         onBlur={(e) => { setNameFocus(false); handleChange(e, (form.current as HTMLFormElement)) }}
-                        value={values.name || ''}
+                        value={values.name}
                         onChange={(e) => { handleChange(e, (form.current as HTMLFormElement)) }}
                         minLength={2}
                         maxLength={25}

@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import Border from "../../ui/border/Border";
-import useFormWithValidation from '../../../utils/customHooks/validator';
+import useFormWithValidation from '../../../utils/customHooks/useFormWithValidation';
 import { UserSign } from "../../../utils/types";
 
 

@@ -131,6 +131,7 @@ export default function Header() {
                                     name="profitHideComplited" />
                                 <Select
 
+
                                     zIndex={6}
                                     optionsArray={sortingSelect}
                                     selectName="profitSorting"
@@ -145,6 +146,7 @@ export default function Header() {
                                     callBack={handleUpdateAppSettings}
                                     name="loseHideComplited" />
                                 <Select
+
 
                                     optionsArray={sortingSelect}
                                     selectName="loseSorting"

@@ -47,44 +47,59 @@ const Statistics = memo((props: props) => {
     const [showedStatsEl, setShowedStatsEl] = useState(0);
     const { handleTouchStart, handleTouchMove, handleTouchEnd, slideStyle } = useTouchSlider({ step: showedStatsEl, callback: choisStats })
 
-    function chartPieData(data: LocalPost | null) {
-        if (data !== null) {
-            const chartData: chartData = {
-                labels: [],
-                datasets: [
-                    {
-                        data: [],
-                        backgroundColor: [],
-                    },
-                ]
+    useEffect(() => {
+        if (statsOpened) {
+            setProfitCategoryData(getValuesByCategory({ localPost: props.localPost, kinde: 'profit' }));
+            setLoseCategoryData(getValuesByCategory({ localPost: props.localPost, kinde: 'lose' }));
+            setDataForChart(chartPieData(props.localPost.current));
+            setTotalComplited(getTotalValues(props.localPost));
 
-            };
-
-            data?.cashData.profit.forEach((item) => {
-                const key = Object.keys(item.data)[0];
-                const value = Object.values(item.data)[0];
-                chartData.labels.push(key);
-                chartData.datasets[0].data.push(value);
-                chartData.datasets[0].backgroundColor.push("#7DCE70");
-            });
-
-            data?.cashData.lose.forEach((item) => {
-                const key = Object.keys(item.data)[0];
-                const value = Object.values(item.data)[0];
-                chartData.labels.push(key);
-                chartData.datasets[0].data.push(value);
-                chartData.datasets[0].backgroundColor.push("#f12652");
-            });
-            setDataForChart(chartData);
-        } else {
-            setDataForChart(null);
         }
+
+
+    }, [props.localPost, statsOpened])
+
+    function chartPieData(data: LocalPost | null): chartData {
+        const chartData: chartData = {
+            labels: [],
+            datasets: [
+                {
+                    data: [],
+                    backgroundColor: [],
+                },
+            ]
+
+        };
+
+
+        data?.cashData.profit.forEach((item) => {
+            const key = Object.keys(item.data)[0];
+            const value = Object.values(item.data)[0];
+            chartData.labels.push(key);
+            chartData.datasets[0].data.push(value);
+            chartData.datasets[0].backgroundColor.push("#7DCE70");
+        });
+
+        data?.cashData.lose.forEach((item) => {
+            const key = Object.keys(item.data)[0];
+            const value = Object.values(item.data)[0];
+            chartData.labels.push(key);
+            chartData.datasets[0].data.push(value);
+            chartData.datasets[0].backgroundColor.push("#f12652");
+        });
+        return chartData;
+
     }
-    function getStatsValues(data: { kinde: string }) {
-        const { cashData } = (props.localPost.current as LocalPost);
-        const cashDataPrev = props?.localPost.prev || null;
-        const currentList = createStatsValues({ kinde: data.kinde, obj: cashData })
+    function getValuesByCategory(data: { localPost: { current: LocalPost | null, prev: LocalPost | null }, kinde: string }): { total: valuesByCategory, precent: valuesByCategory } {
+
+        const { cashData } = (data.localPost.current as LocalPost);
+        const cashDataPrev = data.localPost.prev || null;
+        const currentList = createStatsValues({ kinde: data.kinde, obj: cashData });
         const previousList = createStatsValues({ kinde: data.kinde, obj: cashDataPrev?.cashData || null });
+        const precentValues = createPrecentValues({ curList: currentList, prevList: previousList, kinde: data.kinde });
+
+        return { total: currentList, precent: precentValues }
+
 
         function createStatsValues(data: { kinde: string, obj: { [key: string]: CashData[] } | null }): valuesByCategory {
             if (data.obj && data.obj[data.kinde].length > 0) {
@@ -114,15 +129,7 @@ const Statistics = memo((props: props) => {
         }
 
 
-
-        data.kinde === 'profit' ? setProfitCategoryList(currentList) : setLoseCategoryList(currentList);
-
-        const prevValues = createPrevValues({ curList: currentList, prevList: previousList, kinde: data.kinde });
-
-        data.kinde === 'profit' ? setProfitPrecentCategoryList(prevValues) : setLosePrecentCategoryList(prevValues);
-
-
-        function createPrevValues(data: { curList: valuesByCategory, prevList: valuesByCategory, kinde: string }): valuesByCategory {
+        function createPrecentValues(data: { curList: valuesByCategory, prevList: valuesByCategory, kinde: string }): valuesByCategory {
             if (data.prevList && data.curList) {
 
                 const currentList = data.curList;

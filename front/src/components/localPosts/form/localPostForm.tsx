@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Border from "../../ui/border/Border";
 import VisualBtn from "../../ui/visualbtn/VisualBtn";
 import Select from "../../ui/select/Select";
-import useFormWithValidation from "../../../utils/customHooks/validator";
+import useFormWithValidation from "../../../utils/customHooks/useFormWithValidation";
 import { MetaData, CashDataFromClient, Kinde } from "../../../utils/types";
 
 
