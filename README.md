@@ -1,4 +1,4 @@
-*BudgetBuddy
+# BudgetBuddy
 
 он же - бюджетный чувачок
 
