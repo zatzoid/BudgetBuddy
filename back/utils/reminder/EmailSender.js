@@ -1,12 +1,12 @@
-const dotenv = require('dotenv');
-dotenv.config();
-const nodemailer = require('nodemailer');
-const { emailSendedOk } = require('./EmailSendedOk')
+import { config } from 'dotenv';
+config();
+import { createTransport } from 'nodemailer';
+import { emailSendedOk } from './EmailSendedOk.js';
 
 
 const { EMAIL_HOST, EMAIL_HOST_PASSWORD, EMAIL_HOST_USER, EMAIL_PORT } = process.env;
 
-const transporter = nodemailer.createTransport({
+const transporter = createTransport({
     host: EMAIL_HOST,
     port: EMAIL_PORT,
     secure: true,
@@ -16,7 +16,7 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-module.exports = async function EmailSender(data, next) {
+export default async function EmailSender(data, next) {
     // send mail with defined transport object
     try {
         const date = new Date(data.dateToSend);

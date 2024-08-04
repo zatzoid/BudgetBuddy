@@ -1,5 +1,5 @@
-const rateLimit = require('express-rate-limit');
-module.exports.limiter = rateLimit({
+import rateLimit from 'express-rate-limit';
+export const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 минут
     max: 100, 
 });

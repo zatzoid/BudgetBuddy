@@ -1,6 +1,6 @@
-const { BAD_REQUEST_ERROR, DEFAULT_ERROR } = require('../utils/errorsCodes');
+import { BAD_REQUEST_ERROR, DEFAULT_ERROR } from '../utils/errorsCodes.js';
 
-module.exports.errorCheker = (err, req, res, next) => {
+export function errorCheker(err, req, res, next) {
   console.log(err.name, err.statusCode, err.message);
   if (err.name === 'CastError' || err.name === 'ValidationError') {
     return res.status(BAD_REQUEST_ERROR).send({ message: err.message, statusCode: BAD_REQUEST_ERROR });
@@ -18,4 +18,4 @@ module.exports.errorCheker = (err, req, res, next) => {
     return res.status(DEFAULT_ERROR).send({ message: err.message });
   }
  
-};
+}

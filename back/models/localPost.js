@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
+import { Schema, Types, model } from 'mongoose';
 
-const localPost = new mongoose.Schema({
+const localPost = new Schema({
     owner: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
@@ -16,8 +16,8 @@ const localPost = new mongoose.Schema({
         profit: [
             {
                 _id: {
-                    type: mongoose.Schema.Types.ObjectId
-                    , default: mongoose.Types.ObjectId
+                    type: Schema.Types.ObjectId
+                    , default: Types.ObjectId
                 },
 
                 data: {
@@ -30,7 +30,7 @@ const localPost = new mongoose.Schema({
 
                 },
                 postId: {
-                    type: mongoose.Schema.Types.ObjectId
+                    type: Schema.Types.ObjectId
                 },
                 category: {
                     type: String,
@@ -52,8 +52,8 @@ const localPost = new mongoose.Schema({
         lose: [
             {
                 _id: {
-                    type: mongoose.Schema.Types.ObjectId
-                    , default: mongoose.Types.ObjectId
+                    type: Schema.Types.ObjectId
+                    , default: Types.ObjectId
                 },
 
                 data: {
@@ -66,7 +66,7 @@ const localPost = new mongoose.Schema({
 
                 },
                 postId: {
-                    type: mongoose.Schema.Types.ObjectId
+                    type: Schema.Types.ObjectId
                 },
                 category: {
                     type: String,
@@ -99,4 +99,4 @@ const localPost = new mongoose.Schema({
 
 }, { versionKey: false });
 
-module.exports = mongoose.model('LocalPost', localPost);
+export default model('LocalPost', localPost);

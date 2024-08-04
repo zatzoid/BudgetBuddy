@@ -1,10 +1,9 @@
-const dotenv = require('dotenv');
-const path = require('path');
-dotenv.config({ path: path.resolve(__dirname, '../..', '.env') });
+import dotenv from 'dotenv';
+dotenv.config({ path: `.${process.env.NODE_ENV}.env` });
 
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-module.exports.getJWT = function () {
+export function getJWT () {
   return NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret';
-};
+}

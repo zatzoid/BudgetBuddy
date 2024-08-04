@@ -1,3 +1,3 @@
-module.exports.NOT_FOUND_ERROR = 404;
-module.exports.BAD_REQUEST_ERROR = 400;
-module.exports.DEFAULT_ERROR = 500;
+export const NOT_FOUND_ERROR = 404;
+export const BAD_REQUEST_ERROR = 400;
+export const DEFAULT_ERROR = 500;

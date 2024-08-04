@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
+import { Schema, Types, model } from 'mongoose';
 
-const LPreminderData = new mongoose.Schema({
+const LPreminderData = new Schema({
     createdAt: {
         type: Date,
         default: Date.now,
@@ -19,8 +19,8 @@ const LPreminderData = new mongoose.Schema({
     },
     mainData: {
         _id: {
-            type: mongoose.Schema.Types.ObjectId
-            , default: mongoose.Types.ObjectId
+            type: Schema.Types.ObjectId
+            , default: Types.ObjectId
         },
 
         data: {
@@ -33,7 +33,7 @@ const LPreminderData = new mongoose.Schema({
 
         },
         postId: {
-            type: mongoose.Schema.Types.ObjectId
+            type: Schema.Types.ObjectId
         },
         category: {
             type: String,
@@ -55,4 +55,4 @@ const LPreminderData = new mongoose.Schema({
 }, { versionKey: false });
 
 
-module.exports = mongoose.model('LPreminderData', LPreminderData);
+export default model('LPreminderData', LPreminderData);

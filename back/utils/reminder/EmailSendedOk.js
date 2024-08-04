@@ -1,7 +1,7 @@
-const LPreminderData = require('../../models/LPreminderData');
-const localPost = require('../../models/localPost');
+import  LPreminderData  from '../../models/LPreminderData.js';
+import  localPost  from '../../models/localPost.js';
 
-module.exports.emailSendedOk = async (data) => {
+export async function emailSendedOk(data) {
     try {
         /* finde post */
         const deletedData = await LPreminderData.findOneAndDelete({ _id: data._id });

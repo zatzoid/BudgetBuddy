@@ -1,30 +1,46 @@
-const dotenv = require('dotenv');
-const path = require('path');
-const schedule = require('node-schedule');
+import dotenv from 'dotenv';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+const __dirname = dirname(fileURLToPath(import.meta.url));
 dotenv.config({ path: path.resolve(__dirname, '..', '.env') });
-const express = require('express');
-const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser');
-const routes = require('./routes/index');
-const { Auth } = require('./midlewares/auth');
-const { errors } = require('celebrate');
-const { errorCheker } = require('./midlewares/errorChecker');
-const { signUp, signIn } = require('./controllers/users');
-const { validRegister, validLogin } = require('./utils/validation');
-const { emailFinder } = require('./utils/reminder/EmailFinder');
-const cors = require('./midlewares/cors');
-const { NotFoundError } = require('./utils/errorsType');
-const { requestLogger, errorLogger } = require('./midlewares/logger');
-const { checkStatus } = require('./controllers/status');
+
+import express, { json } from 'express';
+import { connect } from 'mongoose';
+import cookieParser from 'cookie-parser';
+import { errors } from 'celebrate';
+import { RecurrenceRule, scheduleJob } from 'node-schedule';
+import routes from './routes/index.js';
+import { Auth } from './midlewares/auth.js';
+import { errorCheker } from './midlewares/errorChecker.js';
+import { signUp, signIn } from './controllers/users.js';
+import { validRegister, validLogin } from './utils/validation.js';
+import { emailFinder } from './utils/reminder/EmailFinder.js';
+import cors from './midlewares/cors.js';
+import { NotFoundError } from './utils/errorsType.js';
+import { requestLogger, errorLogger } from './midlewares/logger.js';
+import { checkStatus } from './controllers/status.js';
 //const { limiter } = require('./midlewares/limiter')
+//swagger new
+import { serve, setup } from 'swagger-ui-express';
+import docs from './docs/docs.js';
+
+
+
+
 
 const { PORT = 3000, MONGODB_PORT } = process.env;
 
 const app = express();
-//https
-app.use(express.json());
+
+
+
+
+
+app.use(json());
 app.use(cookieParser());
 app.set('trust proxy', true);
+app.use('/docs', serve, setup(docs));
+
 //app.use(limiter);
 app.use(requestLogger);
 app.use(cors);
@@ -40,7 +56,7 @@ app.use(errorCheker);
 
 async function serverUp() {
   try {
-    await mongoose.connect(`mongodb://127.0.0.1:${MONGODB_PORT}/budgetbuddy`);
+    await connect(`mongodb://127.0.0.1:${MONGODB_PORT}/budgetbuddy`);
     app.listen(PORT, () => {
       console.log('все круто --', PORT);
     });
@@ -52,12 +68,12 @@ async function serverUp() {
 serverUp();
 
 /* отправка писем с делеем */
-const rule = new schedule.RecurrenceRule();
+const rule = new RecurrenceRule();
 rule.hour = 0;
 rule.minute = 10;
 
 
-const dailyTask = schedule.scheduleJob(rule, function () {
+const dailyTask = scheduleJob(rule, function () {
   const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0);
   const day = currentDate.getDate();

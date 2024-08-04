@@ -1,8 +1,7 @@
-const LocalPost = require('../models/localPost');
-const LPreminderData = require('../models/LPreminderData')
-const PublicPost = require('../models/publicPosts');
-const { NotFoundError } = require('../utils/errorsType');
-const mongoose = require('mongoose');
+import LocalPost from '../models/localPost.js';
+import LPreminderData from '../models/LPreminderData.js';
+import { NotFoundError } from '../utils/errorsType.js';
+import { Types } from 'mongoose';
 
 
 function successResponse(res, data) {
@@ -19,22 +18,22 @@ function successResponse(res, data) {
 };
 
 
-module.exports.getUserLocalPosts = async (req, res, next) => {
+export async function getUserLocalPosts(req, res, next) {
     try {
         const owner = req.user._id;
         const findedPosts = await LocalPost.find({ owner: owner });
         if (!findedPosts) {
-           throw new NotFoundError('постов не найдено')
+            throw new NotFoundError('постов не найдено')
         }
         successResponse(res, { metaData: { message: `загружено ${findedPosts.length} постов` }, content: findedPosts });
     }
     catch (err) {
         return next(err);
     }
-};
+}
 
 
-module.exports.createLocalPost = async (req, res, next) => {
+export async function createLocalPost(req, res, next) {
     try {
         const { choisenMonth, choisenYear } = req.body;
         const owner = req.user._id;
@@ -45,11 +44,11 @@ module.exports.createLocalPost = async (req, res, next) => {
         return next(err);
     }
 
-};
+}
 
 
 // добавляет что то одно, получает {cashData. ...}
-module.exports.putCashDataLocalPost = async (req, res, next) => {
+export async function putCashDataLocalPost(req, res, next) {
 
     try {
 
@@ -60,12 +59,12 @@ module.exports.putCashDataLocalPost = async (req, res, next) => {
         }
         if (!req.body.cashData.lose) {
             const profit = req.body.cashData.profit;
-            const newProfit = { _id: new mongoose.Types.ObjectId(), emailStatus: null, postId: postId, category: profit.category, ...profit };
+            const newProfit = { _id: new Types.ObjectId(), emailStatus: null, postId: postId, category: profit.category, ...profit };
             postToPut.cashData.profit.push(newProfit);
         }
         if (!req.body.cashData.profit) {
             const lose = req.body.cashData.lose;
-            const newLose = { _id: new mongoose.Types.ObjectId(), emailStatus: null, postId: postId, category: lose.category, ...lose };
+            const newLose = { _id: new Types.ObjectId(), emailStatus: null, postId: postId, category: lose.category, ...lose };
             postToPut.cashData.lose.push(newLose);
         }
         const updatedPost = await postToPut.save();
@@ -78,7 +77,7 @@ module.exports.putCashDataLocalPost = async (req, res, next) => {
 }
 
 
-module.exports.deleteCashDataLocalPost = async (req, res, next) => {
+export async function deleteCashDataLocalPost(req, res, next) {
     try {
         const postId = req.params.postId;
         const postToDel = await LocalPost.findById(postId);
@@ -102,15 +101,17 @@ module.exports.deleteCashDataLocalPost = async (req, res, next) => {
     catch (err) {
         return next(err);
     }
-};
+}
 
 
-module.exports.patchCashDataLP = async (req, res, next) => {
+export async function patchCashDataLP(req, res, next) {
     try {
         const postId = req.params.postId;
         const postToUpdate = await LocalPost.findById(postId);
         if (!postToUpdate) {
             throw new NotFoundError('Пост не найден');
+
+
         }
         if (!req.body.data.cashData.lose) {
             const { profit } = req.body.data.cashData;
@@ -141,16 +142,34 @@ module.exports.patchCashDataLP = async (req, res, next) => {
 }
 
 
-//не нужно
-module.exports.uploadLocalPost = async (req, res, next) => {
+export async function createEmailDataToSend(req, res, next) {
     try {
-        const postId = req.params.postId;
-        const updatedPost = await LocalPost.findByIdAndUpdate(postId, { posted: true }, { new: true });
-        const { cashData, owner, choisenDate } = updatedPost;
-        const uploadPost = await PublicPost.create({ cashData, owner, choisenDate });
-        return successResponse(res, { message: 'Запись опубликована', uploadPost })
+        console.log(req.body)
+        const { date, mainData, message, emailTo } = req.body.data;
+        const dateToSend = date;
+        const { _id, postId } = mainData;
+        const dataReminder = await LPreminderData.create({ dateToSend, mainData, message, emailTo });
+        const updatedPost = await localPost.findOne({ _id: postId });
+        if (updatedPost) {
+            const targetElementId = _id;
+            const cashData = updatedPost.cashData;
+            const profitIndex = cashData.profit.findIndex(
+                (profitElement) => profitElement._id.toString() === targetElementId);
+            const loseIndex = cashData.lose.findIndex(
+                (loseElement) => loseElement._id.toString() === targetElementId);
+
+            if (profitIndex !== -1) {
+                cashData.profit[profitIndex].reminde = { status: 'added', data: { dateToSend: dateToSend, reminderId: dataReminder._id, message: dataReminder.message } };
+
+            }
+            else if (loseIndex !== -1) {
+                cashData.lose[loseIndex].reminde = { status: 'added', data: { dateToSend: dateToSend, reminderId: dataReminder._id, message: dataReminder.message } };
+
+            }
+
+            await updatedPost.save();
+        }
+        return res.status(200).send({ metaData: { message: `Писмьо придет на почту ${emailTo}, ${dateToSend} в 1:00 по МСК`, statusCode: 200 }, content: updatedPost })
     }
-    catch (err) {
-        return next(err);
-    }
-};
+    catch (e) { return next(e) }
+}

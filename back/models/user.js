@@ -1,9 +1,10 @@
-const mongoose = require('mongoose');
-const validator = require('validator');
-const { LoginError } = require('../utils/errorsType');
-const bcrypt = require("bcryptjs")
-
-const user = new mongoose.Schema({
+import { Schema, model } from 'mongoose';
+import validator from 'validator';
+const { isEmail } = validator
+import {LoginError} from '../utils/errorsType.js';
+import bcryptjs from "bcryptjs";
+const { compare } = bcryptjs;
+const user = new Schema({
   avatar: {
     type: String,
     default: 'in progress'
@@ -19,7 +20,7 @@ const user = new mongoose.Schema({
     required: true,
     unique: [true, 'Почта уже зарегистрирована'],
     validate: {
-      validator: (value) => validator.isEmail(value),
+      validator: (value) => isEmail(value),
       message: 'Некорректный формат email',
     },
   },
@@ -36,7 +37,7 @@ user.statics.login = function (email, password) {
       if (!user) {
         return Promise.reject(new LoginError('Неверная почта или пароль'));
       }
-      return bcrypt.compare(password, user.password)
+      return compare(password, user.password)
         .then((match) => {
           if (!match) {
             return Promise.reject(new LoginError('Неверная почта или пароль'));
@@ -46,4 +47,4 @@ user.statics.login = function (email, password) {
     });
 };
 
-module.exports = mongoose.model('User', user);
+export default model('User', user);
