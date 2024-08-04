@@ -1,8 +1,7 @@
-const LPreminderData = require('../../models/LPreminderData');
-const mongoose = require('mongoose');
-const EmailSender = require('./EmailSender')
+import LPreminderData from '../../models/LPreminderData.js';
+import EmailSender from './EmailSender.js';
 
-module.exports.emailFinder = async (data) => {
+export async function emailFinder(data) {
     try {
         const findedDataToSend = await LPreminderData.find({ dateToSend: data })
         if (findedDataToSend.length > 0) {

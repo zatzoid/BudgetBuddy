@@ -33,7 +33,7 @@ class RequestError extends Error {
     this.statusCode = 400;
   }
 }
-module.exports = {
+export {
   LoginError,
   NoRightError,
   NotFoundError,

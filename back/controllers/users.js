@@ -1,10 +1,12 @@
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/user');
-const localPost = require('../models/localPost');
-const LPreminderData = require('../models/LPreminderData')
-const { getJWT } = require('../utils/getJwt');
-const { NotFoundError, RegistrError } = require('../utils/errorsType');
+import bcryptjs from 'bcryptjs';
+const { hash } = bcryptjs
+import jsonwebtoken from 'jsonwebtoken';
+const { sign } = jsonwebtoken
+import User from '../models/user.js';
+import localPost from '../models/localPost.js';
+import LPreminderData from '../models/LPreminderData.js';
+import { getJWT } from '../utils/getJwt.js';
+import { NotFoundError, RegistrError } from '../utils/errorsType.js';
 
 function successResponse(res, data) {
     const statusCode = data.metaData.statusCode ? data.metaData.statusCode : 200
@@ -19,19 +21,20 @@ function successResponse(res, data) {
 
     return res.status(statusCode).send(data);
 };
-module.exports.signUp = async (req, res, next) => {
+
+export async function signUp(req, res, next) {
     try {
         const {
             name, email,
         } = req.body;
-        const password = await bcrypt.hash(req.body.password, 10);
+        const password = await hash(req.body.password, 10);
         const newUser = await User.create({
             name,
             email,
             password,
         });
         const key = getJWT();
-        const token = jwt.sign({ _id: newUser._id }, key, { expiresIn: '7d' });
+        const token = sign({ _id: newUser._id }, key, { expiresIn: '7d' });
         return res.cookie(
             'Bearer ',
             token,
@@ -47,13 +50,16 @@ module.exports.signUp = async (req, res, next) => {
 
         return next(err);
     }
-};
-module.exports.signIn = async (req, res, next) => {
+}
+
+
+
+export async function signIn(req, res, next) {
     try {
         const { email, password } = req.body;
         const user = await User.login(email, password);
         const key = getJWT();
-        const token = jwt.sign({ _id: user._id }, key, { expiresIn: '7d' });
+        const token = sign({ _id: user._id }, key, { expiresIn: '7d' });
         return res.cookie(
             'Bearer ',
             token,
@@ -63,13 +69,19 @@ module.exports.signIn = async (req, res, next) => {
             },
         ).send({ metaData: { message: 'Вход в аккаунт выполнен успешно' } });
     } catch (err) { return next(err); }
-};
-module.exports.signOut = async (req, res, next) => {
+}
+
+
+
+export async function signOut(req, res, next) {
     try {
         return res.clearCookie('Bearer').status(200).send({ metaData: { message: 'Выход из аккаунта выполнен успешно' } });
     } catch (err) { return next(err); }
-};
-module.exports.getUserMe = async (req, res, next) => {
+}
+
+
+
+export async function getUserMe(req, res, next) {
     try {
         const userData = await User.findById(req.user._id);
         if (!userData) {
@@ -79,7 +91,10 @@ module.exports.getUserMe = async (req, res, next) => {
     }
     catch (err) { return next(err); }
 }
-module.exports.changeProfile = async (req, res, next) => {
+
+
+
+export async function changeProfile(req, res, next) {
     try {
         const { name, email } = req.body;
         const userData = await User.findByIdAndUpdate(
@@ -97,9 +112,11 @@ module.exports.changeProfile = async (req, res, next) => {
         }
         return next(err);
     }
-};
+}
 
-module.exports.deleteUserMe = async (req, res, next) => {
+
+
+export async function deleteUserMe(req, res, next) {
     try {
         await localPost.deleteMany({ owner: req.user._id });
         await LPreminderData.deleteMany({ emailTo: req.body.data.email });

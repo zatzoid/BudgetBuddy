@@ -1,4 +1,4 @@
-const LocalPost = require('../models/localPost');
+import LocalPost from '../models/localPost.js';
 
 
 function successResponse(res, data) {
@@ -14,7 +14,7 @@ function successResponse(res, data) {
     return res.status(statusCode).send(data);
 };
 
-module.exports.checkStatus = async (req, res, next) => {
+export async function checkStatus(req, res, next) {
     try {
        
        await LocalPost.find();
@@ -23,4 +23,4 @@ module.exports.checkStatus = async (req, res, next) => {
     catch (err) {
         return next(err);
     }
-};
+}

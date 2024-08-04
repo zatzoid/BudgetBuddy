@@ -41,7 +41,7 @@ const localPostsSlice = createSlice({
 const { updateLP, clearLp } = localPostsSlice.actions;
 export default localPostsSlice.reducer;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 /* function _endOfRequest(dispatch: any, meta: MetaData, content: LocalPost[] | LocalPost | null = null) {
     const { message = 'unknown error :::', statusCode = 555 } = meta
     if (content !== null) {
