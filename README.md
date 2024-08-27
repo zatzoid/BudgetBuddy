@@ -4,8 +4,9 @@
 
 Мой пет проект и тренажер, на котором я тестирую всякое.
 
+
 + spa
-+ full-stack (апи по rest)
++ full-stack (апи по rest (сейчас работает через локальный стор))
 + React (redux, ts)
 + Express (mongodb, дока на swagger)
 
